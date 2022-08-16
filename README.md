@@ -1,3 +1,3 @@
-# formatio
+# RPG-IO
 
-To run: `npm run watch`.
+To run: `node app.js`
