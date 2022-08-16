@@ -1,0 +1,7 @@
+class StatusInput
+{
+    constructor()
+    {
+        
+    }
+}
