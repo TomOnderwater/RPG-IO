@@ -15,9 +15,10 @@ module.exports = class Level
         this.ticks = 0
         this.events = []
     }
-    getSpawnPos()
+    getSpawnPos(body)
     {
-        return {x: this.size / 2, y: this.size / 8} //somewhere near the top
+        //return {x: this.size / 2, y: this.size / 8}
+        return this.getFreeSpot({x: this.size / 2, y: this.size / 8}, body)
     }
     takePlayer(id)
     {
@@ -41,7 +42,7 @@ module.exports = class Level
     addPlayer(player, initpos)
     {
     // where do we move the player?
-    player.body.pos = initpos || this.getSpawnPos()
+    player.body.pos = initpos || this.getSpawnPos(player.body)
     this.players.push(player)
     }
     getPlayer(id)
@@ -97,6 +98,51 @@ module.exports = class Level
     {
         console.log('new event:', event)
         this.events.push(event)
+    }
+    closeBodies(pos, colliders, range)
+    {
+        //let colliders = [...this.players, ...this.entities]
+        let close = this.getStructures(pos, range)
+        for (let collider of colliders)
+        {
+            if (Func.inRange(pos, collider.body.pos, range)) close.push(collider.body) 
+        }
+        //console.log('bodies in range:', close.length)
+        return close
+    }
+    getFreeSpot(testpos, body)
+    {
+        // first round, test original
+        let colliders = [...this.players, ...this.entities]
+        let close = this.closeBodies(testpos, colliders, 5)
+        let maxdist = 2
+        let original = {x: testpos.x, y: testpos.y}
+        while(true) 
+        {
+            let resolved = true
+            for (let collider of close)
+            {
+                // check if distance is greater than reasonable
+                if (Func.dist(testpos, collider.pos) > 2) continue
+                // check the body is the same as the testbody
+                if (collider == body) continue
+
+                if (body.virtualCollision(testpos, collider))
+                {
+                    // collision! get a new random pos
+                    testpos = {x: original.x + (Math.random() - 0.5) * maxdist, y: original.y + (Math.random() - 0.5) * maxdist}
+                    maxdist += 0.5
+                    resolved = false
+                    break
+                }
+            }
+            if (resolved) break
+        }
+        return testpos
+    }
+    getCloseBodiesFromPos(pos)
+    {
+
     }
     getEntities(player)
     {

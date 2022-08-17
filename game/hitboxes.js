@@ -217,6 +217,15 @@ module.exports = class PhysicalBody
         this.applyDrag()
         return collisions
     }
+    virtualCollision(testpos, body)
+    {
+        // copy own pos first
+        let copy = {x: this.pos.x, y: this.pos.y}
+        this.pos = testpos
+        let collision = this.collide(body)
+        this.pos = copy
+        return collision
+    }
     collide(body)
     {
         switch(this.type)

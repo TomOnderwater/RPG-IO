@@ -21,7 +21,7 @@ module.exports = class Player
         this.maxhealth = data.health || 100
         this.heading = 0
         //pos, angle, fov, resolution, range
-        this.perception = new Perception(Math.PI / 2, 10, 6)
+        //this.perception = new Perception(Math.PI / 2, 10, 6)
         this.health = this.maxhealth
     }
     initHand(id)
@@ -39,29 +39,19 @@ module.exports = class Player
         items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
     }
-    closeBodies(pos, level, colliders, range)
-    {
-       let close = level.getStructures(pos, range)
-       for (let collider of colliders)
-       {
-          if (Func.inRange(pos, collider.body.pos, range)) close.push(collider.body) 
-       }
-       return close
-    }
-    getPerception(level) {
-        return this.perception.getSight(this, level).perception
-    }
+
     update(level, colliders)
     {
-        if (Func.magnitude(this.body.speed) > 0.01) // turn sight
+        // rotate sprite
+        if (Func.magnitude(this.body.speed) > 0.01)
             this.heading = Math.atan2(this.body.speed.y, this.body.speed.x)
-        //console.log(this.body.pos)
+
         this.body.bounceSpeed(this.input.dir)
-        this.body.update(this.closeBodies(this.body.pos, level, colliders, 1))
+        this.body.update(level.closeBodies(this.body.pos, colliders, 1))
         // update sword / fist with everything but not own body
         if (this.hand.moving)
         {
-            let closebodies = this.closeBodies(this.hand.body.pos, level, colliders, 1)
+            let closebodies = level.closeBodies(this.hand.body.pos, colliders, 1)
             let collisions = this.hand.body.update(closebodies, this.body) // except player body
             if (collisions)
             {

@@ -112,7 +112,7 @@ module.exports = class Dungeon {
         if (inventoryUpdate) viewport.inventory = inventoryUpdate
         
         // test perception
-        viewport.perception = active.player.getPerception(active.level)
+        //viewport.perception = active.player.getPerception(active.level)
 
         // set update frequency for level
         if (this.ticks % 10 === 0) viewport.tiles = active.level.getTileData(active.player)
