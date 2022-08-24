@@ -2,7 +2,7 @@ const PhysicalBody = require('./hitboxes.js')
 const Func = require('./functions.js')
 const Perception = require('./perception.js')
 
-function getSlime()
+function baseSlime()
 {
     let stats = {}
     stats.rad = 0.2 //body diameter
@@ -15,46 +15,20 @@ function getSlime()
     return stats
 }
 
-
-class Mob
+class Slime
 {
-    constructor(pos, stats)
+    constructor(pos, id, stats)
     {
-        this.stats = stats || getSlime()
+        this.stats = stats || baseSlime()
+        this.id = id
         this.body = new PhysicalBody({type: 'circle', mass: this.stats.mass, entity: this, pos, rad: this.stats.rad})
         this.perception = new Perception(this.stats.fov, this.stats.resolution, this.stats.range)
+        this.maxspeed = 0.005
+        this.dir = {x: 0, y: 0}
         this.heading = 0
         this.health = this.stats.health
         this.maxhealth = this.stats.health
-        this.vision
-        this.type = stats.type
-    }
-    perceive(level)
-    {
-       return this.perception.getSight(this, level)
-    }
-}
-
-class Other
-{
-    constructor(pos, type)
-    {
-        this.pos = pos
-        this.type = type
-        this.ticks = 0
-    }
-    update(perception)
-    {
-        
-    }
-}
-
-class Slime
-{
-    constructor(pos)
-    {
-        let stats = getSlime()
-        super(pos, stats)
+        this.type = 'slime'
     }
     getAction(level, colliders)
     {
@@ -62,8 +36,33 @@ class Slime
     }
     update(level, colliders)
     {
-        let perception = this.perceive(level)
-        let action = this.getAction(perception)
-        this.body.target(action.target)
+        //let perception = this.perceive(level)
+        //let action = this.getAction(perception)
+        //this.body.target(action.target)
+
+        //random movement
+        if (Math.random() > 0.99) 
+            this.dir = {
+                    x: Func.getRandom(-this.maxspeed, this.maxspeed), 
+                    y: Func.getRandom(-this.maxspeed, this.maxspeed)
+                }
+            this.body.bounceSpeed(this.dir)
+        let collisions = this.body.update(level.closeBodies(this.body.pos, colliders, 1))
     }
+    applyDamage(damage)
+    {
+        this.health -= damage
+    }
+    data() 
+        {
+            let x = Func.fixNumber(this.body.pos.x, 2)
+            let y = Func.fixNumber(this.body.pos.y, 2)
+            let pos = {x,y}
+            return {id: this.id, type: this.type, pos, health: this.health, maxhealth: this.maxhealth}
+        }
+}
+
+module.exports =
+{
+    Slime
 }

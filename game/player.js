@@ -77,7 +77,7 @@ module.exports = class Player
     applyDamage(damage)
     {
         this.health -= damage
-        console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)
+        //console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)
     }
     getScore()
     {

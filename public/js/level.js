@@ -153,6 +153,9 @@ class Level {
         case 'none':
           this.entities.push(new Fist(entity))
         break
+        // case 'slime':
+        //   console.log('slime spawn')
+        // break
 
         default:
         console.log('unknown entity detected')

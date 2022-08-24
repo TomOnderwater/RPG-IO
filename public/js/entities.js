@@ -35,9 +35,8 @@ class Entity
         push()
         fill(255, 255, 0)
         stroke(255, 125, 0)
-        strokeWeight(2)
-        rectMode(CENTER)
-        rect(this.pos.x, this.pos.y, 20, 20)
+        let pos = camera.onScreen(this.pos)
+        circle(pos.x, pos.y, this.dia)
         pop()
     }
     touch()

@@ -26,6 +26,10 @@ function multiply(a, factor) {
     }
 }
 
+function getRandom(min, max) {
+  return Math.random() * (max - min) + min
+}
+
 function divide(a, factor) {
     return {
         x: a.x / factor,
@@ -116,5 +120,5 @@ module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
-    squareBounce, isAbout, fixNumber, inRange
+    squareBounce, isAbout, fixNumber, inRange, getRandom
 }

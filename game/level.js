@@ -1,6 +1,7 @@
 const Tile = require('./tile.js')
 const LevelGenerator = require('./levelgeneration.js')
 const Func = require('./functions.js')
+const Mobs = require('./mobs.js')
 
 module.exports = class Level 
 {
@@ -14,6 +15,8 @@ module.exports = class Level
         this.items = []
         this.ticks = 0
         this.events = []
+        this.mobs = []
+        this.maxMobs = 100
     }
     getSpawnPos(body)
     {
@@ -63,7 +66,9 @@ module.exports = class Level
     }
     update()
     {
-        let entities = [...this.players, ...this.entities] //collect everything
+        //spawn mobs
+        this.spawnMobs()
+        let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
         for (let i = this.players.length - 1; i >= 0; i--)
         {
@@ -74,6 +79,18 @@ module.exports = class Level
                 this.players.splice(i, 1)
             }
         }
+    }
+    spawnMobs()
+    {
+        if (this.mobs.length < this.maxMobs) this.spawnMob('slime')
+    }
+    spawnMob(type)
+    {
+        let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
+        let spawnpos = this.getFreeSpot({x: Math.random() * this.size, y: Math.random() * this.size}, slime.body)
+        slime.body.pos = spawnpos
+        console.log(slime)
+        this.mobs.push(slime)
     }
     getEvents(player)
     {
@@ -151,6 +168,12 @@ module.exports = class Level
         {
             entities.push(other.data())
             entities.push(other.getHand())
+        }
+        for (let mob of this.mobs)
+        {
+            // check in range:
+            if (Func.inRange(player.body.pos, mob.body.pos, player.perceptionstat))
+                entities.push(mob.data())
         }
         return entities
     }
