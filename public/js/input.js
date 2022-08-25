@@ -32,7 +32,9 @@ class MobileInput {
         if (inventoryactions !== null) actions = [...actions, ...inventoryactions]
         //console.log(actions)
 
-        this.stats.update()
+        let pointallocations = this.stats.update()
+        if (pointallocations !== null) 
+            actions = [...actions, ...pointallocations]
 
         //print(actions)
         //print(joyout)
@@ -422,14 +424,17 @@ class Stats
 { // draw on the top right corner
     constructor()
     {
-        this.area = {x1:width - 120, y1: 15, x2: width - 10, y2: 40}
+        this.area = {x1:width - 120, y1: 15, x2: width - 20, y2: 40}
         this.width = this.area.x2 - this.area.x1
+        this.height = this.area.y2 - this.area.y1
         this.maxXP = 100
         this.xp = 0
         this.level = 1
 
+        this.open = false
+        this.points = 0
         this.strength = 1
-        this.stamina = 1
+        this.vitality = 1
         this.speed = 1
     }
     updateData(status)
@@ -437,20 +442,35 @@ class Stats
         this.xp = status.xp
         this.maxXP = status.xpnext
         this.level = status.level
+        this.points = status.points
+
+        this.strength = status.strength
+        this.vitality = status.vitality
+        this.speed = status.speed
+
+        this.strengthButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 20}, '+')
+        this.vitalityButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 50}, '+')
+        this.speedButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 80}, '+')
     }
     draw()
     {
         let w = map(this.xp, 0, this.maxXP, 0, this.width)
         push()
-
+        if (!this.open && this.points > 0) 
+        {
+            noFill()
+            stroke(0, 100, 255)
+            strokeWeight(3)
+            rect(this.area.x1 - 5, this.area.y1 - 5, this.width + 10, this.height + 10, 8)
+        }
         // XP BAR
         stroke(0)
         strokeWeight(1)
         noFill()
-        rect(this.area.x1, this.area.y1, this.width, 12)
+        rect(this.area.x1, this.area.y1, this.width, 12, 5)
         noStroke()
         fill(0, 255, 255, 100)
-        rect(this.area.x1, this.area.y1, w, 12)
+        rect(this.area.x1, this.area.y1, w, 12, 5)
 
         // TEXT
         fill(255)
@@ -460,6 +480,69 @@ class Stats
         text('LVL ' + this.level, this.area.x1, this.area.y2)
         textAlign(RIGHT)
         text(this.xp + '/' + this.maxXP, this.area.x2, this.area.y2)
+
+        if (this.open) this.drawAttributes()
+        pop()
+    }
+    drawAttributes()
+    {
+        textSize(16)
+        textAlign(RIGHT, CENTER)
+        if (this.points)
+        {
+            this.strengthButton.draw()
+            this.vitalityButton.draw()
+            this.speedButton.draw()
+        }
+        text('strength: ' + this.strength, this.strengthButton.pos.x - 20, this.strengthButton.pos.y)
+        text('vitality: ' + this.vitality, this.vitalityButton.pos.x - 20, this.vitalityButton.pos.y)
+        text('speed: ' + this.speed, this.speedButton.pos.x - 20, this.speedButton.pos.y)
+    }
+    toggleAttributes()
+    {
+        let allocations = []
+        if (this.strengthButton.update()) allocations.push({type: 'allocation', attribute: 'strength'})
+        if (this.speedButton.update()) allocations.push({type: 'allocation', attribute: 'speed'})
+        if (this.vitalityButton.update()) allocations.push({type: 'allocation', attribute: 'vitality'})
+        if (!allocations.length) return null
+        return allocations
+    }
+    update()
+    {
+        for (let t of touches)
+        {
+            if (onField(t, this.area) && !inList(t.id, input.usedTouches))
+            {
+                input.addTouch(t)
+                // switch to open
+                this.open = !this.open
+                return null
+            }
+        }
+        if (this.open) return this.toggleAttributes()
+        return null
+    }
+}
+
+class SimpleButton
+{
+    constructor(pos, char)
+    {
+        this.pos = pos
+        this.area = {x1: this.pos.x - 10, y1: this.pos.y - 10, x2: this.pos.x + 10, y2: this.pos.y + 10}
+        this.char = char
+    }
+    draw()
+    {
+        push()
+        rectMode(CORNERS)
+        fill(0, 255, 0)
+        noStroke()
+        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 10)
+        stroke(255)
+        strokeWeight(3)
+        textAlign(CENTER, CENTER)
+        text(this.char, this.pos.x, this.pos.y)
         pop()
     }
     update()
@@ -470,9 +553,10 @@ class Stats
             {
                 input.addTouch(t)
                 // switch to open
-                return 
+                return true
             }
         }
+        return false
     }
 }
 

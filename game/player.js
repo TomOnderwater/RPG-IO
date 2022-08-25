@@ -64,7 +64,7 @@ module.exports = class Player
     }
     getXP()
     {
-        return this.xp * 0.5
+        return (this.xp + this.usedXP) * 0.5
     }
     recover()
     {
@@ -115,7 +115,7 @@ module.exports = class Player
                         // calculate damage based on speed times damage
                         let itemdamage = this.hand.item.physical
                         let speed = Func.magnitude(collision.speed)
-                        let damage = speed * itemdamage
+                        let damage = speed * itemdamage * (1 + (this.strength * 0.2))
                         damage = Math.round(damage)
                         // apply damage
                         if (collision.entity.health !== undefined)
@@ -202,6 +202,32 @@ module.exports = class Player
         this.inventory.updated = true
         //console.log(action)
     }
+    manageAttributes(attribute)
+    {
+        if (this.points <= 0) return
+        switch(attribute)
+        {
+            case 'strength':
+            this.strength ++
+            this.points --
+            break
+            case 'speed':
+            this.speed ++
+            this.speedstat = 0.0005 + (0.0001 * (this.speed - 1))
+            this.points --
+            break
+            case 'vitality':
+            this.vitality++
+            this.maxhealth = 100 + ((this.vitality - 1) * 50)
+            this.health += 50
+            this.points --
+            break
+            default:
+
+            break
+        }
+    }
+
     updateInput(input)
     {
         this.input.dir = Func.multiply(input.joy, this.speedstat)
@@ -209,6 +235,7 @@ module.exports = class Player
         {
             if (action.type == 'physical') this.handlePhysical(action)
             if (action.type == 'inventory') this.handleInventory(action)
+            if (action.type == 'allocation') this.manageAttributes(action.attribute)
         }
     }
 }
