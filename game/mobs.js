@@ -12,6 +12,8 @@ function baseSlime()
     stats.resolution = 10
     stats.range = 3
     stats.mass = 0.5
+    stats.stamina = 100
+    stats.attack = 1
     return stats
 }
 
@@ -31,9 +33,12 @@ class Slime
         this.maxspeed = 0.01
         this.dir = {x: 0, y: 0}
         this.heading = 0
+        this.stamina = this.stats.stamina
         this.health = this.stats.health
         this.maxhealth = this.stats.health
         this.type = 'slime'
+        this.name = 'slime'
+        this.xp = 0
     }
     getAction(level, colliders)
     {
@@ -43,7 +48,6 @@ class Slime
     {
         let perception = this.perception.getSight(this, level, colliders)
         let action = this.getAction(perception.perception)
-        //this.body.target(action.target)
 
         //get closest bodies to collide with
         //random movement event
@@ -66,6 +70,24 @@ class Slime
             closest.push(body.body)
         }
         let collisions = this.body.update(closest)
+        for (let collision of collisions)
+        {
+            //console.log(collision.entity)
+            if (collision.entity.type == 'player')
+            {
+                let damage = this.stats.attack
+                console.log(damage)
+                collision.entity.applyDamage(this.stats.attack, this)
+                level.addEvent({collision, pos: collision.pos, damage, item: 'slime'})
+            }
+        }
+        // apply damage if player
+
+    }
+    recover()
+    {
+        if (this.health < this.maxhealth) this.health += 1
+        if (this.stamina < this.stats.stamina) this.stamina += 1
     }
     getAction(perception)
     {
@@ -75,14 +97,23 @@ class Slime
             if (line.ray.obj === 'player')
             {
                 //console.log('player!!!')
-                let fight = (this.health > this.maxhealth * 0.5)
+                let fight = (this.health > this.maxhealth * 0.3)
                 let angle = fight ? line.a : line.a + Math.PI
-                let speed = fight ? this.maxspeed : this.maxspeed * 1.5
+                let speed = fight ? this.maxspeed : this.maxspeed + this.sprint()
+                //burst speed on low distance
+                if (fight && line.ray.dist < 1) speed += this.sprint()
+                //speed += line.ray.dist 
                 let dir = Func.getVector(angle, speed)
                 return {action: 'move', dir}
             }
         }
         return {action: 'wander'}
+    }
+    sprint()
+    {
+        this.stamina -= 1
+        if (this.stamina > 0) return this.maxspeed
+        return 0
     }
     dead()
     {
@@ -92,6 +123,10 @@ class Slime
     {
         this.health -= damage
         this.lastattacker = attacker.id
+    }
+    addXP(xp)
+    {
+        this.xp += xp
     }
     getXP()
     {

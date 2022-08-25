@@ -7,7 +7,9 @@ module.exports = class Level
 {
     constructor(level, dungeon)
     {
-        this.size = level.size
+        //this.size = level.size
+        this.width = level.width
+        this.height = level.height
         this.dungeon = dungeon
         this.tiles = new LevelGenerator(level).getTiles()
         this.players = []
@@ -21,7 +23,8 @@ module.exports = class Level
     getSpawnPos(body)
     {
         //return {x: this.size / 2, y: this.size / 8}
-        return this.getFreeSpot({x: this.size / 2, y: this.size / 8}, body)
+        let startpos = {x: this.width / 2, y: this.height / 8}
+        return this.getFreeSpot(startpos, body)
     }
     takePlayer(id)
     {
@@ -75,18 +78,35 @@ module.exports = class Level
     }
     update()
     {
+        this.ticks ++
         //spawn mobs
         this.spawnMobs()
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
+        let recoverytick = ((this.ticks % 30) === 0)
         for (let i = this.players.length - 1; i >= 0; i--)
         {
             let player = this.players[i]
             if (player.dead()) 
             {
-                this.dungeon.addScore(player.getScore(), player.id, player.killer)
+                // get killer
+                let killer = this.getEntity(player.lastattacker)
+                if (killer !== null)
+                {
+                    killer.addXP(player.getXP()) //add XP to killer
+                    this.dungeon.addScore({score: player.getScore(), 
+                                            id: player.id, 
+                                            name: player.name,
+                                            killer: killer.name})
+                }
+                else 
+                this.dungeon.addScore({score: player.getScore(), 
+                                            id: player.id, 
+                                            name: player.name,
+                                            killer: 'natural causes'})
                 this.players.splice(i, 1)
             }
+            else if (recoverytick) player.recover()
         }
         for (let i = this.mobs.length - 1; i >= 0; i--)
         {
@@ -102,6 +122,7 @@ module.exports = class Level
                 //mob.killer.addXP(mob.getXP()) // add XP to killer
                 this.mobs.splice(i, 1)
             }
+            else if (recoverytick) mob.recover()
         }
     }
     spawnMobs()
@@ -111,7 +132,7 @@ module.exports = class Level
     spawnMob(type)
     {
         let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
-        let spawnpos = this.getFreeSpot({x: Math.random() * this.size, y: Math.random() * this.size}, slime.body)
+        let spawnpos = this.getFreeSpot({x: Math.random() * this.width, y: Math.random() * this.height}, slime.body)
         slime.body.pos = spawnpos
         console.log('slime spawned')
         this.mobs.push(slime)
@@ -137,7 +158,7 @@ module.exports = class Level
     }
     addEvent(event)
     {
-        console.log('new event:', event)
+        //console.log('new event:', event)
         this.events.push(event)
     }
     closeBodies(pos, colliders, range)
@@ -215,9 +236,9 @@ module.exports = class Level
         if (y1 < 0) y1 = 0
 
         let x2 = Math.round(pos.x) + range
-        if (x2 > this.size - 1) x2 = this.size - 1
+        if (x2 > this.width - 1) x2 = this.width - 1
         let y2 = Math.round(pos.y) + range
-        if (y2 > this.size - 1) y2 = this.size - 1
+        if (y2 > this.height - 1) y2 = this.height - 1
 
         let tiles = []
         for (let x = x1; x < x2; x++)
@@ -228,6 +249,18 @@ module.exports = class Level
             }
         }
         return tiles
+    }
+    getLevelData()
+    {
+        let tiles = []
+        for (let x = 0; x < this.width; x++)
+        {
+            for (let y = 0; y < this.height; y++)
+            {
+                tiles.push(this.tiles[x][y].getData())
+            }
+        }
+        return {width: this.width, height: this.height, tiles}
     }
     getTileData(player)
     {

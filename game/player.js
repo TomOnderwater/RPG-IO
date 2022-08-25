@@ -20,15 +20,56 @@ module.exports = class Player
         this.perceptionstat = 10
         this.maxhealth = data.health || 100
         this.heading = 0
+
+        // STATUS
         this.xp = 0
+        this.level = 1
+        this.usedXP = 0
+        this.points = 0
+        //ATTRIBUTES
+        this.strength = 1
+        this.speed = 1
+        this.regen = 1
+        this.stamina = 100
+        this.maxstamina = 100
+
         //pos, angle, fov, resolution, range
         //this.perception = new Perception(Math.PI / 2, 10, 6)
         this.health = this.maxhealth
     }
-    addXP(points)
+    getStatus()
     {
-        console.log('gained', points, 'XP points')
-        this.xp += points
+        let xpnext = this.calcXPForLevel()
+        let xp = this.xp
+        return { 
+            xp, xpnext,
+            level: this.level
+        }
+    }
+    levelUP()
+    {
+        this.usedXP += this.xp
+        this.xp -= this.calcXPForLevel()
+        this.level ++
+        this.points ++
+    }
+    calcXPForLevel()
+    {
+        return 100 + (this.level - 1) * 50
+    }
+    getXP()
+    {
+        return this.xp * 0.5
+    }
+    recover()
+    {
+        if (this.health < this.maxhealth) this.health += 1
+        if (this.stamina < this.maxstamina) this.stamina += 1
+    }
+    addXP(xp)
+    {
+        console.log('gained', xp, 'XP points')
+        this.xp += xp
     }
     initHand(id)
     {
@@ -88,7 +129,8 @@ module.exports = class Player
     }
     getScore()
     {
-        return {type: 'game over', name: this.name, score: 100}
+        return this.xp + this.usedXP
+        //return {type: 'game over', name: this.name, score: 100}
     }
     sees(pos)
     {

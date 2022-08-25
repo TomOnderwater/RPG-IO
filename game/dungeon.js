@@ -71,13 +71,13 @@ module.exports = class Dungeon {
             console.log('water threshold:', water)
             console.log('stone treshold:', stone)
             console.log('structure threshhold', structurerate)
-            levels.push(new Level({size: 100, water, stone, structurerate}, this)) //contains tiles, which contain objects and items
+            levels.push(new Level({width: 40, height: 20, water, stone, structurerate}, this)) //contains tiles, which contain objects and items
         }
         return levels
     }
-    addScore(score, id, deathcause)
+    addScore(score)
     {
-        this.scores.push({score, id, deathcause})
+        this.scores.push(score)
     }
     update() 
     {
@@ -93,7 +93,11 @@ module.exports = class Dungeon {
         //let outpu
         for (let i = this.scores.length - 1; i >= 0; i--)
         {
-            if (this.scores[i].id === id) return this.scores[i].deathcause.name
+            if (this.scores[i].id === id) 
+                return {type: 'game over', 
+                        killer: this.scores[i].killer, 
+                        score: this.scores[i].score,
+                        name: this.scores[i].name}
         }
     }
     getViewport(id) 
@@ -115,9 +119,15 @@ module.exports = class Dungeon {
         //viewport.perception = active.player.getPerception(active.level)
 
         // set update frequency for level
-        if (this.ticks % 10 === 0) viewport.tiles = active.level.getTileData(active.player)
+        //if (this.ticks % 10 === 0) viewport.tiles = active.level.getTileData(active.player)
 
         return {type: 'update', data: viewport}
+    }
+    getLevelData(id)
+    {
+        let active = this.getPlayerAndLevel(id)
+        if (!active) return []
+        return active.level.getLevelData()
     }
     getPlayerAndLevel(id)
     {

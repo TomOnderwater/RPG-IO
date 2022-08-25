@@ -41,7 +41,8 @@ class Level {
    if (!t) return
    let pos = camera.onLevel(t)
    //console.log(pos)
-   for (let tile of this.tiles)
+   let visibletiles = this.getVisibleTiles(player)
+   for (let tile of visibletiles)
    {
       if (onField(pos, {x1: tile.x, y1: tile.y, x2: tile.x + 1, y2: tile.y + 1}))
       {
@@ -69,18 +70,47 @@ class Level {
           if (event.ended()) this.events.splice(i, 1)
         }
   }
+  initLevel(leveldata)
+  {
+    this.tiles = []
+    this.width = leveldata.width
+    this.height = leveldata.height
+    this.updateTiles(leveldata.tiles)
+  }
   newData(viewport)
   {
-    if (viewport.tiles) this.updateTiles(viewport)
+    if (viewport.tiles) this.updateTiles(viewport.tiles)
     if (viewport.entities) this.updateEntities(viewport)
     if (viewport.events) this.updateEvents(viewport)
   }
   draw()
   {
-    this.tiles.forEach(tile => tile.drawSurface())
+    let visibletiles = this.getVisibleTiles(player)
+    visibletiles.forEach(tile => tile.drawSurface())
     this.entities.forEach(entity => entity.draw())
-    this.tiles.forEach(tile => tile.drawTop())
+    visibletiles.forEach(tile => tile.drawTop())
     this.events.forEach(event => event.draw())
+  }
+  getVisibleTiles(perspective)
+  {
+    let pos = perspective.pos
+    let range = perspective.viewdistance
+    let x1 = Math.round(pos.x) - range
+    if (x1 < 0) x1 = 0
+    let y1 = Math.round(pos.y) - range
+    if (y1 < 0) y1 = 0
+
+    let x2 = Math.round(pos.x) + range
+    if (x2 > this.width - 1) x2 = this.width - 1
+    let y2 = Math.round(pos.y) + range
+    if (y2 > this.height - 1) y2 = this.height - 1
+    let tiles = []
+    for (let tile of this.tiles)
+    {
+      if (tile.x >= x1 && tile.x <= x2 && tile.y >= y1 && tile.y <= y2)
+        tiles.push(tile)
+    }
+    return tiles
   }
   updateEvents(viewport)
   {
@@ -88,31 +118,21 @@ class Level {
     //console.log(events)
     events.forEach(event => this.events.push(new Event(event.pos, event.damage)))
   }
-  updateTiles(leveldata)
+  updateTiles(tiles)
   {
-    //console.log('tiles:', leveldata.tiles)
-  let newTiles = leveldata.tiles
     for (let i = this.tiles.length - 1; i >= 0; i--)
     {
-      //let tile = this.tiles[i]
-      let found = false
-      for (let j = newTiles.length - 1; j >= 0; j--)
+      for (let j = tiles.length - 1; j >= 0; j--)
       {
-        if (this.tiles[i].x == newTiles[j].x && this.tiles[i].y == newTiles[j].y) 
+        if (this.tiles[i].x == tiles[j].x && this.tiles[i].y == tiles[j].y) 
         {
-          this.tiles[i].update(newTiles[j]) //update corresponding tile
-          newTiles.splice(j, 1) //remove from list
-          found = true //flag
+          this.tiles[i].update(tiles[j]) //update corresponding tile
+          tiles.splice(j, 1) //remove from list
           break
         }
       }
-      if (!found) this.tiles.splice(i, 1) // no corresponding tile found, remove
     }
-    newTiles.forEach(tile => this.tiles.push(new Tile(tile)))
-    // for (let tile of newTiles)
-    // {
-    //   this.tiles.push(new Tile(tile))
-    // }
+    tiles.forEach(tile => this.tiles.push(new Tile(tile)))
   }
   updateEntities(leveldata)
   {

@@ -120,8 +120,12 @@ function drawGameOver()
   textSize(30)
   textAlign(CENTER, CENTER)
   text(message.type, width * 0.5, height * 0.2)
-  let info = message.name + ' score: ' + message.score
+  let info = message.name + ' scored ' + message.score + ' points'
+  let cause = 'before dying'
+  if (message.killer == 'natural causes') cause += ' of natural causes'
+  else cause += (' by ' + message.killer)
   text(info, width * 0.5, height * 0.3)
+  text(cause, width * 0.5, height * 0.4)
 
   rectMode(CORNERS)
   fill(0, 255, 0, 100)

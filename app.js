@@ -89,7 +89,11 @@ app.ws('/gamestream', (ws, req) => {
       break
       case 'ready':
         dungeon.startPlayer(msg.id)
-        if (manageConnections(ws, msg.id)) ws.send(JSON.stringify({type: 'start', id: msg.id}))
+        if (manageConnections(ws, msg.id)) ws.send(JSON.stringify({
+          type: 'start', 
+          id: msg.id, 
+          level: dungeon.getLevelData(msg.id)
+          }))
       default:
       //do nothing
       break

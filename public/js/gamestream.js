@@ -10,7 +10,10 @@ function openStream() {
         switch(msg.type) 
         {
           case 'start':
+            game_id = msg.id
             console.log("GAME START", game_id)
+            console.log(msg.level)
+            level.initLevel(msg.level)
             setGameState('game') //set state
           break
           case 'update':

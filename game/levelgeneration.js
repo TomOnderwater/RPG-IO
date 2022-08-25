@@ -19,10 +19,10 @@ module.exports = class LevelGenerator
     generateTiles(level)
     {
         let tiles = []
-        for (let x = 0; x < level.size; x++)
+        for (let x = 0; x < level.width; x++)
         {
             let col = []
-            for (let y = 0; y < level.size; y++)
+            for (let y = 0; y < level.height; y++)
             {
                 col.push(new Tile(x, y))
             }
@@ -36,9 +36,9 @@ module.exports = class LevelGenerator
         let vegetationbias = level.stone + 0.2
         let stepsize = (1 - vegetationbias) / 6 
         //console.log(vegetationbias, stepsize)
-        for (let x = 0; x < level.size; x++)
+        for (let x = 0; x < level.width; x++)
         {
-            for (let y = 0; y < level.size; y++)
+            for (let y = 0; y < level.height; y++)
             {
                 let terrainval = terrainmap[x][y]
                 let structval = structuremap[x][y]
@@ -82,10 +82,10 @@ module.exports = class LevelGenerator
     addMaps(maps, specs)
     {
         let rows = []
-        for (let x = 0; x < specs.size; x++)
+        for (let x = 0; x < specs.width; x++)
         {
             let col = []
-            for (let y = 0; y < specs.size; y++)
+            for (let y = 0; y < specs.height; y++)
             {
                 col.push(0)
             }
@@ -94,9 +94,9 @@ module.exports = class LevelGenerator
         let div = 1 / maps.length
         for (let map of maps)
         {
-            for (let x = 0; x < specs.size; x++)
+            for (let x = 0; x < specs.width; x++)
             {
-                for (let y = 0; y < specs.size; y++)
+                for (let y = 0; y < specs.height; y++)
                 {
                     rows[x][y] += map[x][y] * div
                 }
@@ -108,10 +108,10 @@ module.exports = class LevelGenerator
     {
         this.noise.seed(seed)
         let rows = []
-        for (let x = 0; x < level.size; x++)
+        for (let x = 0; x < level.width; x++)
         {
             let col = []
-            for (let y = 0; y < level.size; y++)
+            for (let y = 0; y < level.height; y++)
             {
                 let val = this.noise.perlin2(x / v, y / v) + bias
                 val *= h
@@ -124,30 +124,29 @@ module.exports = class LevelGenerator
     drawBorder(level)
     {
     // loop through edges of the level
-    let padding = level.padding || 2
+    let padding = level.padding || 1
 
-    for (let x = 0; x < level.size; x++)     // bottom, top
+    for (let x = 0; x < level.width; x++)     // bottom, top
         {
             for (let y = 0; y < padding; y++)
             {  //top row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
-            for (let y = level.size - 1; y >= level.size - (1 + padding); y--)
+            for (let y = level.height - 1; y >= level.height - (1 + padding); y--)
             {  //bottom row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
         }
-        for (let y = 0; y < level.size; y++)     // left, right
+        for (let y = 0; y < level.height; y++)     // left, right
         {
             for (let x = 0; x < padding; x++)
             {  //top row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
-            for (let x = level.size - 1; x >= level.size - (1 + padding); x--)
+            for (let x = level.width - 1; x >= level.width - (1 + padding); x--)
             {  //bottom row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
         }
     }
-
 }
