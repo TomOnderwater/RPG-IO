@@ -44,6 +44,9 @@ function updateView(viewport)
   //console.log(viewport)
   if (viewport.inventory) 
     input.inventory.updateInventory(viewport.inventory)
+
+  if (viewport.status)
+    input.stats.updateData(viewport.status)
   //print(player, game_id, level.entities)
 }
 

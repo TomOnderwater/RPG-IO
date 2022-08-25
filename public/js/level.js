@@ -7,7 +7,7 @@ class Event
     this.ticks = 0
     this.maxticks = 100
   }
-  draw()
+  drawValue()
   {
     let pos = camera.onScreen(this.pos)
     push()
@@ -24,6 +24,28 @@ class Event
   ended()
   {
     return this.ticks > this.maxticks
+  }
+}
+
+class Slash extends Event
+{
+  constructor(pos, damage, dir)
+  {
+    super (pos, damage)
+    this.maxticks = 50 + (damage * 3)
+    this.dir = dir
+    let scalar = ((damage + 5) * 5)
+    this.len = createVector(dir.x * scalar, dir.y * scalar)
+  }
+  draw()
+  {
+    let pos = camera.onScreen(this.pos)
+    push()
+    stroke(255, 0, 0, this.maxticks + 50 - this.ticks)
+    strokeWeight(3)
+    //print(this.len)
+    line(pos.x, pos.y, pos.x + this.len.x, pos.y + this.len.y)
+    pop()
   }
 }
 
@@ -116,7 +138,10 @@ class Level {
   {
     let events = viewport.events
     //console.log(events)
-    events.forEach(event => this.events.push(new Event(event.pos, event.damage)))
+    events.forEach(event => 
+    {
+      if (event.type == 'damage') this.events.push(new Slash(event.pos, event.damage, event.dir))
+    })
   }
   updateTiles(tiles)
   {

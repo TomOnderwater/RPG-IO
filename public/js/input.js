@@ -425,8 +425,18 @@ class Stats
         this.area = {x1:width - 120, y1: 15, x2: width - 10, y2: 40}
         this.width = this.area.x2 - this.area.x1
         this.maxXP = 100
-        this.xp = 20
+        this.xp = 0
         this.level = 1
+
+        this.strength = 1
+        this.stamina = 1
+        this.speed = 1
+    }
+    updateData(status)
+    {
+        this.xp = status.xp
+        this.maxXP = status.xpnext
+        this.level = status.level
     }
     draw()
     {

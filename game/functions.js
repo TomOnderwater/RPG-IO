@@ -99,6 +99,11 @@ function convergeAngle(a1, a2, mult)
       return a %= TWOPI
   }
 
+function fixPos(pos, digits)
+{
+    let n = digits || 2
+    return {x: fixNumber(pos.x, n), y: fixNumber(pos.y, n)}
+}
   function rotatingBounce(v1, v2, b)
   {
       return {mag: bounce(v1.mag, v2.mag, b), rot: convergeAngle(v1.rot, v2.rot, b)}
@@ -126,5 +131,5 @@ module.exports = {
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
-    getVector
+    getVector, fixPos
 }

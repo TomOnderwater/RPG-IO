@@ -76,9 +76,8 @@ class Slime
             if (collision.entity.type == 'player')
             {
                 let damage = this.stats.attack
-                console.log(damage)
                 collision.entity.applyDamage(this.stats.attack, this)
-                level.addEvent({collision, pos: collision.pos, damage, item: 'slime'})
+                level.addEvent({type: 'damage', dir: collision.speed, pos: collision.pos, damage, item: 'slime'})
             }
         }
         // apply damage if player

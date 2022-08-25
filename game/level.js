@@ -144,10 +144,7 @@ module.exports = class Level
         this.events.forEach(event =>
         {
             if (Func.sqDist(player.body.pos, event.pos) < sqrange)
-            {
-                // get relevant events
-                events.push({pos: event.pos, damage: event.damage})
-            }
+                events.push(event)
         })
         //console.log('output events:', events)
         return events
@@ -189,7 +186,7 @@ module.exports = class Level
                 // check the body is the same as the testbody
                 if (collider == body) continue
 
-                if (body.virtualCollision(testpos, collider))
+                if (body.virtualCollision(testpos, collider) || this.outOfBounds(testpos))
                 {
                     // collision! get a new random pos
                     testpos = {x: original.x + (Math.random() - 0.5) * maxdist, y: original.y + (Math.random() - 0.5) * maxdist}
@@ -201,6 +198,11 @@ module.exports = class Level
             if (resolved) break
         }
         return testpos
+    }
+    outOfBounds(pos)
+    {
+        if (pos.x >= 0 && pos.x <= this.width && pos.y >= 0 && pos.y <= this.height) return false
+        return true
     }
     getEntities(player)
     {

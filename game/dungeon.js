@@ -56,8 +56,6 @@ module.exports = class Dungeon {
         this.queue = []
         this.ticks = 0
         this.scores = []
-
-        console.log(STONE)
     }
     generateLevel(floorcount)
     {
@@ -119,7 +117,7 @@ module.exports = class Dungeon {
         //viewport.perception = active.player.getPerception(active.level)
 
         // set update frequency for level
-        //if (this.ticks % 10 === 0) viewport.tiles = active.level.getTileData(active.player)
+        if (this.ticks % 10 === 0) viewport.status = active.player.getStatusData()
 
         return {type: 'update', data: viewport}
     }

@@ -29,7 +29,8 @@ module.exports = class Player
         //ATTRIBUTES
         this.strength = 1
         this.speed = 1
-        this.regen = 1
+        this.vitality = 1
+
         this.stamina = 100
         this.maxstamina = 100
 
@@ -37,13 +38,17 @@ module.exports = class Player
         //this.perception = new Perception(Math.PI / 2, 10, 6)
         this.health = this.maxhealth
     }
-    getStatus()
+    getStatusData()
     {
         let xpnext = this.calcXPForLevel()
         let xp = this.xp
         return { 
             xp, xpnext,
-            level: this.level
+            level: this.level,
+            points: this.points,
+            strength: this.strength,
+            vitality: this.vitality,
+            speed: this.speed
         }
     }
     levelUP()
@@ -63,8 +68,9 @@ module.exports = class Player
     }
     recover()
     {
+        if (this.xp >= this.calcXPForLevel()) this.levelUP()
         if (this.health < this.maxhealth) this.health += 1
-        if (this.stamina < this.maxstamina) this.stamina += 1
+        if (this.stamina < this.maxstamina) this.stamina += 5
     }
     addXP(xp)
     {
@@ -115,7 +121,13 @@ module.exports = class Player
                         if (collision.entity.health !== undefined)
                             collision.entity.applyDamage(damage, this)
                         // add to visual
-                        level.addEvent({collision, pos: collision.pos, damage, item: this.hand.item.type})
+                        level.addEvent({
+                            type: 'damage', 
+                            dir: collision.speed, 
+                            pos: collision.pos, 
+                            damage, 
+                            item: this.hand.item.type
+                            })
                     }
                 }
             }
