@@ -20,9 +20,15 @@ module.exports = class Player
         this.perceptionstat = 10
         this.maxhealth = data.health || 100
         this.heading = 0
+        this.xp = 0
         //pos, angle, fov, resolution, range
         //this.perception = new Perception(Math.PI / 2, 10, 6)
         this.health = this.maxhealth
+    }
+    addXP(points)
+    {
+        console.log('gained', points, 'XP points')
+        this.xp += points
     }
     initHand(id)
     {
@@ -66,7 +72,7 @@ module.exports = class Player
                         damage = Math.round(damage)
                         // apply damage
                         if (collision.entity.health !== undefined)
-                            collision.entity.applyDamage(damage)
+                            collision.entity.applyDamage(damage, this)
                         // add to visual
                         level.addEvent({collision, pos: collision.pos, damage, item: this.hand.item.type})
                     }
@@ -74,9 +80,10 @@ module.exports = class Player
             }
         }
     }
-    applyDamage(damage)
+    applyDamage(damage, attacker)
     {
         this.health -= damage
+        this.lastattacker = attacker.id
         //console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)
     }
     getScore()

@@ -48,6 +48,15 @@ module.exports = class Level
     player.body.pos = initpos || this.getSpawnPos(player.body)
     this.players.push(player)
     }
+    getEntity(id)
+    {
+        let entities = [...this.mobs, ...this.players]
+        for (let entity of entities)
+        {
+            if (entity.id === id) return entity
+        }
+        return null
+    }
     getPlayer(id)
     {
         for (let player of this.players)
@@ -75,8 +84,23 @@ module.exports = class Level
             let player = this.players[i]
             if (player.dead()) 
             {
-                this.dungeon.addScore(player.getScore(), player.id)
+                this.dungeon.addScore(player.getScore(), player.id, player.killer)
                 this.players.splice(i, 1)
+            }
+        }
+        for (let i = this.mobs.length - 1; i >= 0; i--)
+        {
+            let mob = this.mobs[i]
+            if (mob.dead())
+            {
+                let killer = this.getEntity(mob.lastattacker)
+                if (killer !== null)
+                {
+                    console.log(mob.type, 'killed by', killer.name)
+                    killer.addXP(mob.getXP()) // add XP to killer
+                }
+                //mob.killer.addXP(mob.getXP()) // add XP to killer
+                this.mobs.splice(i, 1)
             }
         }
     }
@@ -89,7 +113,7 @@ module.exports = class Level
         let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
         let spawnpos = this.getFreeSpot({x: Math.random() * this.size, y: Math.random() * this.size}, slime.body)
         slime.body.pos = spawnpos
-        console.log(slime)
+        console.log('slime spawned')
         this.mobs.push(slime)
     }
     getEvents(player)
@@ -156,10 +180,6 @@ module.exports = class Level
             if (resolved) break
         }
         return testpos
-    }
-    getCloseBodiesFromPos(pos)
-    {
-
     }
     getEntities(player)
     {

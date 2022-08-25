@@ -37,6 +37,11 @@ function divide(a, factor) {
     }
 }
 
+function getVector(angle, mag)
+{
+    return {x: Math.cos(angle) * mag, y: Math.sin(angle) * mag}
+}
+
 function onField(p, area)
 {
     return (p.x > area.x1 && p.x < area.x2 && p.y > area.y1 && p.y < area.y2)
@@ -120,5 +125,6 @@ module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
-    squareBounce, isAbout, fixNumber, inRange, getRandom
+    squareBounce, isAbout, fixNumber, inRange, getRandom,
+    getVector
 }

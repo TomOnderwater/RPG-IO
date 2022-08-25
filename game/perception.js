@@ -10,20 +10,13 @@ module.exports = class Perception
         this.range = range
         this.sqrange = Math.pow(this.range, 2)
     }
-    bodiesInRange(self, level)
+    bodiesWithRange(self, bodies)
     {
         let close = []
-        for (let structure of level.getStructures(self.body.pos, this.range))
+        for (let body of bodies)
         {
-            let sqdist = Func.sqDist(self.body.pos, structure.getCenter())
-            if (sqdist < this.sqrange) close.push({dist: Math.sqrt(sqdist), body: structure})
-        }
-        let entities = [...level.entities, ...level.players]
-        for (let entity of entities)
-        {
-            if (self === entity) continue
-           let sqdist = Func.sqDist(self.body.pos, entity.body.pos)
-            if (sqdist < this.sqrange) close.push({dist: Math.sqrt(sqdist), body: entity.body})
+            let dist = Func.dist(self.body.pos, body.getCenter())
+            if (body !== self.body) close.push({dist, body})
         }
         return close
     }
@@ -41,9 +34,10 @@ module.exports = class Perception
         }
         return lines
     }
-    getSight(self, level)
+    getSight(self, level, colliders)
     {
-        let bodies = this.bodiesInRange(self, level)
+        //let bodies = this.bodiesInRange(self, level, colliders)
+        let bodies = this.bodiesWithRange(self, level.closeBodies(self.body.pos, colliders, this.range))
         bodies.sort((a, b) => a.dist - b.dist) //sort ascending, closest first
         return {perception: this.castLines(self, bodies), bodies}
     }

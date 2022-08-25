@@ -75,9 +75,9 @@ module.exports = class Dungeon {
         }
         return levels
     }
-    addScore(score, id)
+    addScore(score, id, deathcause)
     {
-        this.scores.push({score, id})
+        this.scores.push({score, id, deathcause})
     }
     update() 
     {
@@ -93,7 +93,7 @@ module.exports = class Dungeon {
         //let outpu
         for (let i = this.scores.length - 1; i >= 0; i--)
         {
-            if (this.scores[i].id === id) return this.scores[i].score
+            if (this.scores[i].id === id) return this.scores[i].deathcause.name
         }
     }
     getViewport(id) 

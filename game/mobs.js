@@ -15,6 +15,11 @@ function baseSlime()
     return stats
 }
 
+function randomWalk(maxspeed)
+{
+ return { x: Func.getRandom(-maxspeed, maxspeed), y: Func.getRandom(-maxspeed, maxspeed)}
+}
+
 class Slime
 {
     constructor(pos, id, stats)
@@ -23,7 +28,7 @@ class Slime
         this.id = id
         this.body = new PhysicalBody({type: 'circle', mass: this.stats.mass, entity: this, pos, rad: this.stats.rad})
         this.perception = new Perception(this.stats.fov, this.stats.resolution, this.stats.range)
-        this.maxspeed = 0.005
+        this.maxspeed = 0.01
         this.dir = {x: 0, y: 0}
         this.heading = 0
         this.health = this.stats.health
@@ -36,22 +41,61 @@ class Slime
     }
     update(level, colliders)
     {
-        //let perception = this.perceive(level)
-        //let action = this.getAction(perception)
+        let perception = this.perception.getSight(this, level, colliders)
+        let action = this.getAction(perception.perception)
         //this.body.target(action.target)
 
-        //random movement
-        if (Math.random() > 0.99) 
-            this.dir = {
-                    x: Func.getRandom(-this.maxspeed, this.maxspeed), 
-                    y: Func.getRandom(-this.maxspeed, this.maxspeed)
-                }
-            this.body.bounceSpeed(this.dir)
-        let collisions = this.body.update(level.closeBodies(this.body.pos, colliders, 1))
+        //get closest bodies to collide with
+        //random movement event
+        switch(action.action)
+        {
+            case 'move':
+            this.dir = action.dir
+            break
+            default:
+            if (Math.random() > 0.99) this.dir = randomWalk(this.maxspeed * 0.5)
+            break
+        }
+        //if (Math.random() > 0.99) this.dir = randomWalk(this.maxspeed * 0.5)
+        
+        this.body.bounceSpeed(this.dir)
+        let closest = []
+        for (let body of perception.bodies)
+        {
+            if (body.dist > 1) break // they are sorted
+            closest.push(body.body)
+        }
+        let collisions = this.body.update(closest)
     }
-    applyDamage(damage)
+    getAction(perception)
+    {
+        for (let line of perception)
+        {
+            //console.log(line)
+            if (line.ray.obj === 'player')
+            {
+                //console.log('player!!!')
+                let fight = (this.health > this.maxhealth * 0.5)
+                let angle = fight ? line.a : line.a + Math.PI
+                let speed = fight ? this.maxspeed : this.maxspeed * 1.5
+                let dir = Func.getVector(angle, speed)
+                return {action: 'move', dir}
+            }
+        }
+        return {action: 'wander'}
+    }
+    dead()
+    {
+        return this.health <= 0
+    }
+    applyDamage(damage, attacker)
     {
         this.health -= damage
+        this.lastattacker = attacker.id
+    }
+    getXP()
+    {
+        return 10
     }
     data() 
         {
