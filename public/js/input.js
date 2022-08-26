@@ -441,6 +441,7 @@ class Stats
     {
         this.xp = status.xp
         this.maxXP = status.xpnext
+        if (status.level > this.level) player.levelUP()
         this.level = status.level
         this.points = status.points
 
@@ -448,22 +449,28 @@ class Stats
         this.vitality = status.vitality
         this.speed = status.speed
 
-        this.strengthButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 20}, '+')
-        this.vitalityButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 50}, '+')
-        this.speedButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 80}, '+')
+        this.strengthButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 20}, '1P')
+        this.vitalityButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 50}, '1P')
+        this.speedButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 80}, '1P')
     }
     draw()
     {
         let w = map(this.xp, 0, this.maxXP, 0, this.width)
-        push()
         if (!this.open && this.points > 0) 
         {
+            push()
+            textAlign(RIGHT)
+            stroke(0)
+            fill(255)
+            text('points available!', this.area.x1 - 20, (this.area.y2 + this.area.y1) * 0.5)
             noFill()
             stroke(0, 100, 255)
             strokeWeight(3)
             rect(this.area.x1 - 5, this.area.y1 - 5, this.width + 10, this.height + 10, 8)
+            pop()
         }
         // XP BAR
+        push()
         stroke(0)
         strokeWeight(1)
         noFill()
@@ -494,9 +501,10 @@ class Stats
             this.vitalityButton.draw()
             this.speedButton.draw()
         }
-        text('strength: ' + this.strength, this.strengthButton.pos.x - 20, this.strengthButton.pos.y)
-        text('vitality: ' + this.vitality, this.vitalityButton.pos.x - 20, this.vitalityButton.pos.y)
-        text('speed: ' + this.speed, this.speedButton.pos.x - 20, this.speedButton.pos.y)
+        const offset = 30
+        text('strength: ' + this.strength, this.strengthButton.pos.x - offset, this.strengthButton.pos.y)
+        text('vitality: ' + this.vitality, this.vitalityButton.pos.x - offset, this.vitalityButton.pos.y)
+        text('agility: ' + this.speed, this.speedButton.pos.x - offset, this.speedButton.pos.y)
     }
     toggleAttributes()
     {
@@ -529,7 +537,7 @@ class SimpleButton
     constructor(pos, char)
     {
         this.pos = pos
-        this.area = {x1: this.pos.x - 10, y1: this.pos.y - 10, x2: this.pos.x + 10, y2: this.pos.y + 10}
+        this.area = {x1: this.pos.x - 20, y1: this.pos.y - 12, x2: this.pos.x + 20, y2: this.pos.y + 12}
         this.char = char
     }
     draw()
@@ -538,9 +546,11 @@ class SimpleButton
         rectMode(CORNERS)
         fill(0, 255, 0)
         noStroke()
-        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 10)
+        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 5)
         stroke(255)
-        strokeWeight(3)
+        strokeWeight(2)
+        textSize(18)
+        fill(255)
         textAlign(CENTER, CENTER)
         text(this.char, this.pos.x, this.pos.y)
         pop()
@@ -571,9 +581,11 @@ class JoyStick
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.touch = null
+        this.hintcompleted = false
     }
     draw() 
     {
+        if (!this.hintcompleted) this.drawHint()
         if (!this.active) return
 
         push()
@@ -583,6 +595,22 @@ class JoyStick
         fill(200, 200, 200, 150)
         circle(this.joy.x, this.joy.y, this.dia / 3)
         pop()
+    }
+    drawHint()
+    {
+        push()
+        stroke(100, 100, 100, 100)
+        noFill()
+        strokeWeight(5)
+        rectMode(CORNERS)
+        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 5)
+        fill(100, 100, 100, 100)
+        textSize(20)
+        textAlign(CENTER, CENTER)
+        strokeWeight(2)
+        text("joystick", (this.area.x1 + this.area.x2) * 0.5, (this.area.y1 + this.area.y2) * 0.5)
+        pop()
+        if (this.active) this.hintcompleted = true
     }
     update()
     {

@@ -11,11 +11,27 @@ class Player extends Entity
     this.health = data.health
     this.maxhealth = data.maxhealth
     this.perception = []
+    this.animationframe = 0
+    this.animationlength = 60
   }
   updatePerception(perception)
   {
     this.perception = perception
     //console.log(perception)
+  }
+  levelUP()
+  {
+    this.animationframe = this.animationlength
+  }
+  drawLevelUP(pos)
+  {
+    push()
+    noStroke()
+    fill(100, 100, 255, 30 + this.animationframe)
+    strokeWeight(5)
+    circle(pos.x, pos.y, 20 + (this.animationlength - this.animationframe))
+    pop()
+    this.animationframe --
   }
   drawPerception()
   {
@@ -60,6 +76,7 @@ class Player extends Entity
     //   this.distance = 0
     // }
     let pos = camera.onScreen(this.pos)
+    if (this.animationframe) this.drawLevelUP(pos)
     push()
     //console.log(this.rot)
     translate(pos.x, pos.y)

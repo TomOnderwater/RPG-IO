@@ -129,7 +129,7 @@ class Slime
     }
     getXP()
     {
-        return 10
+        return Math.round((this.xp * 0.5) + 100)
     }
     data() 
         {

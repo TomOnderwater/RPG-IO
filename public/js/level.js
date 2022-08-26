@@ -32,20 +32,47 @@ class Slash extends Event
   constructor(pos, damage, dir)
   {
     super (pos, damage)
-    this.maxticks = 50 + (damage * 3)
-    this.dir = dir
-    let scalar = ((damage + 5) * 5)
-    this.len = createVector(dir.x * scalar, dir.y * scalar)
+    let splatters = Math.round(random(1, (damage + 1) * 0.5))
+    this.bloodspatters = []
+    for (let i = 0; i < splatters; i++)
+    {
+      this.bloodspatters.push(new Blood(pos, damage, dir))
+    }
   }
   draw()
   {
+    for (let i = this.bloodspatters.length - 1; i >= 0; i--)
+    {
+      let ended = this.bloodspatters[i].draw()
+      if (ended) this.bloodspatters.slice(i, 1)
+    }
+  }
+}
+
+class Blood
+{
+  constructor(pos, damage, dir)
+  {
+    this.pos = createVector(pos.x, pos.y)
+    this.dia = random(3, 5 + damage)
+    this.diaincrement = 0.1
+    this.mult = random(0.8, 0.9)
+    this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
+    this.ticks = Math.round(random(50, 60 + damage))
+  }
+  draw()
+  {
+    this.pos.add(this.dir)
+    this.dir.mult(this.mult)
     let pos = camera.onScreen(this.pos)
+    this.dia += this.diaincrement
     push()
-    stroke(255, 0, 0, this.maxticks + 50 - this.ticks)
-    strokeWeight(3)
-    //print(this.len)
-    line(pos.x, pos.y, pos.x + this.len.x, pos.y + this.len.y)
+    noStroke()
+    fill(255, 0, 0, this.ticks * 2)
+    circle(pos.x, pos.y, this.dia)
     pop()
+    this.ticks --
+    return (this.ticks <= 0)
   }
 }
 

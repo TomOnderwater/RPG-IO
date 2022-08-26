@@ -25,7 +25,7 @@ module.exports = class Player
         this.xp = 0
         this.level = 1
         this.usedXP = 0
-        this.points = 0
+        this.points = 1
         //ATTRIBUTES
         this.strength = 1
         this.speed = 1
@@ -64,7 +64,7 @@ module.exports = class Player
     }
     getXP()
     {
-        return (this.xp + this.usedXP) * 0.5
+        return Math.round((this.xp + this.usedXP) * 0.5)
     }
     recover()
     {
