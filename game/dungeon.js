@@ -64,7 +64,7 @@ module.exports = class Dungeon {
         {
             let water = Math.random() * 0.7 //don't produce full seas
             let stone = 0.2 + Math.random() * 0.6 //always keep some stone
-            let structurerate = 0.2 + Math.random() * 0.4 //somewhat sparse
+            let structurerate = 0.2 + Math.random() * 0.2 //somewhat sparse
             console.log('floor:', i)
             console.log('water threshold:', water)
             console.log('stone treshold:', stone)

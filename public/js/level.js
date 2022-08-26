@@ -56,7 +56,7 @@ class Blood
     this.pos = createVector(pos.x, pos.y)
     this.dia = random(3, 5 + damage)
     this.diaincrement = 0.1
-    this.mult = random(0.8, 0.9)
+    this.mult = random(0.5, 0.9)
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
     this.ticks = Math.round(random(50, 60 + damage))
   }
