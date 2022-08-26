@@ -47,6 +47,9 @@ function updateView(viewport)
 
   if (viewport.status)
     input.stats.updateData(viewport.status)
+
+  if (viewport.leaderboard)
+    input.leaderboard.updateLeaderBoard(viewport.leaderboard)
   //print(player, game_id, level.entities)
 }
 

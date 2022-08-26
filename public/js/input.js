@@ -7,6 +7,7 @@ class MobileInput {
         this.usedTouches = []
         this.starttime = new Date().getTime()
         this.stats = new Stats()
+        this.leaderboard = new LeaderBoard()
         //print(height)
         this.attackButtons.push(new AttackButton('✊', 'physical', createVector(width - 150, height - 150), 65))
         //print('hello')
@@ -53,6 +54,7 @@ class MobileInput {
         }
         this.inventory.draw()
         this.stats.draw()
+        this.leaderboard.draw()
     }
     isFree(t)
     {
@@ -412,6 +414,57 @@ class AttackButton
     }
 }
 
+class LeaderBoard
+{
+    constructor()
+    {
+        this.area = {x1:10, y1: 10, x2: 200, y2: 200}
+        this.width = this.area.x2 - this.area.x1
+        this.height = this.area.y2 - this.area.y1
+        this.top5 = []
+        this.you = {name: 'you', score: 0}
+        this.intop5 = false
+    }
+    updateLeaderBoard(leaderboard)
+    {
+        this.intop5 = false
+        for (let entry of leaderboard.top5)
+        {
+            entry.bold = false
+            if (leaderboard.you.name == entry.name && leaderboard.you.score == entry.score)
+            {
+                entry.bold = true
+                this.intop5 = true
+            }
+        }
+        this.top5 = leaderboard.top5
+        this.you = leaderboard.you
+    }
+    draw()
+    {
+        push()
+        textAlign(LEFT, TOP)
+        const s = 18
+        let ypos = this.area.y1
+        const spacing = s + 4
+        textSize(s)
+        fill(255)
+        stroke(255)
+        text('Leaderboard', this.area.x1, ypos)
+        ypos += spacing
+        for (let entry of this.top5)
+        {
+            if (entry.bold) strokeWeight(2)
+            else (strokeWeight(0))
+            text(entry.name + ' ' + entry.score, this.area.x1, ypos)
+            ypos += spacing
+        }
+        if (!this.intop5) 
+            text(this.you.name + ' ' + this.you.score, this.area.x1, ypos)
+        pop()
+    }
+}
+
 class Settings
 { // draw on the top left corner
 // includes sound settings,mu
@@ -424,7 +477,7 @@ class Stats
 { // draw on the top right corner
     constructor()
     {
-        this.area = {x1:width - 120, y1: 15, x2: width - 20, y2: 40}
+        this.area = {x1:width - 130, y1: 15, x2: width - 20, y2: 40}
         this.width = this.area.x2 - this.area.x1
         this.height = this.area.y2 - this.area.y1
         this.maxXP = 100
@@ -600,15 +653,15 @@ class JoyStick
     {
         push()
         stroke(100, 100, 100, 100)
-        noFill()
+        fill(100, 100, 100, 100)
         strokeWeight(5)
         rectMode(CORNERS)
-        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 5)
-        fill(100, 100, 100, 100)
+        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 20)
+        fill(255, 150)
         textSize(20)
         textAlign(CENTER, CENTER)
         strokeWeight(2)
-        text("joystick", (this.area.x1 + this.area.x2) * 0.5, (this.area.y1 + this.area.y2) * 0.5)
+        text("move", (this.area.x1 + this.area.x2) * 0.5, (this.area.y1 + this.area.y2) * 0.5)
         pop()
         if (this.active) this.hintcompleted = true
     }

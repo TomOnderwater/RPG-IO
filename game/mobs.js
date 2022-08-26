@@ -39,6 +39,7 @@ class Slime
         this.type = 'slime'
         this.name = 'slime'
         this.xp = 0
+        this.attack = this.stats.attack
     }
     getAction(level, colliders)
     {
@@ -76,7 +77,7 @@ class Slime
             if (collision.entity.type == 'player')
             {
                 let damage = this.stats.attack
-                collision.entity.applyDamage(this.stats.attack, this)
+                collision.entity.applyDamage(this.attack, this)
                 level.addEvent({type: 'damage', dir: collision.speed, pos: collision.pos, damage, item: 'slime'})
             }
         }
@@ -110,8 +111,11 @@ class Slime
     }
     sprint()
     {
-        this.stamina -= 1
-        if (this.stamina > 0) return this.maxspeed
+        if (this.stamina > 0) 
+        {
+            this.stamina -= 1
+            return this.maxspeed
+        }
         return 0
     }
     dead()
@@ -126,10 +130,12 @@ class Slime
     addXP(xp)
     {
         this.xp += xp
+        this.maxhealth = this.stats.health + Math.round((this.xp * 0.1))
+        this.attack = this.stats.attack + (Math.round(this.xp * 0.01))
     }
     getXP()
     {
-        return Math.round((this.xp * 0.5) + 100)
+        return Math.round((this.xp * 0.5) + 10)
     }
     data() 
         {

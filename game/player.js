@@ -64,7 +64,7 @@ module.exports = class Player
     }
     getXP()
     {
-        return Math.round((this.xp + this.usedXP) * 0.5)
+        return 50 + Math.round((this.xp + this.usedXP) * 0.5)
     }
     recover()
     {
@@ -141,8 +141,7 @@ module.exports = class Player
     }
     getScore()
     {
-        return this.xp + this.usedXP
-        //return {type: 'game over', name: this.name, score: 100}
+        return {id : this.id, name: this.name, score: this.xp + this.usedXP}
     }
     sees(pos)
     {

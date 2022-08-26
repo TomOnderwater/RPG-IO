@@ -106,7 +106,8 @@ module.exports = class Level
                                             killer: 'natural causes'})
                 this.players.splice(i, 1)
             }
-            else if (recoverytick) player.recover()
+            else if (recoverytick) 
+                player.recover()
         }
         for (let i = this.mobs.length - 1; i >= 0; i--)
         {
@@ -124,6 +125,15 @@ module.exports = class Level
             }
             else if (recoverytick) mob.recover()
         }
+    }
+    getLeaderBoard()
+    {
+        let out = []
+        for (let player of this.players)
+        {
+            out.push(player.getScore())
+        }
+        return out
     }
     spawnMobs()
     {

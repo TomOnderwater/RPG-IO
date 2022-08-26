@@ -27,9 +27,13 @@ class Player extends Entity
   {
     push()
     noStroke()
-    fill(100, 100, 255, 30 + this.animationframe)
-    strokeWeight(5)
+    fill(100, 100, 255, this.animationframe * 2)
+    noStroke()
     circle(pos.x, pos.y, 20 + (this.animationlength - this.animationframe))
+    noFill()
+    stroke(255, 255, 255, this.animationframe * 2)
+    strokeWeight(10)
+    circle(pos.x, pos.y, 20 + (this.animationlength - this.animationframe) * 3)
     pop()
     this.animationframe --
   }

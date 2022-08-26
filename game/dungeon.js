@@ -56,6 +56,7 @@ module.exports = class Dungeon {
         this.queue = []
         this.ticks = 0
         this.scores = []
+        this.leaderboard = []
     }
     generateLevel(floorcount)
     {
@@ -81,6 +82,32 @@ module.exports = class Dungeon {
     {
         this.levels.forEach(level => level.update())
         this.ticks ++
+        if (this.ticks % 30 === 0) 
+            this.updateLeaderBoard()
+    }
+    updateLeaderBoard()
+    {
+        this.leaderboard = []
+        for (let level of this.levels)
+        {
+            let entries = level.getLeaderBoard()
+            for (let entry of entries)
+            {
+                this.leaderboard.push(entry)
+            }
+        }
+        this.leaderboard.sort((a, b) => b.score - a.score)
+    }
+    getLeaderBoard(player)
+    {
+        let out = {}
+        out.you = this.leaderboard.find(e => e.id === player.id)
+        out.top5 = []
+        for (let i = 0; i < 5 && i < this.leaderboard.length; i++)
+        {
+            out.top5.push(this.leaderboard[i])
+        }
+        return out
     }
     resetEvents()
     {
@@ -118,6 +145,7 @@ module.exports = class Dungeon {
 
         // set update frequency for level
         if (this.ticks % 10 === 0) viewport.status = active.player.getStatusData()
+        if (this.ticks % 30 === 0) viewport.leaderboard = this.getLeaderBoard(active.player)
 
         return {type: 'update', data: viewport}
     }
