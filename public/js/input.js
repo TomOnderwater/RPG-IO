@@ -268,12 +268,14 @@ class Slot
     draw()
     {
         push()
-        noFill()
-        let col = this.selected ? color(255, 0, 0) : color(0, 0, 0)
-        stroke(col)
+        if (this.selected)
+            fill(0, 100, 150, 100)
+        else
+            noFill()
+        stroke(0)
         strokeWeight(2)
         //if (this.doubleclicked) fill(0, 0, 255, 100)
-        rect(this.pos.x, this.pos.y, this.size, this.size)
+        rect(this.pos.x, this.pos.y, this.size, this.size, 10)
         if (this.item.type !== 'none') {
             textAlign(CENTER, CENTER)
             textSize(20)

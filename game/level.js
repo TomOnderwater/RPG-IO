@@ -84,6 +84,8 @@ module.exports = class Level
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
         let recoverytick = ((this.ticks % 30) === 0)
+        if (recoverytick) 
+            this.killOutOfBounds()
         for (let i = this.players.length - 1; i >= 0; i--)
         {
             let player = this.players[i]
@@ -106,7 +108,7 @@ module.exports = class Level
                                             killer: 'natural causes'})
                 this.players.splice(i, 1)
             }
-            else if (recoverytick) 
+            else if (recoverytick)
                 player.recover()
         }
         for (let i = this.mobs.length - 1; i >= 0; i--)
@@ -123,7 +125,18 @@ module.exports = class Level
                 //mob.killer.addXP(mob.getXP()) // add XP to killer
                 this.mobs.splice(i, 1)
             }
-            else if (recoverytick) mob.recover()
+            else if (recoverytick) 
+                mob.recover()
+        }
+    }
+    killOutOfBounds()
+    {
+        let entities = [...this.players, ...this.mobs]
+        for (let entity of entities)
+        {
+            let pos = entity.body.pos
+            if (pos.x <= 0 || pos.x >= this.width || pos.y <= 0 || pos.y >= this.height)
+                entity.health = -100
         }
     }
     getLeaderBoard()
@@ -200,7 +213,7 @@ module.exports = class Level
                 {
                     // collision! get a new random pos
                     testpos = {x: original.x + (Math.random() - 0.5) * maxdist, y: original.y + (Math.random() - 0.5) * maxdist}
-                    maxdist += 0.5
+                    maxdist += 0.2
                     resolved = false
                     break
                 }

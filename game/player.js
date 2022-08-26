@@ -19,6 +19,7 @@ module.exports = class Player
         this.speedstat = 0.0005
         this.perceptionstat = 10
         this.maxhealth = data.health || 100
+        this.health = this.maxhealth
         this.heading = 0
 
         // STATUS
@@ -30,13 +31,15 @@ module.exports = class Player
         this.strength = 1
         this.speed = 1
         this.vitality = 1
+        
+        this.reach = Math.PI * 0.3
+        this.attackCharge = 0
 
         this.stamina = 100
         this.maxstamina = 100
 
         //pos, angle, fov, resolution, range
         //this.perception = new Perception(Math.PI / 2, 10, 6)
-        this.health = this.maxhealth
     }
     getStatusData()
     {
@@ -101,6 +104,7 @@ module.exports = class Player
 
         this.body.bounceSpeed(this.input.dir)
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
+        if (this.attackAnimation >= 0) this.slash()
         // update sword / fist with everything but not own body
         if (this.hand.moving)
         {
@@ -165,17 +169,22 @@ module.exports = class Player
         if (action.action == 'touch') 
         {
             this.hand.moving = false
+            this.attackCharge ++
             return
         }
         if (action.action == 'end') 
         {
+            console.log(this.attackCharge)
+            if (!this.hand.moving)
+                this.beginAttackAnimation()
             this.hand.moving = false
-            console.log('action end')
+            //console.log('action end')
             return
         }
         let pos = Func.add(this.body.pos, Func.multiply(action.dir, 0.01)) //mult value is reach of the attack
         if (!this.hand.moving) 
             {
+                if (this.attackAnimation >= 0) this.attackAnimation = 0
                 // get radius from the item
                 // extra options: bounce, mass
                 let item = this.hand.item
@@ -185,6 +194,28 @@ module.exports = class Player
         // set target
         let target = Func.add(this.body.pos, Func.multiply(action.dir, 0.01))
         this.hand.body.target(target)
+    }
+    slash()
+    {
+        if (this.attackAnimation <= 0) this.hand.moving = false
+        else this.hand.moving = true
+        let increment = this.reach * 0.3
+        let a = this.heading + Math.PI + this.reach + (increment * this.attackAnimation)
+        let target = Func.add(this.body.pos, Func.getVector(a, this.swinglength))
+        this.hand.body.target(target)
+        //console.log(Func.getVector(a, reach))
+        this.attackAnimation --
+    }
+    beginAttackAnimation()
+    {
+        this.attackAnimation = 15
+        let item = this.hand.item
+        this.hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
+        this.hand.moving = true
+        this.swinglength = 0.5 + this.attackCharge * 0.03
+        if (this.swinglength > 1.28) this.swinglength = 1.28
+        this.reach *= -1
+        this.attackCharge = 0
     }
     getInventoryUpdate()
     {
