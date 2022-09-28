@@ -62,20 +62,35 @@ module.exports = class GameMaster
     checkConnections()
     {
         for (let i = this.connections.length - 1; i >= 0; i--) {
-            let socket = this.connections[i].socket
+            let connection = this.connections[i]
+            let socket = connection.socket
             if (socket.readyState === socket.CLOSED) {
                 // remove the socket 
+                if (connection.type === 'spectator')
+                    {
+                        console.log('dead spectator')
+                        let dungeon = this.getDungeon(connection.key)
+                        dungeon.end()
+                        this.connections.splice(i, 1)
+                    }
             }
           }
-          setTimeout(this.checkConnections, 1000)
     }
     getLevelData(connection)
     {
         let dungeon = this.getDungeon(connection.key)
         return dungeon.getLevelData(connection.id)
     }
-    resetEvents()
+    resetDungeons()
     {
+        for (let i = this.dungeons.length - 1; i >= 0; i--)
+        {
+            if (this.dungeons[i].ended === true) 
+            {
+                console.log('REMOVING DUNGEON')
+                this.dungeons.splice(i, 1)
+            }
+        }
         this.dungeons.forEach(dungeon => dungeon.resetEvents())
     }
     updateView()
@@ -103,7 +118,7 @@ module.exports = class GameMaster
                     connection.socket.send(JSON.stringify(data))
             }
         }
-        this.resetEvents()
+        this.resetDungeons()
     }
 
     manageConnections(connection)

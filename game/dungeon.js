@@ -58,6 +58,7 @@ module.exports = class Dungeon {
         this.ticks = 0
         this.scores = []
         this.leaderboard = []
+        this.ended = false
     }
     generateLevel(floorcount, width, height)
     {
@@ -78,6 +79,14 @@ module.exports = class Dungeon {
     addScore(score)
     {
         this.scores.push(score)
+    }
+    end()
+    {
+        console.log('killing all the players')
+        //kill all
+        this.levels.forEach(level => level.killAll())
+        console.log('scheduling for removal')
+        this.ended = true
     }
     update() 
     {

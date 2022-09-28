@@ -18,6 +18,7 @@ const gameMaster = new GameMaster()
 //const dungeon = new Dungeon(1) // floor count
 
 runGames()
+checkConnections()
 
 let accountmanager = new AccountManager()
 
@@ -83,6 +84,11 @@ const server = app.listen(port, () => {
   console.log(`rpg-io listening at http://localhost:${port}`)
 })
 
+function checkConnections()
+{
+  gameMaster.checkConnections()
+  setTimeout(checkConnections, 1000)
+}
 function runGames()
 {
   gameMaster.update()

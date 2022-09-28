@@ -20,6 +20,10 @@ module.exports = class Level
         this.mobs = []
         this.maxMobs = 0.05 * this.width * this.height
     }
+    killAll()
+    {
+        this.players.forEach(player => player.health = -1000) // effective kill
+    }
     getSpawnPos(body)
     {
         //return {x: this.size / 2, y: this.size / 8}
