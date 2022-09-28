@@ -45,6 +45,8 @@ function setup() {
 
   setGameState('loading')
 
+  loadLevelData({key, id: 'spectator', type: 'spectator'})
+
   MOBILE = isMobileDevice()
 
   console.log('type:', type)
@@ -161,6 +163,14 @@ function lobby()
   const margin = 100
   const rounding = 10
   const minwidth = 120
+  // draw the level
+  let focus = {x: level.width * 0.5, y: level.height * 0.5}
+  cam.updateFocus(focus, 0.1)
+  //cam.updateZoom(20)
+
+  level.update()
+  level.draw()
+
   let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 60}
   let s_area = {x1: box.x + box.w + 20, y1: box.y, x2: box.x + box.w + 150, y2: box.y + box.h + 5}
   if (box.w < minwidth)

@@ -101,6 +101,14 @@ async function startSpectator()
   setGameState('spectator')
 }
 
+async function loadLevelData(connection)
+{
+  const url = httpPrefix + host + '/getLevel'
+  let data = await(returnPost(url, connection))
+  console.log("got LEVEL: ", data)
+  if (data.level) level.initLevel(data.level)
+}
+
 async function startGame(playername)
 {
   //change the name

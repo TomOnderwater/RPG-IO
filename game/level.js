@@ -277,9 +277,9 @@ module.exports = class Level
         if (y1 < 0) y1 = 0
 
         let x2 = Math.round(pos.x) + range
-        if (x2 > this.width - 1) x2 = this.width - 1
+        if (x2 > this.width) x2 = this.width - 1
         let y2 = Math.round(pos.y) + range
-        if (y2 > this.height - 1) y2 = this.height - 1
+        if (y2 > this.height) y2 = this.height - 1
 
         let tiles = []
         for (let x = x1; x < x2; x++)

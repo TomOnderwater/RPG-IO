@@ -179,6 +179,7 @@ class Level {
   }
   updateTiles(tiles)
   {
+    console.log('tiles: ', tiles)
     for (let i = this.tiles.length - 1; i >= 0; i--)
     {
       for (let j = tiles.length - 1; j >= 0; j--)

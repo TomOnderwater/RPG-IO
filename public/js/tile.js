@@ -36,7 +36,7 @@ class Tile {
       } else 
       {
         let proximity = 3 //out of normal bounds
-        if (type === 'player')
+        if (type === 'player' && player)
         {
           if (player.pos.x > this.x - proximity && player.pos.x < this.x + proximity && 
             player.pos.y > this.y - proximity && player.pos.y < this.y + proximity)

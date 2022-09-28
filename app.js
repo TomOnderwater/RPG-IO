@@ -41,6 +41,12 @@ app.get("/testing", (req, res) => {
     res.sendFile(path.join(__dirname + "/public/testing.html"))
 })
 
+app.post("/getLevel", (req, res) => {
+  let connection = req.body
+  let level = gameMaster.getLevelData(connection)
+  res.send({level})
+})
+
 app.post("/continue", (req, res) => {
   let data = req.body
   let id = 'none'
