@@ -251,7 +251,7 @@ function drawSpectator()
   noStroke()
   textSize(30)
   textAlign(TOP, LEFT)
-  text("key: " + key, 10, 30)
+  text(host + " key: " + key, 10, 30)
   pop()
 }
 function drawGame()
