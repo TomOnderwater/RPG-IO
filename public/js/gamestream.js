@@ -31,6 +31,7 @@ function openStream() {
             updateView(msg.data)
           break
           case 'game over':
+            console.log('GAME OVER')
             setGameState('game over')
             message = msg
           break

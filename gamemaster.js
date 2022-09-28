@@ -89,8 +89,11 @@ module.exports = class GameMaster
                 //if (connection.type === 'controller') continue
                 //console.log('connection: ', connection)
                 let data = this.getViewPort(connection)
-                if (data.type == 'game over' && connection.player !== null)
+                //console.log(connection.player)
+                if (data.type === 'game over' && connection.player !== null)
                 {
+                    //console.log('player: ', connection.player)
+                    //console.log('connection: ', connection)
                     connection.player = null //dead, set for removal
                     console.log('sending end message')
                     connection.socket.send(JSON.stringify(data))
@@ -107,7 +110,7 @@ module.exports = class GameMaster
     {
         // TODO: Add a ban hammer for lingering connections to a dead game
         // there's no player
-        console.log('new connection:', connection)
+        console.log('new connection:', connection.key, connection.id)
         if (connection.id === 'spectator') 
         {
             this.connections.push(connection)
@@ -116,6 +119,7 @@ module.exports = class GameMaster
         let dungeon = this.getDungeon(connection.key)
         let player = dungeon.getPlayer(connection.id)
         if (!player) return false // dead, or something
+        //console.log('player: ', player)
         for (let con of this.connections)
             {
                 //check empty connections
@@ -124,7 +128,10 @@ module.exports = class GameMaster
                     // same connection
                     if (con.socket === connection.socket) 
                         { // and same player, everything is fine
-                        con.player = connection.player
+                        con.player = player
+                        con.id = player.id
+                        con.key = connection.key
+                        //console.log('player: ', con.player)
                         return true
                     }
                 }
