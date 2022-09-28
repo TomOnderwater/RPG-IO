@@ -156,7 +156,8 @@ async function registerPlayer() {
       setCookie('rpg-io', account.session, 7)
       sess_id = gamedetails.session
     }
-    if (gamedetails.name) inputname = gamedetails.name
+    //)
+    if (gamedetails.account) inputname = gamedetails.account.name
     setGameState('lobby')
   }
 }

@@ -18,7 +18,7 @@ module.exports = class Level
         this.ticks = 0
         this.events = []
         this.mobs = []
-        this.maxMobs = 100
+        this.maxMobs = 0.05 * this.width * this.height
     }
     getSpawnPos(body)
     {

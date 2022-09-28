@@ -32,6 +32,7 @@ module.exports = class AccountManager {
     updateName(session, name)
     {
         let account = this.accounts.find(user => user.session === session)
+        //console.log(' testing: ,', account, name)
         if (account) account.name = name
     }
     getAccount(session) {

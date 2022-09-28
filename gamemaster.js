@@ -19,14 +19,14 @@ module.exports = class GameMaster
         this.connections = []
         this.ticks = 0
         // base dungeon
-        this.dungeons.push(new Dungeon(1, 40, 20, this.createKey()))
+        this.dungeons.push(new Dungeon(1, 100, 100, this.createKey(5)))
         console.log('dungeons: ', this.dungeons, this.dungeons[0].key)
         // example {socket: bla bla, id: '1, 2, 3, spectator', key: 'adfei'}
     }
 
     addDungeon()
     {
-        let dungeon = new Dungeon(1, 32, 18, this.createKey())
+        let dungeon = new Dungeon(1, 32, 18, this.createKey(5))
         this.dungeons.push(dungeon)
         return dungeon
     }
@@ -138,7 +138,7 @@ module.exports = class GameMaster
             if (!con.player) continue
             if (con.player.id === connection.id) 
             {
-            con.socket = socket // set socket
+            con.socket = connection.socket // set socket
             return true
             }
         }
@@ -174,13 +174,13 @@ module.exports = class GameMaster
         if (this.ticks % 2 === 0) this.updateView()
         this.ticks ++
     }
-    createKey()
+    createKey(len)
     {
-        let key = generateKey(5)
+        let key = generateKey(len)
         for (let dungeon of this.dungeons)
         {
             // try again
-            if (dungeon.key === key) return this.createKey()
+            if (dungeon.key === key) return this.createKey(len)
         }
         return key
     }

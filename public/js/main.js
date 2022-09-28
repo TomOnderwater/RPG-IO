@@ -185,7 +185,7 @@ function lobby()
   nameinput.size(box.w, box.h)
 
   keyinput.position(box.x, box.y + 100)
-  keyinput.size(box.w, box.h)
+  keyinput.size(box.w * 0.5, box.h)
   push()
   noStroke()
   fill(255, 100)
@@ -221,6 +221,7 @@ function lobby()
       {
         continueGame()
         nameinput.hide()
+        keyinput.hide()
       }
     }
   }
