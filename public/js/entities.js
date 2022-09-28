@@ -10,7 +10,7 @@ class Entity
         this.moving = data.moving || false //specific for 
         this.dir = 0
         this.owner = null
-        this.dia = 40
+        this.dia = 0.4
         this.distance = 0
     }
     update()
@@ -35,13 +35,13 @@ class Entity
         push()
         fill(255, 255, 0)
         stroke(255, 125, 0)
-        let pos = camera.onScreen(this.pos)
-        circle(pos.x, pos.y, this.dia)
+        let pos = cam.onScreen(this.pos)
+        circle(pos.x, pos.y, this.dia * cam.zoom)
         pop()
     }
     touch()
     {
-        let pos = camera.onScreen(this.pos)
+        let pos = cam.onScreen(this.pos)
         for (let t of touches)
         {
             if (dist(t.x, t.y, pos.x, pos.y) < this.dia) return t
@@ -61,13 +61,13 @@ class HandItem extends Entity
         let rot = 0
         if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         //if (this.moving && this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
-        let pos = camera.onScreen(this.pos)
+        let pos = cam.onScreen(this.pos)
         push()
         translate(pos.x, pos.y)
         fill(255, 0, 0)
         circle(0,0,5)
         rotate(rot + this.rot)
-        textSize(this.spritesize)
+        textSize(this.spritesize * cam.zoom)
         text(this.sprite, this.offset.x, this.offset.y)
         pop()
     }
@@ -78,7 +78,7 @@ class Fist extends HandItem
     {
         super(status)
         this.sprite = '✊'
-        this.spriteSize = 50
+        this.spriteSize = 0.30
         this.dist = 0.4
         this.offset = createVector(0, 5)
         this.rot = PI + HALF_PI
@@ -91,7 +91,7 @@ class Sword extends HandItem
     {
         super(status)
         this.sprite = '🗡️'
-        this.spritesize = 30
+        this.spritesize = 0.4
         this.dist = 0.8
         this.offset = createVector(-16, 10)
         this.rot = QUARTER_PI

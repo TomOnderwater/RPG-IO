@@ -174,7 +174,7 @@ module.exports = class Player
         }
         if (action.action == 'end') 
         {
-            console.log(this.attackCharge)
+            //console.log(this.attackCharge)
             if (!this.hand.moving)
                 this.beginAttackAnimation()
             this.hand.moving = false

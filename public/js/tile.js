@@ -11,11 +11,10 @@ class Tile {
   }
   setStructure(type)
   {
-    if (type === TREE) 
-    {
-      console.log('planting tree')
+    if (type === TREE)
       this.structure = new Tree({x: this.x, y: this.y}, this.x * 1.4243 + this.y * 0.563)
-    }
+    if (type === WALL)
+      this.structure = new Wall({x: this.x, y: this.y})
   }
   update(tile)
   {
@@ -26,25 +25,30 @@ class Tile {
   drawTop(p)
   {
     if (this.top === AIR) return
-    let pos = p || camera.onScreen(createVector(this.x, this.y))
+    let pos = p || cam.onScreen(createVector(this.x, this.y))
     push()
       if (this.top == WALL)
       {
-        fill(0, 100)
-        rect(pos.x, pos.y, camera.zoom, camera.zoom)
+        this.structure.draw()
+        //fill(0, 100)
+        
+        //rect(pos.x, pos.y, cam.zoom, cam.zoom)
       } else 
       {
         let proximity = 3 //out of normal bounds
-        if (player.pos.x > this.x - proximity && player.pos.x < this.x + proximity && 
-        player.pos.y > this.y - proximity && player.pos.y < this.y + proximity)
-          proximity = dist(player.pos.x, player.pos.y, this.x + 0.5, this.y + 0.5)
+        if (type === 'player')
+        {
+          if (player.pos.x > this.x - proximity && player.pos.x < this.x + proximity && 
+            player.pos.y > this.y - proximity && player.pos.y < this.y + proximity)
+              proximity = dist(player.pos.x, player.pos.y, this.x + 0.5, this.y + 0.5)
+        }
         if (this.top === TREE) this.structure.draw(proximity)    
       }
     pop()
   }
   drawSurface(p)
   {
-    let pos = p || camera.onScreen(createVector(this.x, this.y))
+    let pos = p || cam.onScreen(createVector(this.x, this.y))
       push()
       stroke(0)
       switch (this.surface) {
@@ -69,17 +73,30 @@ class Tile {
         default:
           break
       }
-      rect(pos.x, pos.y, camera.zoom, camera.zoom)
+      rect(pos.x, pos.y, cam.zoom, cam.zoom)
       //draw thing on top
       noFill()
       stroke(255, 255, 255, 180)
       strokeWeight(this.selectborder)
       if (this.selected) rect(pos.x + this.selectborder * 0.5, pos.y + this.selectborder * 0.5, 
-      camera.zoom - this.selectborder , camera.zoom - this.selectborder)
+      cam.zoom - this.selectborder , cam.zoom - this.selectborder)
       pop()
   }
 }
 
+class Wall {
+  constructor(pos)
+  {
+    this.pos = pos
+  }
+  draw()
+  {
+    let pos = cam.onScreen(this.pos)
+    push()
+    image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    pop()
+  }
+}
 class Tree {
   constructor(pos, seed)
   {
@@ -106,18 +123,18 @@ class Tree {
     push()
     stroke(1)
     fill(200, 100, 50)
-    let pos = camera.onScreen(this.pos)
-    circle(pos.x, pos.y, camera.zoom * 0.2)
+    let pos = cam.onScreen(this.pos)
+    circle(pos.x, pos.y, cam.zoom * 0.2)
     noStroke()
     if (opacity == 255) fill(50, 150, 0)
     else fill(50, 150, 0, opacity)
-    circle(pos.x, pos.y, camera.zoom * 0.5)
+    circle(pos.x, pos.y, cam.zoom * 0.5)
     for (let branch of this.branches)
     {
-      let pos = camera.onScreen(branch.pos)
+      let pos = cam.onScreen(branch.pos)
       if (opacity == 255) fill(50 + branch.leafcolor, 150 + branch.leafcolor, 30)
       else fill(50 + branch.leafcolor, 150 + branch.leafcolor, 30, opacity)
-      circle(pos.x, pos.y, branch.dia * camera.zoom)
+      circle(pos.x, pos.y, branch.dia * cam.zoom)
     }
     pop()
   }

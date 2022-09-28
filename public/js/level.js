@@ -9,7 +9,7 @@ class Event
   }
   drawValue()
   {
-    let pos = camera.onScreen(this.pos)
+    let pos = cam.onScreen(this.pos)
     push()
     textSize(20)
     fill(255)
@@ -64,7 +64,7 @@ class Blood
   {
     this.pos.add(this.dir)
     this.dir.mult(this.mult)
-    let pos = camera.onScreen(this.pos)
+    let pos = cam.onScreen(this.pos)
     this.dia += this.diaincrement
     push()
     noStroke()
@@ -88,7 +88,7 @@ class Level {
    let t = input.getFreeTouch()
    //console.log(t)
    if (!t) return
-   let pos = camera.onLevel(t)
+   let pos = cam.onLevel(t)
    //console.log(pos)
    let visibletiles = this.getVisibleTiles(player)
    for (let tile of visibletiles)
@@ -134,7 +134,13 @@ class Level {
   }
   draw()
   {
-    let visibletiles = this.getVisibleTiles(player)
+    //console.log(type)
+    // get the zoom distance necessary
+    //if (type)
+    let visibletiles = (type !== 'spectator' && player) ? this.getVisibleTiles(player) :
+      this.getVisibleTiles({pos: cam.focus, viewdistance: 40})
+    //let visibletiles = this.getVisibleTiles(player)
+    //console.log(this.visibletiles)
     visibletiles.forEach(tile => tile.drawSurface())
     this.entities.forEach(entity => entity.draw())
     visibletiles.forEach(tile => tile.drawTop())
@@ -143,6 +149,7 @@ class Level {
   getVisibleTiles(perspective)
   {
     let pos = perspective.pos
+    //console.log(perspective)
     let range = perspective.viewdistance
     let x1 = Math.round(pos.x) - range
     if (x1 < 0) x1 = 0

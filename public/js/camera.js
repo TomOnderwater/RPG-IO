@@ -4,6 +4,7 @@ class Camera
   {
     this.focus = p5.Vector.add(focus, halfScreen())
     this.zoom = zoom //zoom is ratio higher is more zoomed in
+    this.invzoom = 1 / this.zoom
   }
   updateFocus(pos, _bounce)
   {

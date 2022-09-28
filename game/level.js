@@ -107,6 +107,7 @@ module.exports = class Level
                                             name: player.name,
                                             killer: 'natural causes'})
                 this.players.splice(i, 1)
+                console.log('player died', this.players)
             }
             else if (recoverytick)
                 player.recover()
@@ -157,8 +158,12 @@ module.exports = class Level
         let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
         let spawnpos = this.getFreeSpot({x: Math.random() * this.width, y: Math.random() * this.height}, slime.body)
         slime.body.pos = spawnpos
-        console.log('slime spawned')
+        //console.log('slime spawned')
         this.mobs.push(slime)
+    }
+    getAllEvents()
+    {
+        return this.events
     }
     getEvents(player)
     {
@@ -226,6 +231,17 @@ module.exports = class Level
     {
         if (pos.x >= 0 && pos.x <= this.width && pos.y >= 0 && pos.y <= this.height) return false
         return true
+    }
+    getAllEntities()
+    {
+        let entities = [] //everything else
+        for (let player of this.players)
+        {
+            entities.push(player.data())
+            entities.push(player.getHand())
+        }
+        this.mobs.forEach(mob => entities.push(mob.data()))
+        return entities 
     }
     getEntities(player)
     {

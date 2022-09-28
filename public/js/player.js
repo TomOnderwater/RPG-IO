@@ -8,6 +8,7 @@ class Player extends Entity
     this.viewdistance = data.viewdistance || 12
     this.name = data.name
     this.stridelength = 0.3
+    this.dia = 0.6
     this.health = data.health
     this.maxhealth = data.maxhealth
     this.perception = []
@@ -47,9 +48,9 @@ class Player extends Entity
       stroke(255, 0, 0, opacity)
       //console.log(l.a, l.dist)
       rotate(l.a)
-      line(0, 0, l.ray.dist * camera.zoom, 0)
+      line(0, 0, l.ray.dist * cam.zoom, 0)
       fill(255)
-      translate(l.ray.dist * camera.zoom, 0)
+      translate(l.ray.dist * cam.zoom, 0)
       rotate(-l.a)
       text(l.ray.obj, 0, -10)
       pop()
@@ -79,7 +80,7 @@ class Player extends Entity
     //   sound.footstep()
     //   this.distance = 0
     // }
-    let pos = camera.onScreen(this.pos)
+    let pos = cam.onScreen(this.pos)
     if (this.animationframe) this.drawLevelUP(pos)
     push()
     //console.log(this.rot)
@@ -98,7 +99,7 @@ class Player extends Entity
     //draw perception
     //fill(255, 0 ,0)
     //circle(0, 0, 40)
-    textSize(this.dia)
+    textSize(this.dia * cam.zoom)
     text('🧐', 0, 0)
 
     // drawh health bar over player

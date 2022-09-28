@@ -346,6 +346,9 @@ class AttackButton
             stroke(255, 0, 0, 100)
             strokeWeight(3)
             line(0, 0, this.drag.x, this.drag.y)
+            fill(255, 0, 0, 100)
+            noStroke()
+            circle(this.drag.x, this.drag.y, 30)
             pop()
         }
         push()
@@ -640,7 +643,7 @@ class JoyStick
     }
     draw() 
     {
-        if (!this.hintcompleted) this.drawHint()
+        if (!this.hintcompleted || type === 'controller') this.drawHint()
         if (!this.active) return
 
         push()

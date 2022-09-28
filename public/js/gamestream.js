@@ -4,18 +4,29 @@ function openStream() {
     gamestream.onopen = () => {
       // now we are connected
       console.log('connected gamestream')
-      gamestream.send(JSON.stringify({type: 'ready', id: game_id})) //send a ready
+      gamestream.send(JSON.stringify({code: 'ready', key, id: game_id, type})) //send a ready
       gamestream.onmessage = (raw) => {
         let msg = JSON.parse(raw.data)
         switch(msg.type) 
         {
           case 'start':
             game_id = msg.id
+            key = msg.key
             console.log("GAME START", game_id)
             console.log(msg.level)
             level.initLevel(msg.level)
             setGameState('game') //set state
           break
+          case 'spectator':
+            level.initLevel(msg.level)
+            // set appropriate zoom level to display the level
+            //console.log(level)
+            cam.updateZoom(width / level.width)
+            //console.log(cam.zoom)
+            //cam.zoom = width / level.width
+            key = msg.key
+            setGameState('spectator')
+            break
           case 'update':
             updateView(msg.data)
           break
@@ -35,6 +46,8 @@ function updateView(viewport)
 {
   //print(leveldata)
   level.newData(viewport)
+
+  if (type == 'spectator') return
   player = level.getPlayer(game_id)
   if (viewport.perception)
       {
@@ -50,13 +63,14 @@ function updateView(viewport)
 
   if (viewport.leaderboard)
     input.leaderboard.updateLeaderBoard(viewport.leaderboard)
+    
   //print(player, game_id, level.entities)
 }
 
 function sendInput(data)
 {
   //console.log(data)
-  gamestream.send(JSON.stringify({type: 'input', id: game_id, data}))
+  gamestream.send(JSON.stringify({code: 'input', key, id: game_id, data, type}))
 }
 
 async function continueGame()
@@ -76,6 +90,16 @@ async function continueGame()
     setGameState('lobby')
   }
 }
+
+async function startSpectator()
+{
+  setGameState('loading')
+  // set appropriate zoom level
+  console.log("hello, do you hear me?")
+  openStream()
+  setGameState('spectator')
+}
+
 async function startGame(playername)
 {
   //change the name
@@ -84,16 +108,17 @@ async function startGame(playername)
   setGameState('loading')
   const url = httpPrefix + host + '/start'
   //console.log('session:', session)
-  let game = await returnPost(url, {session, name: inputname})
-  print(game)
+  let game = await returnPost(url, {session, name: inputname, key})
+  print('game: ', game)
   if (game.id !== null)
   {
     print('my id:', game.id)
     game_id = game.id
+    key = game.key
     if (gamestream)
     {
       if (gamestream.readyState)
-        gamestream.send(JSON.stringify({type: 'ready', id: game_id})) //send a ready
+        gamestream.send(JSON.stringify({code: 'ready', key, id: game_id, type})) //send a ready
       else
         openStream()
     }
@@ -101,6 +126,10 @@ async function startGame(playername)
   }
 }
 
+async function registerSpectator()
+{
+  //
+}
 async function registerPlayer() {
   let session = getCookie('rpg-io')
   console.log('stored session', session)

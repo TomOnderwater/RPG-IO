@@ -132,7 +132,7 @@ module.exports = class LevelGenerator
             {  //top row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
-            for (let y = level.height - 1; y >= level.height - (1 + padding); y--)
+            for (let y = level.height - 1; y > level.height - (1 + padding); y--)
             {  //bottom row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
@@ -143,7 +143,7 @@ module.exports = class LevelGenerator
             {  //top row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }
-            for (let x = level.width - 1; x >= level.width - (1 + padding); x--)
+            for (let x = level.width - 1; x > level.width - (1 + padding); x--)
             {  //bottom row
                 this.tiles[x][y].addStructure({id: WALL, type: 'rect', pos: {x, y}, width: 1, height: 1, static: true})
             }

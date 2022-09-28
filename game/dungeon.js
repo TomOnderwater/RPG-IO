@@ -50,15 +50,16 @@ const Player = require('./player.js')
 const Level = require('./level.js')
 
 module.exports = class Dungeon {
-    constructor(floorcount) {
-        this.levels = this.generateLevel(floorcount)
+    constructor(floorcount, width, height, key) {
+        this.levels = this.generateLevel(floorcount, width || 40, height || 20)
+        this.key = key
         this.entitycount = 1
         this.queue = []
         this.ticks = 0
         this.scores = []
         this.leaderboard = []
     }
-    generateLevel(floorcount)
+    generateLevel(floorcount, width, height)
     {
         let levels = []
         for (let i = 0; i < floorcount; i++)
@@ -70,7 +71,7 @@ module.exports = class Dungeon {
             console.log('water threshold:', water)
             console.log('stone treshold:', stone)
             console.log('structure threshhold', structurerate)
-            levels.push(new Level({width: 40, height: 20, water, stone, structurerate}, this)) //contains tiles, which contain objects and items
+            levels.push(new Level({width, height, water, stone, structurerate}, this)) //contains tiles, which contain objects and items
         }
         return levels
     }
@@ -125,18 +126,28 @@ module.exports = class Dungeon {
                         name: this.scores[i].name}
         }
     }
-    getViewport(id) 
+    getViewPort(connection) 
     {
+
+        let id = connection.id
+        if (connection.type === 'spectator') 
+        {
+            let viewport = {}
+            let level = this.levels[0]
+            viewport.entities = level.getAllEntities()
+            viewport.events = level.getAllEvents()
+            return {type: 'update', data: viewport}
+        }
         let active = this.getPlayerAndLevel(id)
         if (!active) 
             return this.getScore(id)
 
         let viewport = {}
-        // update entities on high frequency
-        viewport.entities = active.level.getEntities(active.player)
-
-        //update events
-        viewport.events = active.level.getEvents(active.player)
+        if (connection.type === 'player')
+        {
+            viewport.entities = active.level.getEntities(active.player)
+            viewport.events = active.level.getEvents(active.player)
+        }
         let inventoryUpdate = active.player.getInventoryUpdate()
         if (inventoryUpdate) viewport.inventory = inventoryUpdate
         
@@ -151,6 +162,9 @@ module.exports = class Dungeon {
     }
     getLevelData(id)
     {
+        if (id === 'spectator')
+            return this.levels[0].getLevelData()
+
         let active = this.getPlayerAndLevel(id)
         if (!active) return []
         return active.level.getLevelData()
@@ -191,13 +205,13 @@ module.exports = class Dungeon {
         }
         return null
     }
-    updateInput(id, input)
+    updateInput(input)
     {
         try 
         {
-            let player = this.getPlayer(id)
+            let player = this.getPlayer(input.id)
             //console.log(player)
-            if (player) player.updateInput(input)
+            if (player) player.updateInput(input.data)
         }
         catch (e)
         {
@@ -249,6 +263,6 @@ module.exports = class Dungeon {
         console.log('adding player: ', new_player)
         this.queue.push(new_player)
         //console.log('queued: ', this.queue)
-        return id
+        return {id, key: this.key}
     }
 }

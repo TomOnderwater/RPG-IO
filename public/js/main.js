@@ -1,22 +1,17 @@
-/*
-    TO DO:
-
-    implement player registration, store personal account data in cookies
-
-
-*/
-
-
-
 //GAME SPECIFIC
-let camera, level, player, sess_id, game_id, gamestate, inputname = 'gandalf', myitems = []
+let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', myitems = []
 
 let activeID = 'none' // if not none, means there's an existing player
 //DEVICE SPECIFIC
 let MOBILE, orientation, canvas
 
+let key = ''
+
 // DATA SPECIFIC
-let input, gamestream, nameinput, message
+let input, gamestream, nameinput, message, keyinput
+
+// TEXTURES
+let walltexture
 
 // SERVER SETTINGS
 const host = location.host
@@ -35,25 +30,31 @@ function setupInput()
 
 function preload()
 {
-  console.log('loading sounds')
+  walltexture = loadImage('assets/textures/walltexture.png')
+  //console.log('loading sounds')
   //sound = new Sound()
 }
+
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight)
   SEXYGREY = color(51, 51, 51)
   //sound.swoosh()
-  camera = new Camera(createVector(0, 0), 20)
+  cam = new Camera(createVector(0, 0), 20)
 
   level = new Level()
 
   setGameState('loading')
 
   MOBILE = isMobileDevice()
-  setupInput()
 
-  //register player, 
-  registerPlayer()
-
+  console.log('type:', type)
+  //register player
+  if (type === 'player' || type === 'controller') 
+  {
+    setupInput()
+    registerPlayer()
+  }
+  if (type === 'spectator') startSpectator()
   }
 
 function draw() 
@@ -76,6 +77,9 @@ function draw()
     case 'game over':
     drawGameOver()
     break
+    case 'spectator':
+      drawSpectator()
+    break
     default:
     //eg loading
     break
@@ -89,11 +93,15 @@ function updateInput()
 }
 function setGameState(state)
 {
+  console.log("switching to", state)
   switch(state)
   {
     case 'lobby':
     nameinput = createInput(inputname)
-    nameinput.style('font-size', '30px');
+    nameinput.style('font-size', '30px')
+
+    keyinput = createInput(key)
+    keyinput.style('font-size', '30px')
     gamestate = state
     break
     case 'game':
@@ -104,6 +112,9 @@ function setGameState(state)
     break
     case 'game over':
     gamestate = state
+    break
+    case 'spectator':
+      gamestate = state
     break
     default:
     print(state, 'is not a recognized gamestate')
@@ -120,7 +131,8 @@ function drawGameOver()
   textSize(30)
   textAlign(CENTER, CENTER)
   text(message.type, width * 0.5, height * 0.2)
-  let info = message.name + ' scored ' + message.score + ' points'
+  //console.log(message)
+  let info = message.name + ' scored ' + message.score.score + ' points'
   let cause = 'before dying'
   if (message.killer == 'natural causes') cause += ' of natural causes'
   else cause += (' by ' + message.killer)
@@ -160,6 +172,9 @@ function lobby()
 
   nameinput.position(box.x, box.y)
   nameinput.size(box.w, box.h)
+
+  keyinput.position(box.x, box.y + 100)
+  keyinput.size(box.x, box.b)
   push()
   noStroke()
   fill(255, 100)
@@ -172,6 +187,7 @@ function lobby()
   text('name:', box.x - 10, box.y + (box.h / 2))
   textAlign(CENTER, CENTER)
   text('start', (s_area.x1 + s_area.x2) / 2, (s_area.y1 + s_area.y2) / 2)
+  text('key:', box.x - 10, box.y + 100, + (box.h * 0.5))
   pop()
 
   if (activeID != 'none')
@@ -201,22 +217,45 @@ function lobby()
   {
     if (onField(t, s_area))
     {
+      key = keyinput.value()
       startGame(nameinput.value())
+      keyinput.hide()
       nameinput.hide()
     }
   }
 }
 
+function drawSpectator()
+{
+  let focus = {x: level.width * 0.5, y: level.height * 0.5}
+  cam.updateFocus(focus, 0.1)
+  //cam.updateZoom(20)
+
+  level.update()
+  level.draw()
+  push()
+  fill(255)
+  noStroke()
+  textSize(30)
+  textAlign(TOP, LEFT)
+  text("key: " + key, 10, 30)
+  pop()
+}
 function drawGame()
 {
 
-  // draw order -> tiles, entities
-  if (player != null) // check if there's something to draw
-  {
-    let jump = height / (camera.zoom * 8)
-    let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
-    camera.updateFocus(focus, 0.1)
-    camera.updateZoom(player.getZoom())
+    if (type === 'player')
+    {
+       // draw order -> tiles, entities
+   if (player != null) // check if there's something to draw
+    {
+    let jump = height / (cam.zoom * 8)
+    if (player)
+    {
+      let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
+      cam.updateFocus(focus, 0.1)
+      cam.updateZoom(player.getZoom())
+    }
 
     level.checkTouches()
 
@@ -225,6 +264,7 @@ function drawGame()
     level.draw()
     //player.draw()
   }
+    }
 
   input.draw()
 }
