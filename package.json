@@ -1,30 +1,24 @@
 {
-  "name": "formatio",
-  "version": "1.0.0",
-  "description": "an elemental based game stealing cells",
+  "name": "rpg-io",
+  "version": "0.1",
+  "description": "A RPG styled survival game that focuses on combat",
   "main": "app.js",
   "dependencies": {
-    "@tensorflow/tfjs-node": "^3.18.0",
-    "bcrypt": "^5.0.0",
     "express": "^4.18.1",
     "express-ws": "^5.0.2",
-    "microseconds": "^0.2.0",
-    "mongodb": "^3.6.2",
-    "mysql": "^2.18.1",
-    "sequelize": "^6.3.5",
-    "sqlite3": "^5.0.0"
+    "microseconds": "^0.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/margotr/formatio.git"
+    "url": "git+https://github.com/TomOnderwater/RPG-IO"
   },
-  "author": "Margot Rutgers & Tom Onderwater",
+  "author": "Tom Onderwater",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/margotr/formatio/issues"
+    "url": "https://github.com/TomOnderwater/RPG-IO"
   },
-  "homepage": "https://github.com/margotr/formatio#readme"
+  "homepage": "https://github.com/TomOnderwater/RPG-IO#readme"
 }
