@@ -107,6 +107,8 @@ async function loadLevelData(connection)
   let data = await(returnPost(url, connection))
   console.log("got LEVEL: ", data)
   if (data.level) level.initLevel(data.level)
+  cam.focus = createVector(level.width * 0.5, level.height * 0.5)
+  cam.zoom = 30
 }
 
 async function startGame(playername)

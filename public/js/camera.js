@@ -12,9 +12,11 @@ class Camera
     this.focus = bounce(this.focus, pos, b)
     //print(this.focus)
   }
-  updateZoom(zoom)
+  updateZoom(zoom, _bounce)
   {
-    this.zoom = zoom
+    let b = _bounce || 1
+    this.zoom += (zoom - this.zoom) * b
+    //this.zoom = this.zoom, zoom, b
   }
   onLevel(p) //which tile does the touch hit?
   {

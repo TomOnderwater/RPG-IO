@@ -166,6 +166,7 @@ function lobby()
   // draw the level
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
+  cam.updateZoom(30, 0.1)
   //cam.updateZoom(20)
 
   level.update()
@@ -266,7 +267,7 @@ function drawGame()
     {
       let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
       cam.updateFocus(focus, 0.1)
-      cam.updateZoom(player.getZoom())
+      cam.updateZoom(player.getZoom(), 0.05)
     }
 
     level.checkTouches()
