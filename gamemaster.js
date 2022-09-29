@@ -116,15 +116,7 @@ module.exports = class GameMaster
                 //if (connection.type !== 'spectator' && connection.player !== null)
                 if (data.type !== 'game over' && data.type !== undefined)
                 {
-                    //console.log(data)
-                    try 
-                    {
-                        connection.socket.send(JSON.stringify(data))
-                    }
-                    catch(e)
-                    {
-                        console.log('error: ', e)
-                    }
+                    connection.socket.send(JSON.stringify(data))
                 }
             }
         }
@@ -202,8 +194,15 @@ module.exports = class GameMaster
         //     console.log(dungeon)
         //     dungeon.update()
         // }
+        try 
+        {
         this.dungeons.forEach(dungeon => dungeon.update())
         if (this.ticks % 2 === 0) this.updateView()
+        }
+        catch (e)
+        {
+            console.error('ERROR: ', e)
+        }
         this.ticks ++
     }
     createKey(len)

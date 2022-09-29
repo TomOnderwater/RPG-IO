@@ -187,10 +187,34 @@ class Sword extends HandItem
     constructor(status)
     {
         super(status)
-        this.sprite = '🗡️'
-        this.spritesize = 0.4
+        this.size = 0.6
         this.dist = 0.8
-        this.offset = createVector(-16, 10)
-        this.rot = QUARTER_PI
+    }
+    draw()
+    {
+        let pos = cam.onScreen(this.pos)
+        let rot = 0
+        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        push()
+        translate(pos.x, pos.y)
+        rotate(rot)
+        let hilt = this.size * 0.3 * cam.zoom
+        let len = -this.size * cam.zoom
+        //rotate(this.dir)
+        //triangle
+        fill(255)
+        stroke(0, 150)
+        strokeWeight(0.02 * cam.zoom)
+        triangle(hilt + len, 0, 0, hilt * 0.2, 0, -hilt * 0.2)
+        //length line
+        line(hilt, 0, hilt + len, 0)
+        //hilt guard
+        stroke(150)
+        strokeWeight(0.05 * cam.zoom)
+        line(0, hilt * 0.5, 0, -hilt * 0.5)
+        //grip
+        stroke(200, 100, 50)
+        line(0,0,hilt, 0)
+        pop()
     }
 }
