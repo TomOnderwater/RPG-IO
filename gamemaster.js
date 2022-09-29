@@ -114,8 +114,18 @@ module.exports = class GameMaster
                     connection.socket.send(JSON.stringify(data))
                 }
                 //if (connection.type !== 'spectator' && connection.player !== null)
-                if (data.type !== 'game over')
-                    connection.socket.send(JSON.stringify(data))
+                if (data.type !== 'game over' && data.type !== undefined)
+                {
+                    //console.log(data)
+                    try 
+                    {
+                        connection.socket.send(JSON.stringify(data))
+                    }
+                    catch(e)
+                    {
+                        console.log('error: ', e)
+                    }
+                }
             }
         }
         this.resetDungeons()
@@ -174,6 +184,13 @@ module.exports = class GameMaster
     getViewPort(connection)
     {
         let dungeon = this.getDungeon(connection.key)
+        //if (dungeon.key)
+        if (connection.type === 'player' && dungeon.key !== connection.key)
+            return {
+                type: 'game over', 
+                killer: 'the admins', 
+                score: 'no points at all',
+                name: 'some curious guy'}
         //console.log('dungeon: ', dungeon)
         return dungeon.getViewPort(connection)
     }
