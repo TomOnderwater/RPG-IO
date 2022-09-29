@@ -112,7 +112,7 @@ class Bow extends HandItem
                     bowtarget = p5.Vector.fromAngle(rot).mult(this.drawreach).add(this.owner.pos)
                 }
             }
-        this.bowpos = bounce(this.bowpos, bowtarget, 0.3)
+        this.bowpos = bounce(this.bowpos, bowtarget, 1)
         let bowpos = cam.onScreen(this.bowpos)
         //if (this.moving && this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         // draw the bow
