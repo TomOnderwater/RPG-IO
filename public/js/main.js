@@ -8,7 +8,7 @@ let MOBILE, orientation, canvas
 let key = ''
 
 // DATA SPECIFIC
-let input, gamestream, nameinput, message, keyinput
+let input, gamestream, nameinput, message, keyinput, leaderboard
 
 // TEXTURES
 let walltexture

@@ -31,10 +31,11 @@ module.exports = class Player
         this.strength = 1
         this.speed = 1
         this.vitality = 1
-        
-        this.reach = Math.PI * 0.3
-        this.attackCharge = 0
 
+        // UTILITIES
+        this.arrows = 100
+
+        // STAMINA
         this.stamina = 100
         this.maxstamina = 100
 
@@ -104,9 +105,8 @@ module.exports = class Player
 
         this.body.bounceSpeed(this.input.dir)
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
-        if (this.attackAnimation >= 0) this.slash()
-        // update sword / fist with everything but not own body
-        if (this.hand.moving)
+        // if physical attack
+        if (this.hand.moving && this.hand.item.physical)
         {
             let closebodies = level.closeBodies(this.hand.body.pos, colliders, 1)
             let collisions = this.hand.body.update(closebodies, this.body) // except player body
@@ -116,31 +116,22 @@ module.exports = class Player
                 {
                     for (let collision of collisions)
                     {
-                        // calculate damage based on speed times damage
-                        let itemdamage = this.hand.item.physical
-                        let speed = Func.magnitude(collision.speed)
-                        let damage = speed * itemdamage * (1 + (this.strength * 0.2))
-                        damage = Math.round(damage)
-                        // apply damage
                         if (collision.entity.health !== undefined)
-                            collision.entity.applyDamage(damage, this)
-                        // add to visual
-                        level.addEvent({
-                            type: 'damage', 
-                            dir: collision.speed, 
-                            pos: collision.pos, 
-                            damage, 
-                            item: this.hand.item.type
-                            })
+                            level.addEvent(Func.calcAttack({
+                                collision, 
+                                item: this.hand.item, 
+                                attacker: this.id, 
+                                power: 1 + (this.strength * 0.2)}))
                     }
                 }
             }
         }
+
     }
     applyDamage(damage, attacker)
     {
         this.health -= damage
-        this.lastattacker = attacker.id
+        this.lastattacker = attacker
         //console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)
     }
     getScore()
@@ -154,68 +145,44 @@ module.exports = class Player
     }
     data() 
         {
-            let x = Func.fixNumber(this.body.pos.x, 2)
-            let y = Func.fixNumber(this.body.pos.y, 2)
-            let pos = {x,y}
+            let pos = Func.fixPos(this.body.pos, 2)
             return {id: this.id, type: this.type, pos, name: this.name, health: this.health, maxhealth: this.maxhealth}
         }
     getHand()
     {
         return {id: this.hand.id, type: this.hand.item.type, pos: this.hand.body.pos, moving: this.hand.moving, owner: this.hand.owner}
     }
-    handlePhysical(action)
+    handlePhysical(hand)
     {
         // beginning, or middle of the touch, init the item box
-        if (action.action == 'touch') 
+        let input = Func.constrainVector(hand, -128, 128)
+        //if (Func.magnitude)
+        if (Func.zeroVector(input)) 
         {
+            if (this.hand.moving)
+            {
+                if (this.hand.item.type === 'bow')
+                {
+                    //shoot an arrow
+                    console.log(this.body.pos, this.hand.body.pos)
+                    let dir = Func.subtract(this.hand.body.pos, this.body.pos)
+                    console.log('pew', dir)
+                }
+            }
             this.hand.moving = false
-            this.attackCharge ++
             return
         }
-        if (action.action == 'end') 
-        {
-            //console.log(this.attackCharge)
-            if (!this.hand.moving)
-                this.beginAttackAnimation()
-            this.hand.moving = false
-            //console.log('action end')
-            return
-        }
-        let pos = Func.add(this.body.pos, Func.multiply(action.dir, 0.01)) //mult value is reach of the attack
         if (!this.hand.moving) 
             {
-                if (this.attackAnimation >= 0) this.attackAnimation = 0
-                // get radius from the item
-                // extra options: bounce, mass
                 let item = this.hand.item
                 this.hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
                 this.hand.moving = true
             }
         // set target
-        let target = Func.add(this.body.pos, Func.multiply(action.dir, 0.01))
+        let target = Func.add(this.body.pos, Func.multiply(input, 0.01))
         this.hand.body.target(target)
-    }
-    slash()
-    {
-        if (this.attackAnimation <= 0) this.hand.moving = false
-        else this.hand.moving = true
-        let increment = this.reach * 0.3
-        let a = this.heading + Math.PI + this.reach + (increment * this.attackAnimation)
-        let target = Func.add(this.body.pos, Func.getVector(a, this.swinglength))
-        this.hand.body.target(target)
-        //console.log(Func.getVector(a, reach))
-        this.attackAnimation --
-    }
-    beginAttackAnimation()
-    {
-        this.attackAnimation = 15
-        let item = this.hand.item
-        this.hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
-        this.hand.moving = true
-        this.swinglength = 0.5 + this.attackCharge * 0.03
-        if (this.swinglength > 1.28) this.swinglength = 1.28
-        this.reach *= -1
-        this.attackCharge = 0
+        if (!this.hand.item.physical) this.hand.body.update([])
+        //console.log(this.hand.body.pos)
     }
     getInventoryUpdate()
     {
@@ -261,9 +228,9 @@ module.exports = class Player
     updateInput(input)
     {
         this.input.dir = Func.multiply(input.joy, this.speedstat)
+        this.handlePhysical(input.hand)
         for (let action of input.actions)
         {
-            if (action.type == 'physical') this.handlePhysical(action)
             if (action.type == 'inventory') this.handleInventory(action)
             if (action.type == 'allocation') this.manageAttributes(action.attribute)
         }

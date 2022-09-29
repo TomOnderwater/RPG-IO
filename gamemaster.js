@@ -91,7 +91,7 @@ module.exports = class GameMaster
                 this.dungeons.splice(i, 1)
             }
         }
-        this.dungeons.forEach(dungeon => dungeon.resetEvents())
+        this.dungeons.forEach(dungeon => dungeon.reset())
     }
     updateView()
     {

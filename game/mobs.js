@@ -77,7 +77,7 @@ class Slime
             if (collision.entity.type == 'player')
             {
                 let damage = this.stats.attack
-                collision.entity.applyDamage(this.attack, this)
+                collision.entity.applyDamage(this.attack, this.id)
                 level.addEvent({type: 'damage', dir: collision.speed, pos: collision.pos, damage, item: 'slime'})
             }
         }
@@ -125,7 +125,7 @@ class Slime
     applyDamage(damage, attacker)
     {
         this.health -= damage
-        this.lastattacker = attacker.id
+        this.lastattacker = attacker
     }
     addXP(xp)
     {

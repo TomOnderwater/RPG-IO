@@ -119,9 +119,13 @@ module.exports = class Dungeon {
         }
         return out
     }
-    resetEvents()
+    reset()
     {
-        this.levels.forEach(level => level.resetEvents())
+        this.levels.forEach(level => 
+            {
+                level.resetEvents()
+                level.clearUpdates()
+            })
     }
     getScore(id)
     {
@@ -137,7 +141,6 @@ module.exports = class Dungeon {
     }
     getViewPort(connection) 
     {
-
         let id = connection.id
         if (connection.type === 'spectator') 
         {
@@ -145,6 +148,7 @@ module.exports = class Dungeon {
             let level = this.levels[0]
             viewport.entities = level.getAllEntities()
             viewport.events = level.getAllEvents()
+            viewport.updates = level.getUpdates()
             return {type: 'update', data: viewport}
         }
         let active = this.getPlayerAndLevel(id)
@@ -156,6 +160,7 @@ module.exports = class Dungeon {
         {
             viewport.entities = active.level.getEntities(active.player)
             viewport.events = active.level.getEvents(active.player)
+            viewport.updates = active.level.getUpdates()
         }
         let inventoryUpdate = active.player.getInventoryUpdate()
         if (inventoryUpdate) viewport.inventory = inventoryUpdate
@@ -246,19 +251,6 @@ module.exports = class Dungeon {
     {
         return this.entitycount ++
     }
-    // createItem(type)
-    // {
-    //     //returns an item
-    //     switch(type)
-    //     {
-    //         case 'sword':
-    //             return {type: 'sword', mass: 0.3, damage: 5}
-    //         case 'bow':
-    //             return {type: 'bow', mass: 0.2, damage: 3}
-    //         case 'staff':
-    //             return {type: 'staff', damage: 8}
-    //     }
-    // }
     addPlayer(player)
     {
         // assign an id
@@ -267,6 +259,7 @@ module.exports = class Dungeon {
         //let item = this.createItem('sword')
         let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
         new_player.pickup([createItem('sword')])
+        new_player.pickup([createItem('bow')])
         new_player.initHand(this.assignID()) // assign an id for the item in hand
         // add to queue
         console.log('adding player: ', new_player)

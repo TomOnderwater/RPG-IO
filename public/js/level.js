@@ -194,6 +194,18 @@ class Level {
     }
     tiles.forEach(tile => this.tiles.push(new Tile(tile)))
   }
+  updateStructures(newtiles)
+  {
+    // {x: y: s:, t: }
+    newtiles.forEach(tile => this.getTile(tile.x, tile.y).update(tile))
+  }
+  getTile(x, y)
+  {
+    for (let tile of this.tiles)
+    {
+      if (tile.x === x && tile.y === y) return tile
+    }
+  }
   updateEntities(leveldata)
   {
     let entities = leveldata.entities

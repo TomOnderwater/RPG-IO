@@ -205,8 +205,11 @@ module.exports = class PhysicalBody
                     collisions.push(collisiondata)
                 } else 
                 {
+                    //console.log('static collision!')
                     this.speed = reflect(this.speed, subtract(collision, this.pos))
                     this.speed = multiply(this.speed, this.collider)
+                    collisiondata.speed = this.speed
+                    collisions.push(collisiondata)
                     staticCollision = true
                 }
             }

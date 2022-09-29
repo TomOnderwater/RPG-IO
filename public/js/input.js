@@ -1,36 +1,23 @@
 class MobileInput {
     constructor()
     {
-        this.joystick = new JoyStick()
+        this.joystick = new JoyStick(100)
         this.inventory = new Inventory(inventorySpecs)
-        this.attackButtons = []
+        this.handStick = new UtitlityStick()
         this.usedTouches = []
-        this.starttime = new Date().getTime()
         this.stats = new Stats()
-        this.leaderboard = new LeaderBoard()
-        //print(height)
-        this.attackButtons.push(new AttackButton('✊', 'physical', createVector(width - 150, height - 150), 65))
-        //print('hello')
-
     }
     update()
     {
         this.updateTouches()
         let joyout = this.joystick.update()
+        let handout = this.handStick.update()
         let actions = []
-        let attacked = false
-        for (let atk of this.attackButtons)
-        {
-            let attack = atk.update()
-            if (attack && !attacked) 
-            {
-                actions.push(attack)
-                attacked = true
-            }
-        }
+        
         //do the inventory
         let inventoryactions = this.inventory.update()
-        if (inventoryactions !== null) actions = [...actions, ...inventoryactions]
+        if (inventoryactions !== null) 
+            actions = [...actions, ...inventoryactions]
         //console.log(actions)
 
         let pointallocations = this.stats.update()
@@ -39,7 +26,10 @@ class MobileInput {
 
         //print(actions)
         //print(joyout)
-        return {joy: {x: joyout.x, y: joyout.y}, actions}
+        return {
+            joy: {x: joyout.x, y: joyout.y}, 
+            hand: {x: handout.x, y: handout.y}, 
+            actions}
     }
     time() //time since input was instantiated
     {
@@ -48,13 +38,9 @@ class MobileInput {
     draw()
     {
         this.joystick.draw()
-        for (let atk of this.attackButtons)
-        {
-            atk.draw()
-        }
+        this.handStick.draw()
         this.inventory.draw()
         this.stats.draw()
-        this.leaderboard.draw()
     }
     isFree(t)
     {
@@ -318,107 +304,7 @@ class Slot
     }
 }
 
-class AttackButton
-{
-    constructor(item, type, pos, dia)
-    {
-        this.type = type
-        this.item = item //linked item (for visuals)
-        this.pos = pos
-        let xdist = width - pos.x
-        let ydist = height - pos.y
-        this.limit = (xdist > ydist) ? xdist : ydist
-        this.dia = dia || 70
-        this.attack = false
-        this.drag = null
-    }
-    onButton(t, factor)
-    {
-        let margin = factor || 0.5
-        return (this.pos.dist(createVector(t.x, t.y)) < this.dia * margin)
-    }
-    draw()
-    {
-        if (this.attack && this.drag) 
-        {
-            push()
-            translate(this.pos.x, this.pos.y)
-            stroke(255, 0, 0, 100)
-            strokeWeight(3)
-            line(0, 0, this.drag.x, this.drag.y)
-            fill(255, 0, 0, 100)
-            noStroke()
-            circle(this.drag.x, this.drag.y, 30)
-            pop()
-        }
-        push()
-        stroke(255, 0, 0, 200)
-        fill(255, 0, 0, 150)
-        strokeWeight(3)
-        stroke(255, 0, 0)
-        translate(this.pos.x, this.pos.y)
-        circle(0, 0, this.dia)
-        textAlign(CENTER, CENTER)
-        textSize(this.dia * 0.5)
-        text(this.item, 0, 0)
-        pop()
-    }
-    getOutput(action)
-    {
-        // no drag cases
-        if (action == 'touch' || (action == 'end' && this.drag == 'touch'))
-            return {type: this.type, action, rot: 0, mag: 0}
-
-        let out = p5.Vector.mult(this.drag, 128 / this.limit)
-        return { 
-        type: this.type, 
-        action,
-        dir: {x: out.x, y: out.y}
-        }
-    }
-
-    update()
-    {
-        let attackFinished = true
-        for (let t of touches)
-        {
-            // first touch
-            if (!this.attack && this.onButton(t) && !inList(t.id, input.usedTouches)) 
-            {
-                this.attack = true //we're gonna attack
-                this.touch = t.id
-                this.drag = 'touch'
-                attackFinished = false //but we're not done yet
-                input.addTouch(t)
-                break //done
-            }
-            //existing touch, check for drag
-            if (this.attack && t.id === this.touch) 
-            {
-                attackFinished = false //still not done
-                if (this.onButton(t, 0.3)) this.drag = 'touch'
-                else 
-                {
-                    this.drag = p5.Vector.sub(createVector(t.x, t.y), this.pos)
-                    this.drag.limit(this.limit)
-                }
-                break //done
-            }
-        }
-        if (this.attack) 
-        {
-            if (attackFinished)
-            {
-                this.attack = false
-                return this.getOutput('end')
-            }
-            if (this.drag !== 'touch') return this.getOutput('move')
-            else return this.getOutput(this.drag)
-        }
-        return null
-    }
-}
-
+/*
 class LeaderBoard
 {
     constructor()
@@ -470,6 +356,8 @@ class LeaderBoard
     }
 }
 
+*/
+
 class Settings
 { // draw on the top left corner
 // includes sound settings,mu
@@ -478,6 +366,7 @@ class Settings
 
     }
 }
+
 class Stats
 { // draw on the top right corner
     constructor()
@@ -625,6 +514,93 @@ class SimpleButton
             }
         }
         return false
+    }
+}
+
+class UtitlityStick
+{
+    constructor(dia, area)
+    {
+        this.max = 128
+        this.active = false
+        this.dia = dia || 150
+        this.area = area || {x1: 2 * (width / 3), y1: height / 3, x2: width, y2: height - 80}
+        this.center = createVector(0, 0)
+        this.joy = createVector(0, 0)
+        this.bg = color(0, 255, 0, 100)
+        this.touch = null
+        this.hintcompleted = false
+    }
+    draw() 
+    {
+        if (!this.hintcompleted || type === 'controller') this.drawHint()
+        if (!this.active) return
+
+        push()
+        noStroke()
+        fill(100, 100, 100, 100)
+        circle(this.center.x, this.center.y, this.dia)
+        fill(255, 100)
+        circle(this.center.x, this.center.y, this.dia * 0.25)
+        strokeWeight(5)
+        stroke(255, 100)
+        line(this.center.x, this.center.y, this.joy.x, this.joy.y)
+        noStroke()
+        fill(200, 200, 200, 150)
+        circle(this.joy.x, this.joy.y, this.dia * 0.33)
+        pop()
+    }
+    drawHint()
+    {
+        push()
+        stroke(this.bg)
+        fill(this.bg)
+        strokeWeight(5)
+        rectMode(CORNERS)
+        rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 20)
+        fill(255, 150)
+        textSize(20)
+        textAlign(CENTER, CENTER)
+        strokeWeight(2)
+        text("move hand", (this.area.x1 + this.area.x2) * 0.5, (this.area.y1 + this.area.y2) * 0.5)
+        pop()
+        if (this.active) this.hintcompleted = true
+    }
+    update()
+    {
+        for (let t of touches)
+        {
+            // new touch
+            if (!this.active && onField(t, this.area) && !inList(t.id, input.usedTouches)) 
+            {
+                this.place(t)
+                input.addTouch(t)
+                return createVector(0, 0)
+            }
+            //existing touch
+            if (this.active && t.id === this.touch) return this.updateJoy(t)
+        }
+        return this.cancelJoy() //no updates
+    }
+    cancelJoy()
+    {
+        this.touch = null
+        this.active = false
+        return createVector(0, 0)
+    }
+    updateJoy(t)
+    {
+        this.joy = createVector(t.x, t.y) //register pos
+        let diff = p5.Vector.sub(this.joy, this.center).limit(this.dia / 2) // get output and limit
+        this.joy = p5.Vector.add(this.center, diff) //apply limit
+        return diff.mult(2 * this.max / this.dia) //scale
+    }
+    place(t)
+    {
+        //print(t)
+        this.center = createVector(t.x, t.y)
+        this.active = true
+        this.touch = t.id
     }
 }
 

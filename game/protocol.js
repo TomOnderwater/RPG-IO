@@ -17,12 +17,10 @@ global.createItem = function(type)
     switch(type)
         {
             case 'sword':
-                return {type: 'sword', mass: 0.3, rad: 0.1, physical: 30}
-            case 'bow':
-                return {type: 'bow', mass: 0.2, rad: 0.15, physical: 8}
-            case 'staff':
-                return {type: 'staff', mass: 0.3, rad: 0.2, physical: 12}
+                return {type: 'sword', physical: true, mass: 0.3, rad: 0.1, attack: 20, destruction: 5}
             case 'none':
-                return {type: 'none', mass: 0.1, rad: 0.05, physical: 5}
+                return {type: 'none', physical: true, mass: 0.1, rad: 0.05, attack: 5, destruction: 2}
+            case 'bow':
+                return {type: 'bow', physical: false, mass: 0.1, rad: 0.05, attack: 20, destruction: 2}
         }
 }

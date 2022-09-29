@@ -19,6 +19,7 @@ module.exports = class Level
         this.events = []
         this.mobs = []
         this.maxMobs = 0.05 * this.width * this.height
+        this.updates = []
     }
     killAll()
     {
@@ -132,6 +133,34 @@ module.exports = class Level
             }
             else if (recoverytick) 
                 mob.recover()
+        }
+        this.updateStructures()
+    }
+    getUpdates()
+    {
+        return this.updates
+    }
+    clearUpdates()
+    {
+        this.updates = []
+    }
+    updateStructures()
+    {
+        // destroy structures that are dead
+        for (let x = 0; x < this.width; x++)
+        {
+            for (let y = 0; y < this.height; y++)
+            {
+                let tile = this.tiles[x][y]
+                if (tile.structure !== AIR)
+                {
+                    if (tile.structure.health <= 0)
+                    {
+                        tile.destroyStructure()
+                        this.updates.push(tile.getData())
+                    }
+                }
+            }
         }
     }
     killOutOfBounds()

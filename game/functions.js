@@ -126,10 +126,65 @@ function fixPos(pos, digits)
     return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
 }
 
+function constrainVector(vec, min, max)
+{
+    if (vec.x < min) vec.x = min
+    else if (vec.x > max) vec.x = max
+    if (vec.y < min) vec.y = min
+    else if (vec.y > max) vec.y = max
+    return vec
+}
+
+function zeroVector(vec)
+{
+    return (vec.x === 0 && vec.y === 0)
+}
+
+function calcAttack(attack)
+{
+    if (attack.collision)
+    {
+        let speed = magnitude(attack.collision.speed)
+        console.log('speed:', speed)
+        // calc the damage based on the type of collision: destruction / attack
+        if (attack.collision.entity.structure)
+        {
+            // wood, rock or something else
+            let damage = Math.round(attack.item.destruction * speed * attack.power)
+            attack.collision.entity.applyDamage(damage)
+            return {
+                type: 'damage', 
+                dir: attack.collision.speed, 
+                pos: attack.collision.pos, 
+                damage, 
+                item: attack.item.type,
+                target: {material: attack.collision.entity.material}
+            }
+        }
+        else 
+        {
+            // living bodies
+            let damage = Math.round(attack.item.attack * speed * attack.power)
+            console.log('damage', damage)
+            attack.collision.entity.applyDamage(damage, attack.attacker)
+            return {
+                type: 'damage', 
+                dir: attack.collision.speed, 
+                pos: attack.collision.pos, 
+                damage, 
+                item: attack.item.type,
+                target: {material: 'flesh', id: attack.collision.entity.id}
+            }
+        }
+    }
+    // EXPLOSION ATTACK
+}
+
+
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
-    getVector, fixPos
+    getVector, fixPos, constrainVector, zeroVector, calcAttack
 }
