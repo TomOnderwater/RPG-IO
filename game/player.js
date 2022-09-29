@@ -152,10 +152,10 @@ module.exports = class Player
     {
         return {id: this.hand.id, type: this.hand.item.type, pos: this.hand.body.pos, moving: this.hand.moving, owner: this.hand.owner}
     }
-    handlePhysical(hand)
+    handlePhysical(_input)
     {
         // beginning, or middle of the touch, init the item box
-        let input = Func.constrainVector(hand, -128, 128)
+        let input = Func.constrainVector(_input, -128, 128)
         //if (Func.magnitude)
         if (Func.zeroVector(input)) 
         {
@@ -179,7 +179,7 @@ module.exports = class Player
                 this.hand.moving = true
             }
         // set target
-        let target = Func.add(this.body.pos, Func.multiply(input, 0.01))
+        let target = Func.add(this.body.pos, Func.multiply(input, this.hand.item.reach))
         this.hand.body.target(target)
         if (!this.hand.item.physical) this.hand.body.update([])
         //console.log(this.hand.body.pos)

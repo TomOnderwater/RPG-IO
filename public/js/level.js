@@ -242,6 +242,9 @@ class Level {
         //console.log('got a sword')
           this.entities.push(new Sword(entity))
         break
+        case 'bow':
+          this.entities.push(new Bow(entity))
+          break
         case 'none':
           this.entities.push(new Fist(entity))
         break
