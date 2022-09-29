@@ -248,6 +248,9 @@ class Level {
         case 'none':
           this.entities.push(new Fist(entity))
         break
+        case 'arrow':
+          this.entities.push(new Arrow(entity))
+        break
         // case 'slime':
         //   console.log('slime spawn')
         // break

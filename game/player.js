@@ -99,6 +99,7 @@ module.exports = class Player
 
     update(level, colliders)
     {
+        this.level = level
         // rotate sprite
         if (Func.magnitude(this.body.speed) > 0.01)
             this.heading = Math.atan2(this.body.speed.y, this.body.speed.x)
@@ -164,9 +165,14 @@ module.exports = class Player
                 if (this.hand.item.type === 'bow')
                 {
                     //shoot an arrow
-                    console.log(this.body.pos, this.hand.body.pos)
-                    let dir = Func.subtract(this.hand.body.pos, this.body.pos)
-                    console.log('pew', dir)
+                    let dir = Func.subtract(this.body.pos, this.hand.body.pos)
+                    this.level.addRangedAttack(
+                        {
+                            owner: this, 
+                            pos: this.body.pos, 
+                            attack: this.hand.item.attack, 
+                            dir, rad: 0.1, mass: 2,
+                            type: 'arrow'})
                 }
             }
             this.hand.moving = false

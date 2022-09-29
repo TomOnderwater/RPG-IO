@@ -2,6 +2,7 @@ const Tile = require('./tile.js')
 const LevelGenerator = require('./levelgeneration.js')
 const Func = require('./functions.js')
 const Mobs = require('./mobs.js')
+const RangedAttack = require('./rangedattacks.js')
 
 module.exports = class Level 
 {
@@ -20,6 +21,7 @@ module.exports = class Level
         this.mobs = []
         this.maxMobs = 0.05 * this.width * this.height
         this.updates = []
+        this.rangedattacks = []
     }
     killAll()
     {
@@ -81,6 +83,20 @@ module.exports = class Level
         }
         return null
     }
+    addRangedAttack(data)
+    {
+        data.id = this.dungeon.assignID()
+        this.rangedattacks.push(new RangedAttack(data))
+    }
+    updateRangedAttacks(entities)
+    {
+        for (let i = this.rangedattacks.length - 1; i >= 0; i--)
+        {
+            let ended = this.rangedattacks[i].update(this, entities)
+            if (ended) console.log('hit')
+            if (ended) this.rangedattacks.splice(i, 1)
+        }
+    }
     update()
     {
         this.ticks ++
@@ -88,6 +104,8 @@ module.exports = class Level
         this.spawnMobs()
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
+
+        this.updateRangedAttacks(entities)
         let recoverytick = ((this.ticks % 30) === 0)
         if (recoverytick) 
             this.killOutOfBounds()
@@ -274,6 +292,7 @@ module.exports = class Level
             entities.push(player.getHand())
         }
         this.mobs.forEach(mob => entities.push(mob.data()))
+        this.rangedattacks.forEach(rangedattack => entities.push(rangedattack.data()))
         return entities 
     }
     getEntities(player)
@@ -290,6 +309,11 @@ module.exports = class Level
             if (Func.inRange(player.body.pos, mob.body.pos, player.perceptionstat))
                 entities.push(mob.data())
         }
+        for (let rangedattack of this.rangedattacks) 
+            {
+                if(Func.inRange(player.body.pos, rangedattack.body.pos, player.perceptionstat))
+                    entities.push(rangedattack.data())
+            }
         return entities
     }
     getStructures(pos, range)

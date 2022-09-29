@@ -142,6 +142,7 @@ function zeroVector(vec)
 
 function calcAttack(attack)
 {
+    if (!attack.power) attack.power = 1
     if (attack.collision)
     {
         let speed = magnitude(attack.collision.speed)

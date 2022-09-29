@@ -12,11 +12,12 @@ class Entity
         this.owner = false
         this.dia = 0.4
         this.distance = 0
+        this.bounce = 0.2
     }
     update()
     {
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
-        this.pos = bounce(this.pos, this.target, 0.2)
+        this.pos = bounce(this.pos, this.target, this.bounce)
         let speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
         this.distance += speed
         if (speed > 0.01) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
@@ -55,6 +56,16 @@ class Entity
     }
 }
 
+class Arrow extends Entity {
+constructor(entity){
+    super(entity)
+    this.bounce = 0.4
+}
+    draw()
+    {
+        drawArrow(this.pos, this.dir + PI)
+    }
+}
 class HandItem extends Entity
 {
     constructor(status)
