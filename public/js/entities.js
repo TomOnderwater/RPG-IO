@@ -59,13 +59,15 @@ class Entity
 class Arrow extends Entity {
 constructor(entity){
     super(entity)
-    this.bounce = 0.4
+    this.bounce = 0.2
+    this.size = 1
 }
     draw()
     {
-        drawArrow(this.pos, this.dir + PI)
+        drawArrow(this.pos, this.dir + PI, 0.15, this.size)
     }
 }
+
 class HandItem extends Entity
 {
     constructor(status)
@@ -89,16 +91,20 @@ class HandItem extends Entity
     }
 }
 
-function drawArrow(levelpos, dir)
+function drawArrow(levelpos, dir, offset, size)
 {
     let pos = cam.onScreen(levelpos)
+    let off = offset * cam.zoom
+    let tip = cam.zoom * size + off
+    let tipsize = 0.04 * cam.zoom
     push()
     translate(pos.x, pos.y)
     rotate(dir)
     stroke(0)
     strokeWeight(2)
-    line(0, 0, 60, 0)
-    triangle(65, 0, 60, -5, 60, 5)
+    line(off, 0, tip, 0)
+    stroke(255, 0, 0)
+    triangle(tip + tipsize, 0, tip, -tipsize, tip, tipsize)
     //circle(60, 0, 10)
     pop()
 }
@@ -110,6 +116,7 @@ class Bow extends HandItem
         this.dist = 0.6
         this.bowpos = this.pos
         this.drawreach = 0.5
+        this.size = 0.1
     }
     draw()
     {
@@ -130,34 +137,35 @@ class Bow extends HandItem
         push()
         translate(bowpos.x, bowpos.y)
         rotate(rot)
-        strokeWeight(5)
+        strokeWeight(0.1 * cam.zoom)
         stroke(200, 150, 40)
         //line(0, -30, 0, 30)
         // front of the bow points
-        let p2 = createVector(10, -20)
-        let p3 = createVector(10, 20)
+        let bend = 2 * this.size * cam.zoom
+        let p2 = createVector(this.size * cam.zoom, -bend)
+        let p3 = createVector(this.size * cam.zoom, bend)
         //draw += basedraw
         if (draw === 0) draw = -basedraw
         draw *= 3
-        let p1 = p5.Vector.fromAngle(-draw - HALF_PI).mult(20 + abs(draw * 5)).add(p2)
-        let p4 = p5.Vector.fromAngle(draw + HALF_PI).mult(20 + abs(draw * 5)).add(p3)
+        let p1 = p5.Vector.fromAngle(-draw - HALF_PI).mult(bend + abs(draw * bend * 0.25)).add(p2)
+        let p4 = p5.Vector.fromAngle(draw + HALF_PI).mult(bend + abs(draw * bend * 0.25)).add(p3)
         noFill()
         bezier(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y)
         if (!this.moving)
         {
-            strokeWeight(2)
+            strokeWeight(0.05 * cam.zoom)
             stroke(0, 100)
             line(p1.x, p1.y, p4.x, p4.y)
         } else
         {
-            strokeWeight(2)
+            strokeWeight(0.05 * cam.zoom)
             stroke(0, 100)
             let arrowpos = cam.onScreen(this.pos).sub(bowpos).rotate(-rot)
             line(p1.x, p1.y, arrowpos.x, arrowpos.y)
             line(p4.x, p4.y, arrowpos.x, arrowpos.y)
         }
         pop()
-        if (this.moving) drawArrow(this.pos, rot)
+        if (this.moving) drawArrow(this.pos, rot, 0, 1)
 
     }
 }

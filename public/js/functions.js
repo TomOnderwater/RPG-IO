@@ -13,6 +13,10 @@ function bounce(p, t, bounce)
   return createVector(p.x + ((t.x - p.x) * bounce), p.y + ((t.y - p.y) * bounce))
 }
 
+function drawLeaderBoard()
+{
+  console.log('leaderboard: ', leaderboard)
+}
 function onField(p, area)
 {
     return (p.x > area.x1 && p.x < area.x2 && p.y > area.y1 && p.y < area.y2)
