@@ -189,6 +189,7 @@ class Sword extends HandItem
         super(status)
         this.size = 0.6
         this.dist = 0.8
+        this.offset = 0.3
     }
     draw()
     {
@@ -198,6 +199,7 @@ class Sword extends HandItem
         push()
         translate(pos.x, pos.y)
         rotate(rot)
+        translate(this.offset * cam.zoom, 0)
         let hilt = this.size * 0.3 * cam.zoom
         let len = -this.size * cam.zoom
         //rotate(this.dir)

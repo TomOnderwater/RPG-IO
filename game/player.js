@@ -166,14 +166,15 @@ module.exports = class Player
                 {
                     //shoot an arrow
                     let dir = Func.subtract(this.body.pos, this.hand.body.pos)
-                    this.level.addRangedAttack(
-                        {
-                            owner: this, 
-                            pos: this.body.pos, 
-                            attack: this.hand.item.attack, 
-                            dir, rad: 0.1, mass: 2,
-                            type: 'arrow'})
-                }
+                    if (Func.magnitude(dir) > 0.1)
+                        this.level.addRangedAttack(
+                            {
+                                owner: this, 
+                                pos: this.body.pos, 
+                                attack: this.hand.item.attack, 
+                                dir, rad: 0.1, mass: 2,
+                                type: 'arrow'})
+                    }
             }
             this.hand.moving = false
             return

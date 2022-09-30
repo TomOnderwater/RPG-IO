@@ -21,6 +21,6 @@ global.createItem = function(type)
             case 'none':
                 return {type: 'none', physical: true, mass: 0.1, reach: 0.01, rad: 0.05, attack: 5, destruction: 2}
             case 'bow':
-                return {type: 'bow', physical: false, mass: 0.1, reach: 0.0025, rad: 0.05, attack: 20, destruction: 2}
+                return {type: 'bow', physical: false, mass: 0.1, reach: 0.0025, rad: 0.05, attack: 40, destruction: 2}
         }
 }
