@@ -22,12 +22,18 @@ module.exports = class AccountManager {
     {
         let account = 
         {
-            name: 'guest', 
+            name: 'guest',
+            key: "", 
             session: this.createSessionID()
         }
         console.log("new account: ", account)
         this.accounts.push(account)
         return account
+    }
+    updateKey(session, key)
+    {
+        let account = this.accounts.find(user => user.session === session)
+        if (account) account.key = key
     }
     updateName(session, name)
     {

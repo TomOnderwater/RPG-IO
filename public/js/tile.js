@@ -15,6 +15,8 @@ class Tile {
       this.structure = new Tree({x: this.x, y: this.y}, this.x * 1.4243 + this.y * 0.563)
     if (type === WALL)
       this.structure = new Wall({x: this.x, y: this.y})
+    if (type === ROCK)
+      this.structure = new Rock({x: this.x, y: this.y})
   }
   update(tile)
   {
@@ -27,7 +29,7 @@ class Tile {
     if (this.top === AIR) return
     let pos = p || cam.onScreen(createVector(this.x, this.y))
     push()
-      if (this.top == WALL)
+      if (this.top !== TREE)
       {
         this.structure.draw()
         //fill(0, 100)
@@ -97,6 +99,26 @@ class Wall {
     pop()
   }
 }
+
+class Rock {
+  constructor(pos)
+  {
+    this.pos = createVector(pos.x + 0.5, pos.y + 0.5)
+    //console.log('rock:', this.pos)
+  }
+  draw()
+  {
+    //console.log('drawing a rock')
+    let pos = cam.onScreen(this.pos)
+    let dia = cam.zoom * 1.2
+    push()
+    translate(pos.x, pos.y)
+    imageMode(CENTER, CENTER)
+    image(rocktexture, 0, 0, dia, dia)
+    pop()
+  }
+}
+
 class Tree {
   constructor(pos, seed)
   {

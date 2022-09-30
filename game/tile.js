@@ -7,7 +7,7 @@ module.exports = class Tile
         this.x = x
         this.y = y
         this.surface = DIRT
-        this.structure = AIR
+        this.structure = {id: AIR}
     }
     getStructure()
     {
@@ -37,16 +37,20 @@ module.exports = class Tile
     }
     addRock()
     {
-
+        this.structure = new Structure({
+            id: ROCK, 
+            type: 'circle',
+            material: 'stone', 
+            pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
+            static: true})
     }
     getData()
     {
-        let t = (this.structure !== AIR) ? this.structure.id : this.structure
-        return {x: this.x, y: this.y, s: this.surface, t}
+        return {x: this.x, y: this.y, s: this.surface, t: this.structure.id}
     }
     destroyStructure()
     {
-        this.structure = AIR
+        this.structure.id = AIR
     }
 }
 

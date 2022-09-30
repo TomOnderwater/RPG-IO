@@ -11,7 +11,7 @@ let key = ''
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 
 // TEXTURES
-let walltexture, woodicon, stoneicon
+let walltexture, woodicon, stoneicon, rocktexture
 
 // SERVER SETTINGS
 const host = location.host
@@ -33,6 +33,7 @@ function preload()
   walltexture = loadImage('assets/textures/smallwalltexture.png')
   woodicon = loadImage('assets/textures/woodicon.png')
   stoneicon = loadImage('assets/textures/stoneicon.png')
+  rocktexture = loadImage('assets/textures/rocktexture.png')
 
   //console.log('loading sounds')
   //sound = new Sound()
@@ -255,7 +256,7 @@ function drawSpectator()
   noStroke()
   textSize(30)
   textAlign(TOP, LEFT)
-  text(host + " key: " + key, 10, 30)
+  text(httpPrefix + host + " key: " + key, 10, 30)
   drawLeaderBoard({x: 5, y: 40})
   pop()
 }

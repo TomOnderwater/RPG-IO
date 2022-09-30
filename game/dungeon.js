@@ -44,6 +44,11 @@
 
         tbc
 */
+//water threshold: 0.6180857890987179
+//stone treshold: 0.36184257261766134
+//structure threshhold 0.3651568282751072
+
+let riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
 
 const protocol = require('./protocol.js')
 const Player = require('./player.js')
@@ -65,9 +70,9 @@ module.exports = class Dungeon {
         let levels = []
         for (let i = 0; i < floorcount; i++)
         {
-            let water = Math.random() * 0.7 //don't produce full seas
-            let stone = 0.2 + Math.random() * 0.6 //always keep some stone
-            let structurerate = 0.2 + Math.random() * 0.2 //somewhat sparse
+            let water = riverPlains.water //Math.random() * 0.7 //don't produce full seas
+            let stone = riverPlains.stone //0.2 + Math.random() * 0.6 //always keep some stone
+            let structurerate = riverPlains.structure //0.2 + Math.random() * 0.2 //somewhat sparse
             console.log('floor:', i)
             console.log('water threshold:', water)
             console.log('stone treshold:', stone)

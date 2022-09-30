@@ -11,6 +11,7 @@ global.WALL = 'x'
 // STRUCTURE DEFINITIONS
 global.TREE = 't'
 global.AIR = 'a'
+global.ROCK = 'r'
 
 global.createItem = function(type)
 {

@@ -359,7 +359,7 @@ module.exports = class Level
         let structures = []
         for (let tile of tiles)
         {
-            if (tile.structure !== AIR) structures.push(tile.getStructure())
+            if (tile.structure.id !== AIR) structures.push(tile.getStructure())
         }
         return structures
     }

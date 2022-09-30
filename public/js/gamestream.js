@@ -154,6 +154,8 @@ async function registerPlayer() {
     console.log('server response:', gamedetails)
     let account = gamedetails.account
     activeID = gamedetails.id
+    key = gamedetails.account.key
+    console.log('key: ', key)
     if (account.session) 
     {
       setCookie('rpg-io', account.session, 7)

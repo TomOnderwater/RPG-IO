@@ -2,7 +2,7 @@
 const STONE = 's', DIRT = 'd', GRASS = 'g', GRAVEL = 'G', WATER = 'w', SAND = 'z', WALL = 'x'
 
 // structure definitions
-const TREE = 't', AIR = 'a'
+const TREE = 't', AIR = 'a', ROCK = 'r'
 
 
 let inventorySpecs = {rowcount: 6, visible: 1}

@@ -60,9 +60,11 @@ app.post("/start", (req, res) => {
   //console.log(req)
   // contains a key
   let connection = req.body
+  connection.key = connection.key.toLowerCase()
   console.log('start', connection.name, 'in dungeon: ', connection.key)
   let game = gameMaster.addPlayer(connection)
   accountmanager.updateName(connection.session, connection.name) //update latest name
+  accountmanager.updateKey(connection.session, connection.key)
   res.send(game)
 })
 
