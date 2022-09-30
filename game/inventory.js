@@ -47,21 +47,25 @@ module.exports = class Inventory {
     {
         this.slots.forEach(slot => slot.selected = false)
         this.slots[id].selected = true
-        console.log(this.slots)
+        //console.log(this.slots)
     }
     add(item)
     {
-        // check if the item is already in the inventory
-        // add stackable later
         for (let slot of this.slots)
         {
+            if (slot.item.type === item.type) 
+            {
+                slot.item.count += item.count
+                break
+            }
             if (slot.item.count === 0)
             {
                 slot.item.type = item.type
-                slot.item.count ++
+                slot.item.count += item.count
                 break
             }
         }
+
     }
 }
 

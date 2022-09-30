@@ -8,10 +8,10 @@ let MOBILE, orientation, canvas
 let key = ''
 
 // DATA SPECIFIC
-let input, gamestream, nameinput, message, keyinput, leaderboard
+let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 
 // TEXTURES
-let walltexture
+let walltexture, woodicon, stoneicon
 
 // SERVER SETTINGS
 const host = location.host
@@ -30,7 +30,10 @@ function setupInput()
 
 function preload()
 {
-  walltexture = loadImage('assets/textures/walltexture.png')
+  walltexture = loadImage('assets/textures/smallwalltexture.png')
+  woodicon = loadImage('assets/textures/woodicon.png')
+  stoneicon = loadImage('assets/textures/stoneicon.png')
+
   //console.log('loading sounds')
   //sound = new Sound()
 }
@@ -253,6 +256,7 @@ function drawSpectator()
   textSize(30)
   textAlign(TOP, LEFT)
   text(host + " key: " + key, 10, 30)
+  drawLeaderBoard({x: 5, y: 40})
   pop()
 }
 function drawGame()
@@ -280,6 +284,7 @@ function drawGame()
   }
     }
 
+  drawLeaderBoard({x: 5, y: 15})
   input.draw()
 }
 

@@ -129,8 +129,9 @@ class Level {
   newData(viewport)
   {
     if (viewport.tiles) this.updateTiles(viewport.tiles)
-    if (viewport.entities) this.updateEntities(viewport)
-    if (viewport.events) this.updateEvents(viewport)
+    if (viewport.entities) this.updateEntities(viewport.entities)
+    if (viewport.events) this.updateEvents(viewport.events)
+    if (viewport.updates) this.updateStructures(viewport.updates)
   }
   draw()
   {
@@ -168,9 +169,8 @@ class Level {
     }
     return tiles
   }
-  updateEvents(viewport)
+  updateEvents(events)
   {
-    let events = viewport.events
     //console.log(events)
     events.forEach(event => 
     {
@@ -206,9 +206,8 @@ class Level {
       if (tile.x === x && tile.y === y) return tile
     }
   }
-  updateEntities(leveldata)
+  updateEntities(entities)
   {
-    let entities = leveldata.entities
     //console.log(entities)
     for (let i = this.entities.length - 1; i >= 0; i--)
     {
@@ -250,6 +249,9 @@ class Level {
         break
         case 'arrow':
           this.entities.push(new Arrow(entity))
+        break
+        case 'wood':
+          this.entities.push(new Wood(entity))
         break
         // case 'slime':
         //   console.log('slime spawn')

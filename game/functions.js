@@ -146,7 +146,7 @@ function calcAttack(attack)
     if (attack.collision)
     {
         let speed = magnitude(attack.collision.speed)
-        console.log('speed:', speed)
+        //console.log('speed:', speed)
         // calc the damage based on the type of collision: destruction / attack
         if (attack.collision.entity.structure)
         {
@@ -166,7 +166,7 @@ function calcAttack(attack)
         {
             // living bodies
             let damage = Math.round(attack.item.attack * speed * attack.power)
-            console.log('damage', damage)
+            //console.log('damage', damage)
             attack.collision.entity.applyDamage(damage, attack.attacker)
             return {
                 type: 'damage', 
@@ -181,11 +181,16 @@ function calcAttack(attack)
     // EXPLOSION ATTACK
 }
 
+function circleOnCircle(circle1, circle2)
+{
+   return (sqDist(circle1.pos, circle2.pos) <= Math.pow(circle1.rad + circle2.rad, 2))
+}
+
 
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
-    getVector, fixPos, constrainVector, zeroVector, calcAttack
+    getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle
 }

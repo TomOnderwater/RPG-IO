@@ -169,6 +169,23 @@ class Bow extends HandItem
 
     }
 }
+class Wood extends HandItem
+{
+    constructor(status)
+    {
+        super(status)
+        this.size = 0.4
+       // console.log(this)
+    }
+    draw()
+    {
+        let rot = 0
+        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        let pos = cam.onScreen(this.pos)
+        let size = this.size * cam.zoom
+        drawWood(pos, size, rot)
+    }
+}
 class Fist extends HandItem
 {
     constructor(status)

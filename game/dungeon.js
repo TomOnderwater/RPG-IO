@@ -51,14 +51,14 @@ const Level = require('./level.js')
 
 module.exports = class Dungeon {
     constructor(floorcount, width, height, key) {
-        this.levels = this.generateLevel(floorcount, width || 40, height || 20)
-        this.key = key
         this.entitycount = 1
-        this.queue = []
+        this.key = key
         this.ticks = 0
+        this.queue = []
         this.scores = []
         this.leaderboard = []
         this.ended = false
+        this.levels = this.generateLevel(floorcount, width || 40, height || 20)
     }
     generateLevel(floorcount, width, height)
     {
@@ -90,10 +90,10 @@ module.exports = class Dungeon {
     }
     update() 
     {
-        this.levels.forEach(level => level.update())
-        this.ticks ++
+        this.levels.forEach(level => level.update(this.ticks))
         if (this.ticks % 30 === 0) 
             this.updateLeaderBoard()
+        this.ticks ++
     }
     updateLeaderBoard()
     {
@@ -108,14 +108,13 @@ module.exports = class Dungeon {
         }
         this.leaderboard.sort((a, b) => b.score - a.score)
     }
-    getLeaderBoard(player)
+    getLeaderBoard(visible)
     {
         let out = {}
-        out.you = this.leaderboard.find(e => e.id === player.id)
-        out.top5 = []
-        for (let i = 0; i < 5 && i < this.leaderboard.length; i++)
+        out.top = []
+        for (let i = 0; i < visible || 5 && i < this.leaderboard.length; i++)
         {
-            out.top5.push(this.leaderboard[i])
+            out.top.push(this.leaderboard[i])
         }
         return out
     }
@@ -165,13 +164,12 @@ module.exports = class Dungeon {
         let inventoryUpdate = active.player.getInventoryUpdate()
         if (inventoryUpdate) viewport.inventory = inventoryUpdate
         
-        // test perception
-        //viewport.perception = active.player.getPerception(active.level)
-
-        // set update frequency for level
-        if (this.ticks % 10 === 0) viewport.status = active.player.getStatusData()
-        if (this.ticks % 30 === 0) viewport.leaderboard = this.getLeaderBoard(active.player)
-
+        // set update frequency for misc
+        if (this.ticks % 10 === 0) 
+        {
+            viewport.status = active.player.getStatusData()
+            viewport.leaderboard = this.getLeaderBoard()
+        }
         return {type: 'update', data: viewport}
     }
     getLevelData(id)
@@ -247,6 +245,13 @@ module.exports = class Dungeon {
             }
         }
     }
+    createItem(type, count)
+    {
+        let item = createItem(type)
+        item.count = count || 1
+        item.id = this.assignID()
+        return item
+    }
     assignID()
     {
         return this.entitycount ++
@@ -258,8 +263,9 @@ module.exports = class Dungeon {
         //create an item for the player
         //let item = this.createItem('sword')
         let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
-        new_player.pickup([createItem('sword')])
-        new_player.pickup([createItem('bow')])
+
+        new_player.pickup(this.createItem('bow'))
+        new_player.pickup(this.createItem('sword'))
         new_player.initHand(this.assignID()) // assign an id for the item in hand
         // add to queue
         console.log('adding player: ', new_player)

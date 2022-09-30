@@ -3,6 +3,7 @@ const LevelGenerator = require('./levelgeneration.js')
 const Func = require('./functions.js')
 const Mobs = require('./mobs.js')
 const RangedAttack = require('./rangedattacks.js')
+const GroundItem = require('./grounditems.js')
 
 module.exports = class Level 
 {
@@ -16,12 +17,12 @@ module.exports = class Level
         this.players = []
         this.entities = [] // list of items in motion with a rotation, collisionstyle: box
         this.items = []
-        this.ticks = 0
         this.events = []
         this.mobs = []
         this.maxMobs = 0.05 * this.width * this.height
         this.updates = []
         this.rangedattacks = []
+        this.addRandomItems()
     }
     killAll()
     {
@@ -30,7 +31,9 @@ module.exports = class Level
     getSpawnPos(body)
     {
         //return {x: this.size / 2, y: this.size / 8}
-        let startpos = {x: this.width / 2, y: this.height / 8}
+        //let startpos = {x: this.width / 2, y: this.height / 8}
+        let startpos = this.randomPos()
+        console.log('start pos: ', startpos)
         return this.getFreeSpot(startpos, body)
     }
     takePlayer(id)
@@ -83,6 +86,28 @@ module.exports = class Level
         }
         return null
     }
+    addRandomItems()
+    {
+        for (let i = 0; i < 100; i++)
+        {
+            let item = {item: {type: 'wood', count: 1}, pos: this.randomPos()}
+            this.placeItem(item)
+        }
+    }
+    placeItem(data)
+    {
+        data.id = this.dungeon.assignID() //is handled like an entity
+        this.items.push(new GroundItem(data))
+    }
+    updateGroundItems(entities)
+    {
+        for (let i = this.items.length - 1; i >= 0; i--)
+        {
+            let pickup = this.items[i].update(entities)
+            if (pickup)
+                this.items.splice(i, 1)
+        }
+    }
     addRangedAttack(data)
     {
         data.id = this.dungeon.assignID()
@@ -97,16 +122,16 @@ module.exports = class Level
             if (ended) this.rangedattacks.splice(i, 1)
         }
     }
-    update()
+    update(ticks)
     {
-        this.ticks ++
         //spawn mobs
         this.spawnMobs()
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
 
         this.updateRangedAttacks(entities)
-        let recoverytick = ((this.ticks % 30) === 0)
+        this.updateGroundItems(this.players)
+        let recoverytick = ((ticks % 30) === 0)
         if (recoverytick) 
             this.killOutOfBounds()
         for (let i = this.players.length - 1; i >= 0; i--)
@@ -204,10 +229,16 @@ module.exports = class Level
     {
         if (this.mobs.length < this.maxMobs) this.spawnMob('slime')
     }
+    randomPos()
+    {
+        let x = 1 + (Math.random() * (this.width - 2))
+        let y = 1 + (Math.random() * (this.height - 2))
+        return {x, y}
+    }
     spawnMob(type)
     {
         let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
-        let spawnpos = this.getFreeSpot({x: Math.random() * this.width, y: Math.random() * this.height}, slime.body)
+        let spawnpos = this.getFreeSpot(this.randomPos(), slime.body)
         slime.body.pos = spawnpos
         //console.log('slime spawned')
         this.mobs.push(slime)
@@ -293,6 +324,7 @@ module.exports = class Level
         }
         this.mobs.forEach(mob => entities.push(mob.data()))
         this.rangedattacks.forEach(rangedattack => entities.push(rangedattack.data()))
+        this.items.forEach(item => entities.push(item.data()))
         return entities 
     }
     getEntities(player)
@@ -314,6 +346,11 @@ module.exports = class Level
                 if(Func.inRange(player.body.pos, rangedattack.body.pos, player.perceptionstat))
                     entities.push(rangedattack.data())
             }
+        for (let item of this.items)
+        {
+            if(Func.inRange(player.body.pos, item.body.pos, player.perceptionstat))
+                    entities.push(item.data())
+        }
         return entities
     }
     getStructures(pos, range)

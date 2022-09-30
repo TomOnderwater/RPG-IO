@@ -56,7 +56,9 @@ class Structure
     {
         this.id = data.id
         this.material = data.material || 'wood'
-        this.health = data.health || 100
+        this.status = {}
+        this.status.vitality = data.health || 100
+        this.health = this.status.vitality
         data.entity = this
         this.structure = true
         this.body = new PhysicalBody(data)

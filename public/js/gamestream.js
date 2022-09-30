@@ -56,8 +56,11 @@ function updateView(viewport)
         if (player) player.updatePerception(viewport.perception)
       }
   //console.log(viewport)
-  if (viewport.inventory) 
-    input.inventory.updateInventory(viewport.inventory)
+  if (viewport.inventory)
+  {
+    inventory = viewport.inventory
+    input.inventory.updateInventory(inventory)
+  }
 
   if (viewport.status)
     input.stats.updateData(viewport.status)
@@ -65,8 +68,6 @@ function updateView(viewport)
   if (viewport.leaderboard)
       leaderboard = viewport.leaderboard
     
-  if (viewport.updates)
-      level.updateStructures(viewport.updates)
   //print(player, game_id, level.entities)
 }
 

@@ -5,9 +5,9 @@ const Perception = require('./perception.js')
 
 module.exports = class Player
 {
-    constructor(data, dungeon)
+    constructor(data, level)
     {
-        this.level = dungeon
+        this.level = level
         this.id = data.id
         this.type = 'player'
         this.body = new PhysicalBody({type: 'circle', entity: this, pos: data.pos, rad: 0.2})
@@ -18,68 +18,66 @@ module.exports = class Player
         this.hand = {id: 0, item: createItem('none'), body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), owner: this.id, moving: false}
         this.speedstat = 0.0005
         this.perceptionstat = 10
-        this.maxhealth = data.health || 100
-        this.health = this.maxhealth
         this.heading = 0
 
         // STATUS
-        this.xp = 0
-        this.level = 1
-        this.usedXP = 0
-        this.points = 1
+        this.status = {}
+        this.status.xp = 0
+        this.status.level = 1
+        this.status.points = 1
         //ATTRIBUTES
-        this.strength = 1
-        this.speed = 1
-        this.vitality = 1
+        this.status.strength = 1
+        this.status.speed = 1
+        this.status.vitality = data.health || 100
+        this.status.stamina = 100
+
+        this.stamina = this.status.stamina
+        this.health = this.status.vitality
 
         // UTILITIES
         this.arrows = 100
-
-        // STAMINA
-        this.stamina = 100
-        this.maxstamina = 100
 
         //pos, angle, fov, resolution, range
         //this.perception = new Perception(Math.PI / 2, 10, 6)
     }
     getStatusData()
     {
-        let xpnext = this.calcXPForLevel()
-        let xp = this.xp
+        let xpnext = 100 //this.calcXPForLevel()
+        let xp = this.status.xp
         return { 
             xp, xpnext,
-            level: this.level,
-            points: this.points,
-            strength: this.strength,
-            vitality: this.vitality,
-            speed: this.speed
+            points: this.status.points,
+            level: this.status.level,
+            strength: this.status.strength,
+            vitality: this.status.vitality,
+            speed: this.status.speed
         }
     }
     levelUP()
     {
-        this.usedXP += this.xp
-        this.xp -= this.calcXPForLevel()
-        this.level ++
-        this.points ++
+        this.usedXP += this.status.xp
+        //this.xp -= this.calcXPForLevel()
+        this.status.level ++
+        this.status.points ++
     }
     calcXPForLevel()
     {
-        return 100 + (this.level - 1) * 50
+        return 100 + (this.status.level - 1) * 50
     }
     getXP()
     {
-        return 50 + Math.round((this.xp + this.usedXP) * 0.5)
+        return 50
     }
     recover()
     {
-        if (this.xp >= this.calcXPForLevel()) this.levelUP()
-        if (this.health < this.maxhealth) this.health += 1
-        if (this.stamina < this.maxstamina) this.stamina += 5
+        //if (this.xp >= this.calcXPForLevel()) this.levelUP()
+        if (this.health < this.status.vitality) this.health += 1
+        if (this.stamina < this.status.stamina) this.stamina += 5
     }
     addXP(xp)
     {
         console.log('gained', xp, 'XP points')
-        this.xp += xp
+        this.status.xp += xp
     }
     initHand(id)
     {
@@ -90,10 +88,11 @@ module.exports = class Player
     {
         return (this.health <= 0)
     }
-    pickup(items)
+    pickup(item)
     {
-        console.log(items)
-        items.forEach(item => this.inventory.add(item))
+        console.log(item)
+        this.inventory.add(item)
+        //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
     }
 
@@ -122,7 +121,7 @@ module.exports = class Player
                                 collision, 
                                 item: this.hand.item, 
                                 attacker: this.id, 
-                                power: 1 + (this.strength * 0.2)}))
+                                power: 1 + (this.status.strength * 0.2)}))
                     }
                 }
             }
@@ -137,7 +136,7 @@ module.exports = class Player
     }
     getScore()
     {
-        return {id : this.id, name: this.name, score: this.xp + this.usedXP}
+        return {id : this.id, name: this.name, score: this.status.xp}
     }
     sees(pos)
     {
@@ -147,7 +146,8 @@ module.exports = class Player
     data() 
         {
             let pos = Func.fixPos(this.body.pos, 2)
-            return {id: this.id, type: this.type, pos, name: this.name, health: this.health, maxhealth: this.maxhealth}
+            return {id: this.id, 
+                type: this.type, pos, name: this.name, health: this.health, maxhealth: this.status.vitality}
         }
     getHand()
     {

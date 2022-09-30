@@ -1,7 +1,7 @@
 class MobileInput {
     constructor()
     {
-        this.joystick = new JoyStick(100)
+        this.joystick = new JoyStick(128)
         this.inventory = new Inventory(inventorySpecs)
         this.handStick = new UtitlityStick()
         this.usedTouches = []
@@ -108,7 +108,7 @@ class Inventory
     }
     fill(items)
     {
-        console.log('filling inventory', items)
+        //console.log('filling inventory', items)
         for (let i in items)
         {
             this.slots[i].set(items[i])
@@ -196,6 +196,7 @@ class Inventory
     }
     update()
     {
+        if (inventory) this.updateInventory(inventory)
         let newstate = this.updateState()
         if (newstate) //something is happening!
         {
@@ -263,11 +264,9 @@ class Slot
         //if (this.doubleclicked) fill(0, 0, 255, 100)
         rect(this.pos.x, this.pos.y, this.size, this.size, 10)
         if (this.item.type !== 'none') {
-            textAlign(CENTER, CENTER)
-            textSize(20)
-            fill(0)
             let pos = p5.Vector.add(this.pos, createVector(this.size / 2, this.size / 2))
-            text(this.item.type, pos.x, pos.y)
+            drawItem(this.item.type, pos, this.size * 0.5)
+            //text(this.item.type, pos.x, pos.y)
             pos.add(createVector(this.size / 3, this.size / 3))
             noStroke() //strokeWeight(1)
             fill(255)
@@ -276,7 +275,7 @@ class Slot
         }
         pop()
     }
-    set (item)
+    set(item)
     {
         this.item.type = item.type
         this.item.count = item.count
