@@ -28,6 +28,26 @@ class Camera
     let pos = createVector(p.x, p.y).sub(this.focus)
     return p5.Vector.mult(pos, this.zoom).add(halfScreen())
   }
+  zoomToLevel(level)
+  {
+    // check orientation
+    if (level.width === undefined || level.height === undefined) 
+      return this.zoom
+    if (level.width > level.height)
+    {
+      let zoom = width / level.width
+      if (zoom * level.height > height)
+        this.zoom = height / level.height
+      else this.zoom = zoom
+    }
+    else 
+    {
+      let zoom = height / level.height
+      if (zoom * level.width > width)
+        this.zoom = width / level.width
+      else this.zoom = zoom
+    }
+  }
 }
 
 

@@ -7,6 +7,8 @@ let MOBILE, orientation, canvas
 
 let key = ''
 
+let ticks = 0
+
 // DATA SPECIFIC
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 
@@ -66,9 +68,6 @@ function setup() {
 function draw() 
 {
   //blank grey
-  push()
-  background(SEXYGREY)
-  pop()
 
   switch(gamestate)
   {
@@ -88,9 +87,11 @@ function draw()
     break
     default:
     //eg loading
+    background(SEXYGREY)
     break
   }
   if (!fullscreen()) drawFullscreen()
+  ticks ++
 }
 
 function updateInput()
@@ -173,8 +174,12 @@ function lobby()
   cam.updateZoom(30, 0.1)
   //cam.updateZoom(20)
 
-  level.update()
-  level.draw()
+  //level.update()
+  if (ticks % 3 == 0) 
+  {
+    background(SEXYGREY)
+    level.draw()
+  }
 
   let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 60}
   let s_area = {x1: box.x + box.w + 20, y1: box.y, x2: box.x + box.w + 150, y2: box.y + box.h + 5}
@@ -192,7 +197,7 @@ function lobby()
   keyinput.size(box.w * 0.5, box.h)
   push()
   noStroke()
-  fill(255, 100)
+  fill(255)
   rectMode(CORNERS)
   rect(s_area.x1, s_area.y1, s_area.x2, s_area.y2, rounding)
   stroke(0)
@@ -212,7 +217,7 @@ function lobby()
     push()
     stroke(0)
     rectMode(CORNERS)
-    fill(0, 255, 0, 100)
+    fill(0, 255, 0)
     rect(continueArea.x1, continueArea.y1, continueArea.x2, continueArea.y2, rounding)
     textAlign(CENTER, CENTER)
     textSize(24)
@@ -247,8 +252,9 @@ function drawSpectator()
 {
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
+  cam.zoomToLevel(level)
   //cam.updateZoom(20)
-
+  background(SEXYGREY)
   level.update()
   level.draw()
   push()

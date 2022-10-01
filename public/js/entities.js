@@ -11,16 +11,17 @@ class Entity
         this.dir = 0
         this.owner = false
         this.dia = 0.4
-        this.distance = 0
+        this.speed = 0
         this.bounce = 0.2
     }
     update()
     {
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
         this.pos = bounce(this.pos, this.target, this.bounce)
-        let speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
-        this.distance += speed
-        if (speed > 0.01) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
+        this.speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
+        if (this.type === 'sword' && this.speed > 0.1 && this.moving)
+            level.addWoosh(this.pos, this.ppos, 0.3)
+        if (this.speed > 0.01) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }
     newData(data)
@@ -175,6 +176,7 @@ class Wood extends HandItem
     {
         super(status)
         this.size = 0.4
+        this.dist = 0.5
        // console.log(this)
     }
     draw()

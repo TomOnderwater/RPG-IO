@@ -98,8 +98,6 @@ async function continueGame()
 async function startSpectator()
 {
   setGameState('loading')
-  // set appropriate zoom level
-  console.log("hello, do you hear me?")
   openStream()
   setGameState('spectator')
 }

@@ -49,6 +49,33 @@ class Slash extends Event
   }
 }
 
+class Woosh extends Event
+{
+  constructor(p1, p2, len)
+  {
+    super(p1, 0)
+    this.p1 = p1
+    this.p2 = p2
+    //console.log(this.p1, this.p2)
+    this.angle = atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x)
+    this.reach = dist(this.p1.x, this.p1.y, this.p2.x, this.p2.y) * cam.zoom * 1.5
+    this.len = len * cam.zoom
+    //console.log(this.len, this.reach)
+    this.maxticks = 10
+  }
+  draw()
+  {
+    let p1 = cam.onScreen(this.p1)
+    push()
+    noStroke()
+    fill(255, 50 - (this.ticks * 5))
+    translate(p1.x, p1.y)
+    rectMode(CORNERS)
+    rotate(this.angle)
+    rect(0, -this.len * 0.5, this.reach, this.len*0.5)
+    pop()
+  }
+}
 class Blood
 {
   constructor(pos, damage, dir)
@@ -168,6 +195,10 @@ class Level {
         tiles.push(tile)
     }
     return tiles
+  }
+  addWoosh(p1, p2, len)
+  {
+    this.events.push(new Woosh(p1, p2, len))
   }
   updateEvents(events)
   {
