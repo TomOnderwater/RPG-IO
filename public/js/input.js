@@ -1,9 +1,16 @@
 class MobileInput {
     constructor()
     {
-        this.joystick = new JoyStick(128)
         this.inventory = new Inventory(inventorySpecs)
-        this.handStick = new UtitlityStick()
+        this.handarea = {x1: 2 * (width / 3), y1: height / 3, x2: width, y2: height - 80}
+        this.joystick = new JoyStick({
+            dia: 128,
+            area: {x1:  0, y1: height / 2, x2: width / 2, y2: height - this.inventory.height
+        }})
+        this.handStick = new UtitlityStick({
+            dia: 150,
+            area: {x1: width / 2, y1: height / 2, x2: width, y2: height - this.inventory.height
+        }})
         this.usedTouches = []
         this.stats = new Stats()
     }
@@ -89,10 +96,21 @@ class Inventory
         this.rowcount = specs.rowcount
         this.visible = specs.visible
         //this.currentTouch = {touch: null, index: 0}
-        let div = 1 / 4
-        if (width < 300) div = width / 1200
-        this.x_start = width * div
-        this.x_end = this.x_start * 3
+        let minimumHeight = 60
+        let minimumWidth = minimumHeight * this.rowcount
+
+        if (width / 2 < minimumWidth)
+        {
+            let padding = (width - minimumWidth) / 2
+            this.x_start = padding
+            this.x_end = width - padding
+        }
+        else 
+        {
+            let div = 1 / 4
+            this.x_start = div * width
+            this.x_end = div * 3 * width
+        }
         this.slots = this.initslots()
         this.fill(myitems)
         this.giveSelect(0)
@@ -118,6 +136,7 @@ class Inventory
     {
         let slots = []
         let slotsize = (this.x_end - this.x_start) / this.rowcount
+        this.height = slotsize
         let y_start = height - this.visible * slotsize
         //top row
         let id = 0
@@ -518,12 +537,12 @@ class SimpleButton
 
 class UtitlityStick
 {
-    constructor(dia, area)
+    constructor(data)
     {
         this.max = 128
         this.active = false
-        this.dia = dia || 150
-        this.area = area || {x1: 2 * (width / 3), y1: height / 3, x2: width, y2: height - 80}
+        this.dia = data.dia || 150
+        this.area = data.area || {x1: 2 * (width / 3), y1: height / 3, x2: width, y2: height - 80}
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.bg = color(0, 255, 0, 100)
@@ -605,12 +624,12 @@ class UtitlityStick
 
 class JoyStick 
 {
-    constructor(dia)
+    constructor(data)
     {
         this.max = 128
         this.active = false
-        this.dia = dia || 150
-        this.area = {x1:0, y1: height / 2, x2: width / 4, y2: height}
+        this.dia = data.dia || 150
+        this.area = data.area || {x1:0, y1: height / 2, x2: width / 4, y2: height}
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.touch = null
