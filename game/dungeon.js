@@ -48,7 +48,7 @@
 //stone treshold: 0.36184257261766134
 //structure threshhold 0.3651568282751072
 
-let riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
+const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
 
 const protocol = require('./protocol.js')
 const Player = require('./player.js')

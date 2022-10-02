@@ -264,6 +264,7 @@ function drawSpectator()
   textAlign(TOP, LEFT)
   text(httpPrefix + host + " key: " + key, 10, 30)
   drawLeaderBoard({x: 5, y: 40})
+  drawFrameRate({x: width / 2, y: 40})
   pop()
 }
 function drawGame()
@@ -293,6 +294,7 @@ function drawGame()
 
   drawLeaderBoard({x: 5, y: 15})
   input.draw()
+  drawFrameRate({x: width / 2, y: 40})
 }
 
 

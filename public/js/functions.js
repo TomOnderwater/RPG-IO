@@ -13,6 +13,14 @@ function bounce(p, t, bounce)
   return createVector(p.x + ((t.x - p.x) * bounce), p.y + ((t.y - p.y) * bounce))
 }
 
+function drawFrameRate(pos)
+{
+  push()
+  fill(255)
+  textSize(16)
+  text('fps: ' + round(getFrameRate()), pos.x, pos.y)
+  pop()
+}
 function drawWood(pos, size, rot)
 {
   push()
