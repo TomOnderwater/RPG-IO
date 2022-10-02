@@ -165,7 +165,7 @@ module.exports = class Player
                 if (this.hand.item.type === 'bow')
                 {
                     //shoot an arrow
-                    let dir = Func.subtract(this.body.pos, this.hand.body.pos)
+                    let dir = Func.multiply(Func.subtract(this.body.pos, this.hand.body.pos), 2)
                     if (Func.magnitude(dir) > 0.1)
                         this.level.addRangedAttack(
                             {
