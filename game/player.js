@@ -21,7 +21,7 @@ module.exports = class Player
         this.name = data.name
         this.hand = {id: 0, item: createItem('none'), body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), owner: this.id, moving: false}
         this.speedstat = 0.0005
-        this.perceptionstat = 10
+        this.perceptionstat = 8
         this.heading = 0
 
         // STATUS

@@ -19,7 +19,6 @@ module.exports = class GroundItem{
                 if (entity.type == PLAYER) 
                 {
                     entity.pickup(this.item)
-                    console.log('pickup!!!')
                     return true
                 }
             }
