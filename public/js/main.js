@@ -179,7 +179,8 @@ function lobby()
   if (ticks % 3 == 0) 
   {
     background(SEXYGREY)
-    level.draw()
+    if (level.height !== undefined)
+      level.draw()
   }
 
   let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 60}

@@ -173,37 +173,24 @@ class Level {
   draw()
   {
     //console.log(type)
-    // get the zoom distance necessary
-    //if (type)
-    let visibletiles = (type !== 'spectator' && player) ? this.getVisibleTiles(player) :
-      this.getVisibleTiles({pos: cam.focus, viewdistance: 40})
+    let range = cam.getRange()
+    let visibletiles = this.getVisibleTiles(range)
     //let visibletiles = this.getVisibleTiles(player)
-    //console.log(this.visibletiles)
-    console.log(visibletiles.length)
+    console.log(visibletiles.length, player)
+    //if (player) 
+      //console.log(visibletiles)
     visibletiles.forEach(tile => tile.drawSurface())
     this.entities.forEach(entity => entity.draw())
     visibletiles.forEach(tile => tile.drawStructure())
-    //visibletiles.forEach(tile => tile.drawTop())
+    visibletiles.forEach(tile => tile.drawTop())
     this.events.forEach(event => event.draw())
   }
-  getVisibleTiles(perspective)
+  getVisibleTiles(range)
   {
-    let pos = perspective.pos
-    //console.log(perspective)
-    let range = perspective.viewdistance
-    let x1 = Math.round(pos.x) - range
-    if (x1 < 0) x1 = 0
-    let y1 = Math.round(pos.y) - range
-    if (y1 < 0) y1 = 0
-
-    let x2 = Math.round(pos.x) + range
-    if (x2 > this.width) x2 = this.width
-    let y2 = Math.round(pos.y) + range
-    if (y2 > this.height) y2 = this.height
     let tiles = []
-    for (let x = x1; x < x2; x++)
+    for (let x = range.x1; x < range.x2; x++)
      {
-      for (let y = y1; y < y2; y++)
+      for (let y = range.y1; y < range.y2; y++)
       {
         tiles.push(this.tiles[x][y])
       }
