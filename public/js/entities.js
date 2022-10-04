@@ -1,3 +1,10 @@
+const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢', '🐸', '🦋', '🐞']
+function randomAnimal()
+{
+    let index = round(random(animals.length))
+    return animals[index]
+}
+
 class Entity
 {
     constructor(data)
@@ -13,6 +20,7 @@ class Entity
         this.dia = 0.4
         this.speed = 0
         this.bounce = 0.2
+        this.face = randomAnimal()
     }
     update()
     {
@@ -21,7 +29,7 @@ class Entity
         this.speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
         if (this.type === SWORD && this.speed > 0.1 && this.moving)
             level.addWoosh(this.pos, this.ppos, 0.3)
-        if (this.speed > 0.01) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
+        if (this.speed > 0.005) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }
     newData(data)
@@ -43,7 +51,12 @@ class Entity
         fill(255, 255, 0)
         stroke(255, 125, 0)
         let pos = cam.onScreen(this.pos)
-        circle(pos.x, pos.y, this.dia * cam.zoom)
+        textAlign(CENTER, CENTER)
+        translate(pos.x, pos.y)
+        rotate(this.dir + HALF_PI)
+        textSize(this.dia * cam.zoom)
+        text(this.face, 0, 0)
+        //circle(pos.x, pos.y, this.dia * cam.zoom)
         pop()
     }
     touch()

@@ -1,5 +1,7 @@
 //🥺😃🧐☹️🤪😶
 
+const happy = '😀', neutral = '😐', hurt = '🤕'
+
 class Player extends Entity
 {
   constructor(data)
@@ -19,6 +21,13 @@ class Player extends Entity
   {
     this.perception = perception
     //console.log(perception)
+  }
+  getFace()
+  {
+    let pct = this.health / this.maxhealth
+    if (pct < 0.3) return hurt
+    if (pct < 0.7) return neutral
+    return happy
   }
   levelUP()
   {
@@ -100,7 +109,7 @@ class Player extends Entity
     //fill(255, 0 ,0)
     //circle(0, 0, 40)
     textSize(this.dia * cam.zoom)
-    text('🧐', 0, 0)
+    text(this.getFace(), 0, 0)
 
     // drawh health bar over player
     pop()

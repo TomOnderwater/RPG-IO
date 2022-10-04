@@ -53,6 +53,7 @@ const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
 const protocol = require('./protocol.js')
 const Player = require('./player.js')
 const Level = require('./level.js')
+const Func = require('./functions.js')
 
 module.exports = class Dungeon {
     constructor(floorcount, width, height, key) {
@@ -259,10 +260,7 @@ module.exports = class Dungeon {
     }
     assignID()
     {
-        return this.entitycount ++
-        let out = this.entitycount.toString(36)
-        this.entitycount ++
-        return out
+        return Func.toBase64(this.entitycount ++)
     }
     addPlayer(player)
     {
