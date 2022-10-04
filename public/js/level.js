@@ -179,10 +179,11 @@ class Level {
       this.getVisibleTiles({pos: cam.focus, viewdistance: 40})
     //let visibletiles = this.getVisibleTiles(player)
     //console.log(this.visibletiles)
+    console.log(visibletiles.length)
     visibletiles.forEach(tile => tile.drawSurface())
     this.entities.forEach(entity => entity.draw())
     visibletiles.forEach(tile => tile.drawStructure())
-    visibletiles.forEach(tile => tile.drawTop())
+    //visibletiles.forEach(tile => tile.drawTop())
     this.events.forEach(event => event.draw())
   }
   getVisibleTiles(perspective)
