@@ -146,16 +146,26 @@ class Level {
           if (event.ended()) this.events.splice(i, 1)
         }
   }
+
   initLevel(leveldata)
   {
     this.tiles = []
-    this.width = leveldata.width
     this.height = leveldata.height
-    this.updateTiles(leveldata.tiles)
+    this.width = leveldata.width
+    for (let x = 0; x < leveldata.cols.length; x++)
+      {
+        let col = []
+        let datacol = leveldata.cols[x]
+        for (let tile of datacol)
+        {
+          col.push(new Tile(tile))
+        }
+        this.tiles.push(col) 
+      }
   }
   newData(viewport)
   {
-    if (viewport.tiles) this.updateTiles(viewport.tiles)
+    if (viewport.level) this.initLevel(viewport.level)
     if (viewport.entities) this.updateEntities(viewport.entities)
     if (viewport.events) this.updateEvents(viewport.events)
     if (viewport.updates) this.updateStructures(viewport.updates)
@@ -189,11 +199,13 @@ class Level {
     let y2 = Math.round(pos.y) + range
     if (y2 > this.height - 1) y2 = this.height - 1
     let tiles = []
-    for (let tile of this.tiles)
-    {
-      if (tile.x >= x1 && tile.x <= x2 && tile.y >= y1 && tile.y <= y2)
-        tiles.push(tile)
-    }
+    for (let x = x1; x < x2; x++)
+     {
+      for (let y = y1; y < y2; y++)
+      {
+        tiles.push(this.tiles[x][y])
+      }
+     }
     return tiles
   }
   addWoosh(p1, p2, len)
@@ -208,23 +220,6 @@ class Level {
       if (event.type == 'damage') this.events.push(new Slash(event.pos, event.damage, event.dir))
     })
   }
-  updateTiles(tiles)
-  {
-    console.log('tiles: ', tiles)
-    for (let i = this.tiles.length - 1; i >= 0; i--)
-    {
-      for (let j = tiles.length - 1; j >= 0; j--)
-      {
-        if (this.tiles[i].x == tiles[j].x && this.tiles[i].y == tiles[j].y) 
-        {
-          this.tiles[i].update(tiles[j]) //update corresponding tile
-          tiles.splice(j, 1) //remove from list
-          break
-        }
-      }
-    }
-    tiles.forEach(tile => this.tiles.push(new Tile(tile)))
-  }
   updateStructures(newtiles)
   {
     // {x: y: s:, t: }
@@ -232,10 +227,7 @@ class Level {
   }
   getTile(x, y)
   {
-    for (let tile of this.tiles)
-    {
-      if (tile.x === x && tile.y === y) return tile
-    }
+    return this.tiles[x][y]
   }
   updateEntities(entities)
   {

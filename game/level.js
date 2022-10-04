@@ -387,15 +387,17 @@ module.exports = class Level
     }
     getLevelData()
     {
-        let tiles = []
+        let cols = []
         for (let x = 0; x < this.width; x++)
         {
+            let col = []
             for (let y = 0; y < this.height; y++)
             {
-                tiles.push(this.tiles[x][y].getData())
+                col.push(this.tiles[x][y].getData())
             }
+            cols.push(col)
         }
-        return {width: this.width, height: this.height, tiles}
+        return {width: this.width, height: this.height, cols}
     }
     getTileData(player)
     {
