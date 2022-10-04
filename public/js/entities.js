@@ -12,7 +12,7 @@ class Entity
         this.owner = false
         this.dia = 0.4
         this.speed = 0
-        this.bounce = 0.4
+        this.bounce = 0.2
     }
     update()
     {

@@ -109,6 +109,13 @@ function fixPos(pos, digits)
       return {mag: bounce(v1.mag, v2.mag, b), rot: convergeAngle(v1.rot, v2.rot, b)}
   }
 
+  function constrain(val, min, max)
+  {
+    if (val < min) return min
+    if (val > max) return max
+    return val
+  }
+
   function squareBounce(v1, v2, b)
   {
       return {x: bounce(v1.x, v2.x, b), y: bounce(v1.y, v2.y, b)}
@@ -192,5 +199,5 @@ module.exports = {
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
-    getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle
+    getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, constrain
 }

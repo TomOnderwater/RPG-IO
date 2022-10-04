@@ -13,7 +13,9 @@ let ticks = 0
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 
 // TEXTURES
-let walltexture, woodicon, stoneicon, rocktexture
+let walltexture, woodicon, stoneicon, rocktexture, 
+grassTexture, stoneTexture, waterTexture, sandTexture,
+dirtTexture, gravelTexture
 
 // SERVER SETTINGS
 const host = location.host
@@ -36,7 +38,12 @@ function preload()
   woodicon = loadImage('assets/textures/woodicon.png')
   stoneicon = loadImage('assets/textures/stoneicon.png')
   rocktexture = loadImage('assets/textures/rocktexture.png')
-
+  grassTexture = loadImage('assets/textures/seamless_grass1.jpg')
+  waterTexture = loadImage('assets/textures/watertexture1.jpg')
+  stoneTexture = loadImage('assets/textures/workrockugly1.jpg')
+  dirtTexture = loadImage('assets/textures/dirt_texture1.jpg')
+  sandTexture = loadImage('assets/textures/sandtexture1.jpg')
+  gravelTexture = loadImage('assets/textures/gravel_texture1.jpg')
   //console.log('loading sounds')
   //sound = new Sound()
 }

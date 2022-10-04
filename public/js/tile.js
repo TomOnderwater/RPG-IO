@@ -50,33 +50,42 @@ class Tile {
       stroke(0)
       switch (this.surface) {
         case STONE:
-          fill(120, 120, 120)
+          image(stoneTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          //fill(120, 120, 120)
+          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
           break
           case GRAVEL:
-          fill(160, 160, 180)
+          //fill(160, 160, 180)
+          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
+          image(gravelTexture, pos.x, pos.y, cam.zoom, cam.zoom)
           break
         case DIRT:
-          fill(200, 100, 50)
+          image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          //fill(200, 100, 50)
+          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case GRASS:
-          fill(100, 180, 0)
+          image(grassTexture, pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case WATER:
-          fill(0, 0, 255)
+          image(waterTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          //fill(0, 0, 255)
+          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case SAND:
-          fill(255, 255, 0)
+          image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          //fill(255, 255, 0)
+          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         default:
           break
       }
-      rect(pos.x, pos.y, cam.zoom, cam.zoom)
       //draw thing on top
-      noFill()
-      stroke(255, 255, 255, 180)
-      strokeWeight(this.selectborder)
-      if (this.selected) rect(pos.x + this.selectborder * 0.5, pos.y + this.selectborder * 0.5, 
-      cam.zoom - this.selectborder , cam.zoom - this.selectborder)
+      //noFill()
+      //stroke(255, 255, 255, 180)
+      //strokeWeight(this.selectborder)
+      //if (this.selected) rect(pos.x + this.selectborder * 0.5, pos.y + this.selectborder * 0.5, 
+      //cam.zoom - this.selectborder , cam.zoom - this.selectborder)
       pop()
   }
 }
@@ -135,10 +144,10 @@ class Tree {
   draw()
   {
     push()
-    stroke(1)
+    noStroke() //stroke(1)
     fill(200, 100, 50)
     let pos = cam.onScreen(this.pos)
-    circle(pos.x, pos.y, cam.zoom * 0.2)
+    circle(pos.x, pos.y, cam.zoom * 0.4)
     pop()
   }
   drawTop(proximity)

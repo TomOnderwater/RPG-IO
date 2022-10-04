@@ -44,6 +44,26 @@ module.exports = class Tile
             pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
             static: true})
     }
+    groundSpeed()
+    {
+        switch(this.surface)
+        {
+            case STONE:
+                return 1
+            case DIRT:
+                return 0.8
+            case GRASS:
+                return 0.95
+            case GRAVEL:
+                return 0.7
+            case SAND:
+                return 0.6
+            case WATER:
+                return 0.3
+            default:
+                return 1
+        }
+    }
     getData()
     {
         return {x: this.x, y: this.y, s: this.surface, t: this.structure.id}

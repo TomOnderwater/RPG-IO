@@ -103,12 +103,16 @@ module.exports = class Player
     update(level, colliders)
     {
         this.level = level
-        // rotate sprite
-        if (Func.magnitude(this.body.speed) > 0.01)
-            this.heading = Math.atan2(this.body.speed.y, this.body.speed.x)
 
-        this.body.bounceSpeed(this.input.dir)
+        //get the ground surface
+        let surfacespeed = level.getGroundSpeed(this.body.pos)
+        
+        this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
+
+                // rotate sprite
+                if (Func.magnitude(this.body.speed) > 0.01)
+                this.heading = Math.atan2(this.body.speed.y, this.body.speed.x)
 
         this.handlePhysical(this.input.hand)
         // integrate into

@@ -1,5 +1,5 @@
 
-// TILE DEFINITIONS
+// GROUND TILE DEFINITIONS
 global.STONE = 's'
 global.DIRT = 'd'
 global.GRASS = 'g'

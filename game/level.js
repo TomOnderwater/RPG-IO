@@ -327,6 +327,13 @@ module.exports = class Level
         this.items.forEach(item => entities.push(item.data()))
         return entities 
     }
+    getGroundSpeed(pos)
+    {
+        let x = Func.constrain(Math.floor(pos.x), 0, this.width)
+        let y = Func.constrain(Math.floor(pos.y), 0, this.height)
+        return this.tiles[x][y].groundSpeed()
+    }
+
     getEntities(player)
     {
         let entities = [] //everything else
