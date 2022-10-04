@@ -26,27 +26,22 @@ class Tile {
   }
   drawTop(p)
   {
-    if (this.top === AIR) return
-    let pos = p || cam.onScreen(createVector(this.x, this.y))
-    push()
-      if (this.top !== TREE)
-      {
-        this.structure.draw()
-        //fill(0, 100)
-        
-        //rect(pos.x, pos.y, cam.zoom, cam.zoom)
-      } else 
-      {
+    if (this.top === AIR || typeof this.structure.drawTop !== 'function') return
+   //let pos = p || cam.onScreen(createVector(this.x, this.y))
         let proximity = 3 //out of normal bounds
         if (type === 'player' && player)
         {
-          if (player.pos.x > this.x - proximity && player.pos.x < this.x + proximity && 
-            player.pos.y > this.y - proximity && player.pos.y < this.y + proximity)
-              proximity = dist(player.pos.x, player.pos.y, this.x + 0.5, this.y + 0.5)
+          let pos = p || player.pos
+          if (pos.x > this.x - proximity && pos.x < this.x + proximity && 
+            pos.y > this.y - proximity && pos.y < this.y + proximity)
+              proximity = dist(pos.x, pos.y, this.x + 0.5, this.y + 0.5)
         }
-        if (this.top === TREE) this.structure.draw(proximity)    
-      }
-    pop()
+        this.structure.drawTop(proximity)    
+  }
+  drawStructure()
+  {
+    if (this.top !== AIR)
+      this.structure.draw()
   }
   drawSurface(p)
   {
@@ -137,16 +132,22 @@ class Tree {
       this.branches.push({pos: {x,y}, dia, leafcolor})
     }
   }
-  draw(proximity)
+  draw()
   {
-    //console.log('i am groot')
-    let opacity = 255
-    if (proximity < 2) opacity = proximity * 127
     push()
     stroke(1)
     fill(200, 100, 50)
     let pos = cam.onScreen(this.pos)
     circle(pos.x, pos.y, cam.zoom * 0.2)
+    pop()
+  }
+  drawTop(proximity)
+  {
+    //console.log('i am groot')
+    let opacity = 255
+    if (proximity < 2) opacity = proximity * 127
+    push()
+    let pos = cam.onScreen(this.pos)
     noStroke()
     if (opacity == 255) fill(50, 150, 0)
     else fill(50, 150, 0, opacity)

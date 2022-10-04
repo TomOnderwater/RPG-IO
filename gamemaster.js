@@ -19,7 +19,7 @@ module.exports = class GameMaster
         this.connections = []
         this.ticks = 0
         // base dungeon
-        this.dungeons.push(new Dungeon(1, 10, 10, this.createKey(5)))
+        this.dungeons.push(new Dungeon(1, 100, 100, this.createKey(5)))
         console.log('dungeons: ', this.dungeons, this.dungeons[0].key)
         // example {socket: bla bla, id: '1, 2, 3, spectator', key: 'adfei'}
     }

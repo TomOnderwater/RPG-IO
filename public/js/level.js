@@ -181,6 +181,7 @@ class Level {
     //console.log(this.visibletiles)
     visibletiles.forEach(tile => tile.drawSurface())
     this.entities.forEach(entity => entity.draw())
+    visibletiles.forEach(tile => tile.drawStructure())
     visibletiles.forEach(tile => tile.drawTop())
     this.events.forEach(event => event.draw())
   }
