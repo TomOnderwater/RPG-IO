@@ -176,14 +176,14 @@ class Level {
     let range = cam.getRange()
     let visibletiles = this.getVisibleTiles(range)
     //let visibletiles = this.getVisibleTiles(player)
-    //console.log(visibletiles.length, player)
-    //if (player) 
-      //console.log(visibletiles)
+
+    // DRAW ORDER 
+    // surface -> structures -> entities -> events (blood etc.) -> roofing
     visibletiles.forEach(tile => tile.drawSurface())
-    this.entities.forEach(entity => entity.draw())
     visibletiles.forEach(tile => tile.drawStructure())
-    visibletiles.forEach(tile => tile.drawTop())
+    this.entities.forEach(entity => entity.draw())
     this.events.forEach(event => event.draw())
+    visibletiles.forEach(tile => tile.drawTop())
   }
   getVisibleTiles(range)
   {
