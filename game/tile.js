@@ -72,6 +72,6 @@ class Structure
         //console.log('got hit!')
         if (this.id !== WALL) // if destructible
             this.health -= damage
-        console.log('structure health: ', this.health)
+        //console.log('structure health: ', this.health)
     }
 }

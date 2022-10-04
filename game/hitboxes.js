@@ -104,7 +104,6 @@ function reflect(incident, normal)
 {
     let n = normalize(normal)
     let dn = 2 * Dot(incident, n)
-    //console.log(dn)
     return subtract(incident, multiply(n, dn))
 }
 
@@ -117,11 +116,9 @@ function collideRect(rect, body)
         collision = circleOnRect(body, rect)
         if (!collision) return false
         return collision
-        break
         case 'rect':
         //console.log('not a thing')
             return rectOnRect(body, rect)
-        break
     }
 }
 
@@ -135,13 +132,11 @@ function collideCircle(circle, body)
             collision = circleOnCircle(circle, body)
             if (!collision) return false
             return collision
-        break
         case 'rect':
         //console.log('testing a rect with a circle')
             collision = circleOnRect(circle, body)
             if (!collision) return false
             return collision
-        break
     }
 }
 
@@ -173,6 +168,7 @@ module.exports = class PhysicalBody
         if (!this.collides) return []// non-collider
         let foundcollision = false
         let staticCollision = false
+        
         for (let body of bodies)
         {
             //if (body.type == 'circle') console.log(body)
@@ -205,8 +201,8 @@ module.exports = class PhysicalBody
                     collisions.push(collisiondata)
                 } else 
                 {
-                    //console.log('static collision!')
-                    this.speed = reflect(this.speed, subtract(collision, this.pos))
+                    let normal = this.normal(collision, body)
+                    this.speed = reflect(this.speed, normal)
                     this.speed = multiply(this.speed, this.collider)
                     collisiondata.speed = this.speed
                     collisions.push(collisiondata)
@@ -216,9 +212,25 @@ module.exports = class PhysicalBody
         }
         if (foundcollision) this.pos = this.ppos
         this.ppos = {x: this.pos.x, y: this.pos.y}
-        if (staticCollision) this.pos = add(this.pos, this.speed)
+        if (staticCollision) 
+        {
+            this.pos = add(this.pos, this.speed)
+        }
         this.applyDrag()
         return collisions
+    }
+    normal(collision, other)
+    {
+        switch (other.type)
+        {
+            case 'rect':
+                if (collision.x == this.pos.x && collision.y == this.pos.y)
+                        return subtract(other.pos, collision)
+                return subtract(collision, this.pos)
+            case 'circle':
+                return subtract(collision, this.pos)
+        }
+            
     }
     virtualCollision(testpos, body)
     {
@@ -235,10 +247,8 @@ module.exports = class PhysicalBody
         {
             case 'circle': //do the cross 
                 return collideCircle(this, body)
-            break
             case 'rect':
                 return collideRect(this, body)
-            break
         }
     }
     getCenter()
