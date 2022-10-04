@@ -12,7 +12,7 @@ class Entity
         this.owner = false
         this.dia = 0.4
         this.speed = 0
-        this.bounce = 0.2
+        this.bounce = 0.4
     }
     update()
     {
@@ -209,6 +209,7 @@ class Sword extends HandItem
         this.size = 0.6
         this.dist = 0.8
         this.offset = 0.3
+        this.bounce = 0.5
     }
     draw()
     {

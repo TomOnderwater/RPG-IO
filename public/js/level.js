@@ -61,14 +61,14 @@ class Woosh extends Event
     this.reach = dist(this.p1.x, this.p1.y, this.p2.x, this.p2.y) * cam.zoom
     this.len = len * cam.zoom
     //console.log(this.len, this.reach)
-    this.maxticks = 2 + round(this.reach)
+    this.maxticks = round(this.reach * 0.6)
   }
   draw()
   {
     let p1 = cam.onScreen(this.p1)
     push()
     noStroke()
-    fill(255, 5 * this.maxticks - (this.ticks * 5))
+    fill(255, 4 * this.maxticks - (this.ticks * 4))
     translate(p1.x, p1.y)
     rectMode(CORNERS)
     rotate(this.angle)
