@@ -2,12 +2,12 @@ class Entity
 {
     constructor(data)
     {
-        this.id = data.id
-        this.target = data.pos
-        this.pos = data.pos
-        this.ppos = data.pos
-        this.type = data.type
-        this.moving = data.moving || false //specific for 
+        this.id = data.i
+        this.target = data.p
+        this.pos = data.p
+        this.ppos = data.p
+        this.type = data.t
+        this.moving = data.m || false //specific for 
         this.dir = 0
         this.owner = false
         this.dia = 0.4
@@ -19,21 +19,21 @@ class Entity
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
         this.pos = bounce(this.pos, this.target, this.bounce)
         this.speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
-        if (this.type === 'sword' && this.speed > 0.1 && this.moving)
+        if (this.type === SWORD && this.speed > 0.1 && this.moving)
             level.addWoosh(this.pos, this.ppos, 0.3)
         if (this.speed > 0.01) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }
     newData(data)
     {
-        this.target = data.pos
+        this.target = data.p
         //console.log(data.pos)
-        if (data.moving !== undefined) this.moving = data.moving
-        if (data.owner !== undefined) 
+        if (data.m !== undefined) this.moving = data.m
+        if (data.o !== undefined) 
             {
                 if (!this.owner) // start sprite at owner (as if grabbing from inventory)
-                    this.pos = level.getPlayer(data.owner).pos
-                this.owner = level.getPlayer(data.owner)
+                    this.pos = level.getPlayer(data.o).pos
+                this.owner = level.getPlayer(data.o)
             }
     }
     draw()

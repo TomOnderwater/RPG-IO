@@ -74,7 +74,7 @@ class Slot
     constructor(id)
     {
         this.id = id
-        this.item = {type: 'none', count: 0}
+        this.item = {type: NONE, count: 0}
         this.selected = false
     }
 }

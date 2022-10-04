@@ -24,7 +24,7 @@ module.exports = class RangedAttack
         for (let collision of collisions)
         {
             //console.log(collision)
-            let item = createItem('bow')
+            let item = createItem(BOW)
             if (collision.entity.health !== undefined)
                             level.addEvent(Func.calcAttack({
                                 collision, 
@@ -38,6 +38,9 @@ module.exports = class RangedAttack
     data()
     {
         let pos = Func.fixPos(this.body.pos, 2)
-        return {id: this.id, type: this.type, pos}
+        return {
+            i: this.id, 
+            t: this.type, 
+            p: pos}
     }
 }

@@ -6,11 +6,11 @@ class Player extends Entity
   {
     super(data)
     this.viewdistance = data.viewdistance || 12
-    this.name = data.name
+    this.name = data.n
     this.stridelength = 0.3
     this.dia = 0.6
-    this.health = data.health
-    this.maxhealth = data.maxhealth
+    this.health = data.h
+    this.maxhealth = data.H
     this.perception = []
     this.animationframe = 0
     this.animationlength = 60
@@ -107,9 +107,9 @@ class Player extends Entity
   }
     newData(data)
     {
-        if (data.pos) this.target = data.pos
-        if (data.health) this.health = data.health
-        if (data.maxhealth) this.maxhealth = data.maxhealth
+        if (data.p) this.target = data.p
+        if (data.h) this.health = data.h
+        if (data.H) this.maxhealth = data.H
     }
   getHandPos(distance)
   {

@@ -260,6 +260,9 @@ module.exports = class Dungeon {
     assignID()
     {
         return this.entitycount ++
+        let out = this.entitycount.toString(36)
+        this.entitycount ++
+        return out
     }
     addPlayer(player)
     {
@@ -269,11 +272,11 @@ module.exports = class Dungeon {
         //let item = this.createItem('sword')
         let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
 
-        new_player.pickup(this.createItem('bow'))
-        new_player.pickup(this.createItem('sword'))
+        new_player.pickup(this.createItem(BOW))
+        new_player.pickup(this.createItem(SWORD))
         new_player.initHand(this.assignID()) // assign an id for the item in hand
         // add to queue
-        console.log('adding player: ', new_player)
+        console.log('adding player: ', new_player.name, 'id: ', new_player.id)
         this.queue.push(new_player)
         //console.log('queued: ', this.queue)
         return {id, key: this.key}

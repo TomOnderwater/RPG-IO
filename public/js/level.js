@@ -58,17 +58,17 @@ class Woosh extends Event
     this.p2 = p2
     //console.log(this.p1, this.p2)
     this.angle = atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x)
-    this.reach = dist(this.p1.x, this.p1.y, this.p2.x, this.p2.y) * cam.zoom * 1.5
+    this.reach = dist(this.p1.x, this.p1.y, this.p2.x, this.p2.y) * cam.zoom
     this.len = len * cam.zoom
     //console.log(this.len, this.reach)
-    this.maxticks = 10
+    this.maxticks = 2 + round(this.reach)
   }
   draw()
   {
     let p1 = cam.onScreen(this.p1)
     push()
     noStroke()
-    fill(255, 50 - (this.ticks * 5))
+    fill(255, 5 * this.maxticks - (this.ticks * 5))
     translate(p1.x, p1.y)
     rectMode(CORNERS)
     rotate(this.angle)
@@ -245,8 +245,8 @@ class Level {
       let found = false
       for(let j = entities.length - 1; j >= 0; j--)
       {
-        if (this.entities[i].id === entities[j].id &&
-        this.entities[i].type === entities[j].type) //same entity
+        if (this.entities[i].id === entities[j].i &&
+        this.entities[i].type === entities[j].t) //same entity
         {
           this.entities[i].newData(entities[j])
           entities.splice(j, 1)
@@ -263,25 +263,25 @@ class Level {
     for (let entity of entities)
     {
       //console.log(entity.type)
-      switch (entity.type)
+      switch (entity.t)
       {
-        case 'player':
+        case PLAYER:
           this.entities.push(new Player(entity))
         break
-        case 'sword':
+        case SWORD:
         //console.log('got a sword')
           this.entities.push(new Sword(entity))
         break
-        case 'bow':
+        case BOW:
           this.entities.push(new Bow(entity))
           break
-        case 'none':
+        case NONE:
           this.entities.push(new Fist(entity))
         break
-        case 'arrow':
+        case ARROW:
           this.entities.push(new Arrow(entity))
         break
-        case 'wood':
+        case WOOD:
           this.entities.push(new Wood(entity))
         break
         // case 'slime':

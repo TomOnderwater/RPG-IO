@@ -35,13 +35,13 @@ function drawItem(type, pos, size)
   let emoji = ''
   switch (type)
   {
-    case 'sword':
+    case SWORD:
       emoji = '🗡️'
       break
-    case 'bow':
+    case BOW:
       emoji = '🏹'
       break
-    case 'wood':
+    case WOOD:
       drawWood(pos, size)
       break
   }

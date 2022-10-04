@@ -126,11 +126,11 @@ function fixPos(pos, digits)
     return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2))
 }
 
-function constrainVector(vec, min, max)
+function constrainVector(vec, max)
 {
-    if (vec.x < min) vec.x = min
+    if (vec.x < -max) vec.x = -max
     else if (vec.x > max) vec.x = max
-    if (vec.y < min) vec.y = min
+    if (vec.y < -max) vec.y = -max
     else if (vec.y > max) vec.y = max
     return vec
 }

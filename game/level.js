@@ -90,7 +90,7 @@ module.exports = class Level
     {
         for (let i = 0; i < 100; i++)
         {
-            let item = {item: {type: 'wood', count: 1}, pos: this.randomPos()}
+            let item = {item: {type: WOOD, count: 1}, pos: this.randomPos()}
             this.placeItem(item)
         }
     }
@@ -227,7 +227,7 @@ module.exports = class Level
     }
     spawnMobs()
     {
-        if (this.mobs.length < this.maxMobs) this.spawnMob('slime')
+        if (this.mobs.length < this.maxMobs) this.spawnMob(SLIME)
     }
     randomPos()
     {

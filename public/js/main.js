@@ -55,7 +55,8 @@ function setup() {
 
   MOBILE = isMobileDevice()
 
-  console.log('type:', type)
+  setFrameRate(30) //frame updates at 30 hz
+  console.log('connection type:', type)
   //register player
   if (type === 'player' || type === 'controller') 
   {
@@ -269,27 +270,25 @@ function drawSpectator()
 }
 function drawGame()
 {
-
+  background(SEXYGREY)
     if (type === 'player')
     {
        // draw order -> tiles, entities
-   if (player != null) // check if there's something to draw
-    {
-    let jump = height / (cam.zoom * 8)
-    if (player)
-    {
-      let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
-      cam.updateFocus(focus, 0.1)
-      cam.updateZoom(player.getZoom(), 0.05)
-    }
-
-    level.checkTouches()
-
-    level.update()
-
-    level.draw()
+      if (player != null) // check if there's something to draw
+        {
+        let jump = height / (cam.zoom * 8)
+        if (player)
+        {
+          let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
+          cam.updateFocus(focus, 0.2)
+          if (player)
+              cam.updateZoom(player.getZoom(), 0.05)
+        }
+        level.checkTouches()
+        level.update()
+        level.draw()
     //player.draw()
-  }
+      }
     }
 
   drawLeaderBoard({x: 5, y: 15})

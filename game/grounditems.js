@@ -16,7 +16,7 @@ module.exports = class GroundItem{
             if (Func.circleOnCircle(entity.body, this.body))
             {
                 // check if it's elligble to pick it up
-                if (entity.type == 'player') 
+                if (entity.type == PLAYER) 
                 {
                     entity.pickup(this.item)
                     console.log('pickup!!!')
@@ -29,6 +29,9 @@ module.exports = class GroundItem{
     data()
     {
         let pos = Func.fixPos(this.body.pos)
-        return {id: this.id, type: this.item.type, pos}
+        return {
+            i: this.id, 
+            t: this.item.type, 
+            p: pos}
     }
 }

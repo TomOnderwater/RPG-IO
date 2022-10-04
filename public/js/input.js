@@ -2,14 +2,18 @@ class MobileInput {
     constructor()
     {
         this.inventory = new Inventory(inventorySpecs)
-        this.handarea = {x1: 2 * (width / 3), y1: height / 3, x2: width, y2: height - 80}
+        // check the minimum height of the joysticks
+        let minimumheight = 250
+        let offset = 0
+        let shortage = (height * 0.5) - minimumheight
+        if (shortage < 0) offset = shortage
         this.joystick = new JoyStick({
             dia: 128,
-            area: {x1:  0, y1: height / 2, x2: width / 2, y2: height - this.inventory.height
+            area: {x1:  0, y1: (height * 0.5) + offset, x2: width / 2, y2: height
         }})
         this.handStick = new UtitlityStick({
             dia: 150,
-            area: {x1: width / 2, y1: height / 2, x2: width, y2: height - this.inventory.height
+            area: {x1: width / 2, y1: (height * 0.5) + offset, x2: width, y2: height
         }})
         this.usedTouches = []
         this.stats = new Stats()
@@ -17,15 +21,16 @@ class MobileInput {
     update()
     {
         this.updateTouches()
-        let joyout = this.joystick.update()
-        let handout = this.handStick.update()
+
+        //do the inventory first
         let actions = []
-        
-        //do the inventory
         let inventoryactions = this.inventory.update()
         if (inventoryactions !== null) 
             actions = [...actions, ...inventoryactions]
-        //console.log(actions)
+
+        // get joysticks
+        let joyout = this.joystick.update()
+        let handout = this.handStick.update()
 
         let pointallocations = this.stats.update()
         if (pointallocations !== null) 
@@ -240,7 +245,7 @@ class Slot
         this.pos = pos
         this.size = size
         this.id = id
-        this.item = item || {count: 0, type: 'none'}
+        this.item = item || {count: 0, type: NONE}
         this.touch = null
         this.selected = false
         this.doubleclicked = false
@@ -253,7 +258,7 @@ class Slot
     empty()
     {
         this.item.count = 0
-        this.item.type = 'none'
+        this.item.type = NONE
     }
     update(inventory)
     {
@@ -282,7 +287,7 @@ class Slot
         strokeWeight(2)
         //if (this.doubleclicked) fill(0, 0, 255, 100)
         rect(this.pos.x, this.pos.y, this.size, this.size, 10)
-        if (this.item.type !== 'none') {
+        if (this.item.type !== NONE) {
             let pos = p5.Vector.add(this.pos, createVector(this.size / 2, this.size / 2))
             drawItem(this.item.type, pos, this.size * 0.5)
             //text(this.item.type, pos.x, pos.y)

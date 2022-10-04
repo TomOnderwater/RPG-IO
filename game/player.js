@@ -9,9 +9,13 @@ module.exports = class Player
     {
         this.level = level
         this.id = data.id
-        this.type = 'player'
+        this.type = PLAYER
         this.body = new PhysicalBody({type: 'circle', entity: this, pos: data.pos, rad: 0.2})
-        this.input = {dir: {x: 0, y: 0}, actions: []} //controller input
+        this.input = {
+            dir: {x: 0, y: 0}, 
+            hand: {x: 0, y: 0}, 
+            actions: []
+        } //controller input
         this.inventory = new Inventory(6)
         this.session = data.session
         this.name = data.name
@@ -105,7 +109,9 @@ module.exports = class Player
 
         this.body.bounceSpeed(this.input.dir)
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
-        // if physical attack
+
+        this.handlePhysical(this.input.hand)
+        // integrate into
         if (this.hand.moving && this.hand.item.physical)
         {
             let closebodies = level.closeBodies(this.hand.body.pos, colliders, 1)
@@ -146,23 +152,30 @@ module.exports = class Player
     data() 
         {
             let pos = Func.fixPos(this.body.pos, 2)
-            return {id: this.id, 
-                type: this.type, pos, name: this.name, health: this.health, maxhealth: this.status.vitality}
+            return {i: this.id, 
+                t: this.type, 
+                p: pos, 
+                n: this.name, 
+                h: this.health, 
+                H: this.status.vitality}
         }
     getHand()
     {
-        return {id: this.hand.id, type: this.hand.item.type, pos: this.hand.body.pos, moving: this.hand.moving, owner: this.hand.owner}
+        return {
+            i: this.hand.id, 
+            t: this.hand.item.type, 
+            p: this.hand.body.pos, 
+            m: this.hand.moving, 
+            o: this.hand.owner}
     }
-    handlePhysical(_input)
+    handlePhysical(input)
     {
-        // beginning, or middle of the touch, init the item box
-        let input = Func.constrainVector(_input, -128, 128)
         //if (Func.magnitude)
         if (Func.zeroVector(input)) 
         {
             if (this.hand.moving)
             {
-                if (this.hand.item.type === 'bow')
+                if (this.hand.item.type === BOW)
                 {
                     //shoot an arrow
                     let dir = Func.multiply(Func.subtract(this.body.pos, this.hand.body.pos), 1.5)
@@ -173,10 +186,11 @@ module.exports = class Player
                                 pos: this.body.pos, 
                                 attack: this.hand.item.attack, 
                                 dir, rad: 0.1, mass: 2,
-                                type: 'arrow'})
+                                type: ARROW})
                     }
             }
             this.hand.moving = false
+            this.hand.body.pos = this.body.pos // follow player pos
             return
         }
         if (!this.hand.moving) 
@@ -234,8 +248,10 @@ module.exports = class Player
 
     updateInput(input)
     {
-        this.input.dir = Func.multiply(input.joy, this.speedstat)
-        this.handlePhysical(input.hand)
+        if (input.joy)
+            this.input.dir = Func.multiply(Func.constrainVector(input.joy, 128), this.speedstat)
+        if (input.hand)
+            this.input.hand = Func.constrainVector(input.hand, 128)
         for (let action of input.actions)
         {
             if (action.type == 'inventory') this.handleInventory(action)
