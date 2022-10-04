@@ -106,33 +106,14 @@ function isMobileDevice() {
 }
 function touchStarted () 
 {
-let area = {x1: (width / 2) - 30, y1: 0, x2: (width / 2) + 30, y2: 40}
-  for (let t of touches)
-  {
-    if (onField(t, area) && !fullscreen()) fullscreen(true)
-  }
-}
-
-function drawFullscreen()
-{
-  //draw the icon
-    let area = {x1: (width / 2) - 30, y1: 0, x2: (width / 2) + 30, y2: 40}
-    const l = 12
-    const w = 3
-    push()
-    noStroke()
-    fill(255, 255, 255, 100)
-    rect(area.x1, area.y1, l, w)
-    rect(area.x1, area.y1, w, l)
-    rect(area.x1, area.y2, l, -w)
-    rect(area.x1, area.y2, w, -l)
-
-    rect(area.x2, area.y1, -l, w)
-    rect(area.x2, area.y1, -w, l)
-    rect(area.x2, area.y2, -l, -w)
-    rect(area.x2, area.y2, -w, -l)
-
-    pop()
+  //console.log(fullscreen())
+  fullscreen(true)
+  //let area = 
+  // let area = {x1: 0, y1: 0, x2: width, y2: height}
+  // for (let t of touches)
+  // {
+  //   if (onField(t, area) && !fullscreen()) fullscreen(true)
+  // }
 }
 
 function canvasGreatest()

@@ -176,7 +176,7 @@ class Level {
     let range = cam.getRange()
     let visibletiles = this.getVisibleTiles(range)
     //let visibletiles = this.getVisibleTiles(player)
-    console.log(visibletiles.length, player)
+    //console.log(visibletiles.length, player)
     //if (player) 
       //console.log(visibletiles)
     visibletiles.forEach(tile => tile.drawSurface())

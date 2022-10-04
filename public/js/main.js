@@ -91,7 +91,7 @@ function draw()
     background(SEXYGREY)
     break
   }
-  if (!fullscreen()) drawFullscreen()
+  //fullscreen()
   ticks ++
 }
 

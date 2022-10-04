@@ -52,10 +52,10 @@ class Camera
   {
     let halfwidth = (width / this.zoom) * 0.5
     let halfheight = (height / this.zoom) * 0.5
-    let x1 = constrain(floor(this.focus.x - halfwidth - 1), 0, level.width)
-    let x2 = constrain(floor(this.focus.x + halfwidth + 1), 0, level.width)
-    let y1 = constrain(floor(this.focus.y - halfheight - 1), 0, level.height)
-    let y2 = constrain(floor(this.focus.y + halfheight + 1), 0, level.height)
+    let x1 = constrain(round(this.focus.x - halfwidth - 1), 0, level.width)
+    let x2 = constrain(round(this.focus.x + halfwidth + 1), 0, level.width)
+    let y1 = constrain(round(this.focus.y - halfheight - 1), 0, level.height)
+    let y2 = constrain(round(this.focus.y + halfheight + 1), 0, level.height)
     return {x1, x2, y1, y2}
   }
 }
