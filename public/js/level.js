@@ -269,7 +269,7 @@ class Level {
   {
     for (let entity of entities)
     {
-      //console.log(entity.type)
+      console.log(entity.t)
       switch (entity.t)
       {
         case PLAYER:
@@ -282,26 +282,15 @@ class Level {
         case BOW:
           this.entities.push(new Bow(entity))
           break
-        case NONE:
-          this.entities.push(new Fist(entity))
-        break
         case ARROW:
           this.entities.push(new Arrow(entity))
         break
-        case WOOD:
-          this.entities.push(new Wood(entity))
+        case SLIME:
+          this.entities.push(new Entity(entity)) // CHANGE TO CRITTER
         break
-        case ROCK:
-          this.entities.push(new Stone(entity))
-        break
-        // case 'slime':
-        //   console.log('slime spawn')
-        // break
-
         default:
-        console.log('unknown entity detected')
-          this.entities.push(new Entity(entity))
-        break
+          this.entities.push(new HandItem(entity))
+        return 
       }
     }
   }

@@ -65,14 +65,19 @@ class Player extends Entity
       pop()
     }
   }
-  drawHealthBar(x, y)
+  drawHealthBar(offset)
   {
     let pct = this.health / this.maxhealth
-    const W = 80
-    const H = 10
     push()
-    translate(x, y)
-    stroke(1)
+    let pos = cam.onScreen({
+      x: this.pos.x + offset.x, 
+      y: this.pos.y + offset.y})
+    let W = 1.2 * cam.zoom
+    let H = 0.15 * cam.zoom
+    //console.log(W, H)
+    translate(pos.x, pos.y)
+    stroke(0, 100)
+    strokeWeight(cam.zoom * entityborder)
     rect(-W * 0.5, 0, W, H)
     noStroke()
     let w = pct * W
@@ -80,6 +85,18 @@ class Player extends Entity
     rect(-W * 0.5, 0, w, H)
     fill(255, 0, 0)
     rect(w - W * 0.5, 0, W - w, H)
+    pop()
+  }
+  drawName(offset)
+  {
+    let pos = cam.onScreen({
+      x: this.pos.x + offset.x, 
+      y: this.pos.y + offset.y})
+    push()
+    fill(255)
+    textSize(cam.zoom * 0.3)
+    textAlign(CENTER, CENTER)
+    text(this.name, pos.x, pos.y)
     pop()
   }
   draw()
@@ -91,16 +108,14 @@ class Player extends Entity
     // }
     let pos = cam.onScreen(this.pos)
     if (this.animationframe) this.drawLevelUP(pos)
+    this.drawHealthBar({x: 0, y: -0.7})
+    this.drawName({x: 0, y: -0.9})
     push()
     //console.log(this.rot)
+    textAlign(CENTER, CENTER)
     translate(pos.x, pos.y)
     fill(255)
-    textSize(20)
-    textAlign(CENTER, CENTER)
-    //print(this.name)
-    text(this.name, 0, -70)
     stroke(0)
-    this.drawHealthBar(0, -60)
     // width = 100
     this.drawPerception()
 

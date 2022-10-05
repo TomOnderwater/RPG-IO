@@ -104,7 +104,12 @@ class StoneWall
   {
     let pos = cam.onScreen(this.pos)
     push()
-    image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    image(stonewallTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    noFill()
+    let border = cam.zoom * entityborder
+    strokeWeight(border)
+    stroke(0)
+    rect(pos.x, pos.y, cam.zoom, cam.zoom)
     pop()
   }
 }
@@ -118,7 +123,12 @@ class WoodWall
   {
     let pos = cam.onScreen(this.pos)
     push()
-    image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    image(woodenwallTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    noFill()
+    let border = cam.zoom * entityborder
+    strokeWeight(border)
+    stroke(0)
+    rect(pos.x, pos.y, cam.zoom, cam.zoom)
     pop()
   }
 }
@@ -133,6 +143,11 @@ class Wall {
     let pos = cam.onScreen(this.pos)
     push()
     image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    noFill()
+    let border = cam.zoom * entityborder
+    strokeWeight(border)
+    stroke(0)
+    rect(pos.x, pos.y, cam.zoom, cam.zoom)
     pop()
   }
 }
@@ -177,7 +192,7 @@ class Tree {
   draw()
   {
     push()
-    noStroke() //stroke(1)
+    stroke(cam.zoom * entityborder) //stroke(1)
     fill(200, 100, 50)
     let pos = cam.onScreen(this.pos)
     circle(pos.x, pos.y, cam.zoom * 0.4)

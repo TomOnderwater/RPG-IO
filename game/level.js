@@ -448,10 +448,10 @@ module.exports = class Level
     }
     getTiles(pos, range)
     {
-        let x1 = Func.constrain(Math.round(pos.x - range), 0, this.height - 1)
-        let x2 = Func.constrain(Math.round(pos.x + range), 0, this.height - 1)
-        let y1 = Func.constrain(Math.round(pos.y - range), 0, this.height - 1)
-        let y2 = Func.constrain(Math.round(pos.y + range), 0, this.height - 1)
+        let x1 = Func.constrain(Math.round(pos.x - range), 0, this.width)
+        let x2 = Func.constrain(Math.round(pos.x + range), 0, this.width)
+        let y1 = Func.constrain(Math.round(pos.y - range), 0, this.height)
+        let y2 = Func.constrain(Math.round(pos.y + range), 0, this.height)
 
         let tiles = []
         for (let x = x1; x < x2; x++)

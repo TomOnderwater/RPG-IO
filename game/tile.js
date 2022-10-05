@@ -116,7 +116,10 @@ class Structure
         data.entity = this
         this.structure = true
         this.body = new PhysicalBody(data)
-        this.droprate = data.droprate || 1 + Math.round(Math.random() * 2)
+        if (data.droprate === undefined)
+            this.droprate = 1 + Math.round(Math.random() * 2)
+        else this.droprate = data.droprate
+        if (this.id === WOODWALL) console.log('droprate: ', this.droprate)
     }
     applyDamage(damage)
     {
@@ -130,8 +133,10 @@ class Structure
         let items = []
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(this.material)
+        console.log(this.droprate)
         drop.item.count = this.droprate
-        items.push(drop)
+        if (drop.item.count)
+            items.push(drop)
         console.log('drop:', items)
         return items
     }

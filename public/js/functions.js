@@ -44,6 +44,9 @@ function drawItem(type, pos, size, _rot)
     case BOW:
       emoji = '🏹'
       break
+    case NONE:
+      emoji = '✊'
+      break
     case WOOD:
       drawIcon(woodicon, pos, size, rot)
       return

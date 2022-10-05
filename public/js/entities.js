@@ -87,21 +87,16 @@ class HandItem extends Entity
     constructor(status)
     {
         super(status)
+        this.size = 0.4
+        this.dist = 0.5
     }
     draw()
     {
         let rot = 0
         if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
-        //if (this.moving && this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         let pos = cam.onScreen(this.pos)
-        push()
-        translate(pos.x, pos.y)
-        fill(255, 0, 0)
-        circle(0,0,5)
-        rotate(rot + this.rot)
-        textSize(this.spritesize * cam.zoom)
-        text(this.sprite, this.offset.x, this.offset.y)
-        pop()
+        let size = this.size * cam.zoom
+        drawItem(this.type, pos, size, rot)
     }
 }
 
@@ -181,56 +176,6 @@ class Bow extends HandItem
         pop()
         if (this.moving) drawArrow(this.pos, rot, 0, 1)
 
-    }
-}
-
-class Wood extends HandItem
-{
-    constructor(status)
-    {
-        super(status)
-        this.size = 0.4
-        this.dist = 0.5
-       // console.log(this)
-    }
-    draw()
-    {
-        let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
-        let pos = cam.onScreen(this.pos)
-        let size = this.size * cam.zoom
-        drawItem(WOOD, pos, size, rot)
-    }
-}
-class Stone extends HandItem
-{
-    constructor(status)
-    {
-        super(status)
-        this.size = 0.4
-        this.dist = 0.5
-        //console.log('new stone')
-    }
-    draw()
-    {
-        let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
-        let pos = cam.onScreen(this.pos)
-        let size = this.size * cam.zoom
-        drawItem(ROCK, pos, size, rot)
-    }
-}
-
-class Fist extends HandItem
-{
-    constructor(status)
-    {
-        super(status)
-        this.sprite = '✊'
-        this.spriteSize = 0.30
-        this.dist = 0.4
-        this.offset = createVector(0, 5)
-        this.rot = PI + HALF_PI
     }
 }
 

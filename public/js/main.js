@@ -9,13 +9,15 @@ let key = ''
 
 let ticks = 0
 
+const entityborder = 0.03
+
 // DATA SPECIFIC
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 
 // TEXTURES
 let walltexture, woodicon, stoneicon, rocktexture, 
 grassTexture, stoneTexture, waterTexture, sandTexture,
-dirtTexture, gravelTexture
+dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture
 
 let textures = []
 
@@ -46,6 +48,8 @@ function preload()
   dirtTexture = loadImage('assets/textures/dirt_texture1.jpg')
   sandTexture = loadImage('assets/textures/sandtexture1.jpg')
   gravelTexture = loadImage('assets/textures/gravel_texture1.jpg')
+  woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
+  stonewallTexture = loadImage('assets/textures/rockwall.jpg')
   //console.log('loading sounds')
   //sound = new Sound()
 }
