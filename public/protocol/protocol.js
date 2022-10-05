@@ -1,6 +1,8 @@
 // tile definitions
-const STONE = 's', DIRT = 'd', GRASS = 'g', GRAVEL = 'G', WATER = 'w', SAND = 'z', WALL = 'x'
-
+const STONE = 's', DIRT = 'd', GRASS = 'g', GRAVEL = 'G', 
+WATER = 'w', SAND = 'z', WALL = 'x'
+const STONEWALL = '/'
+const WOODWALL = ']'
 // structure definitions
 const TREE = 't', AIR = 'a', ROCK = 'r'
 

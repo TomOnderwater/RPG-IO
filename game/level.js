@@ -4,6 +4,8 @@ const Func = require('./functions.js')
 const Mobs = require('./mobs.js')
 const RangedAttack = require('./rangedattacks.js')
 const GroundItem = require('./grounditems.js')
+const BuildingManager = require('./building.js')
+const PhysicalBody = require('./hitboxes.js')
 
 module.exports = class Level 
 {
@@ -19,9 +21,10 @@ module.exports = class Level
         this.items = []
         this.events = []
         this.mobs = []
-        this.maxMobs = 0.05 * this.width * this.height
+        this.maxMobs = 0 //0.05 * this.width * this.height
         this.updates = []
         this.rangedattacks = []
+        this.buildManager = new BuildingManager(this)
         this.addRandomItems()
     }
     killAll()
@@ -129,6 +132,8 @@ module.exports = class Level
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         entities.forEach(entity => entity.update(this, entities))
 
+        // update buildings being built
+        this.updateBuildManager()
         this.updateRangedAttacks(entities)
         this.updateGroundItems(this.players)
         let recoverytick = ((ticks % 30) === 0)
@@ -199,11 +204,39 @@ module.exports = class Level
                 {
                     if (tile.structure.health <= 0)
                     {
-                        tile.destroyStructure()
+                        let items = tile.destroyStructure()
+                        items.forEach(item => this.placeItem(item))
                         this.updates.push(tile.getData())
                     }
                 }
             }
+        }
+    }
+    build(hand)
+    {
+        // check if it is a continued building event
+        this.buildManager.build(hand)
+    }
+    updateBuildManager()
+    {
+        let completed = this.buildManager.update()
+        // do something with the completed buildings
+        for (let building of completed)
+        {
+            let tile = this.getTile(building.pos)
+            switch(building.type)
+            {
+                case WOOD:
+                    tile.addWoodWall()
+                break
+                case ROCK:
+                    tile.addStoneWall()
+                break
+                default:
+                    console.log('building type not recognized')
+                break
+            }
+            this.updates.push(tile.getData())
         }
     }
     killOutOfBounds()
@@ -243,6 +276,21 @@ module.exports = class Level
         //console.log('slime spawned')
         this.mobs.push(slime)
     }
+    getBuildingEvents(player)
+    {
+        if (player !== undefined)
+        {
+            let buildingevents = []
+            let sqrange = player.perceptionstat * player.perceptionstat
+            for (let be of this.buildManager.buildingevents)
+            {
+                if (Func.sqDist(player.body.pos, be.pos) < sqrange)
+                    buildingevents.push(be.progressData())
+            }
+            return buildingevents
+        }
+        return this.buildManager.getPreviews()
+    }
     getAllEvents()
     {
         return this.events
@@ -256,6 +304,7 @@ module.exports = class Level
             if (Func.sqDist(player.body.pos, event.pos) < sqrange)
                 events.push(event)
         })
+
         //console.log('output events:', events)
         return events
     }
@@ -279,10 +328,27 @@ module.exports = class Level
         //console.log('bodies in range:', close.length)
         return close
     }
+    isFreeTile(_pos) //check if there's something on the tile
+    {
+        let colliders = [...this.players, ...this.entities, ...this.rangedattacks, ...this.mobs]
+        // create a square body
+        let pos = {
+            x: Func.constrain(Math.floor(_pos.x), 0, this.width - 1),
+            y: Func.constrain(Math.floor(_pos.y), 0, this.height - 1)
+        }
+        let close = this.closeBodies(pos, colliders, 2)
+        let body = new PhysicalBody({type: 'rect', pos: Func.add(pos, {x:0.05, y:0.05}), width: 0.9, height:0.9})
+        for (let collider of close)
+        {
+            if (body.collide(collider)) 
+                return false
+        }
+        return true
+    }
     getFreeSpot(testpos, body)
     {
         // first round, test original
-        let colliders = [...this.players, ...this.entities]
+        let colliders = [...this.players, ...this.entities, ...this.mobs, ...this.rangedattacks]
         let close = this.closeBodies(testpos, colliders, 5)
         let maxdist = 2
         let original = {x: testpos.x, y: testpos.y}
@@ -370,17 +436,18 @@ module.exports = class Level
         }
         return structures
     }
+    getTile(pos)
+    {
+        let x = Func.constrain(Math.floor(pos.x), 0, this.width - 1)
+        let y = Func.constrain(Math.floor(pos.y), 0, this.height - 1)
+        return this.tiles[x][y]
+    }
     getTiles(pos, range)
     {
-        let x1 = Math.round(pos.x) - range
-        if (x1 < 0) x1 = 0
-        let y1 = Math.round(pos.y) - range
-        if (y1 < 0) y1 = 0
-
-        let x2 = Math.round(pos.x) + range
-        if (x2 > this.width) x2 = this.width - 1
-        let y2 = Math.round(pos.y) + range
-        if (y2 > this.height) y2 = this.height - 1
+        let x1 = Func.constrain(Math.round(pos.x - range), 0, this.height - 1)
+        let x2 = Func.constrain(Math.round(pos.x + range), 0, this.height - 1)
+        let y1 = Func.constrain(Math.round(pos.y - range), 0, this.height - 1)
+        let y2 = Func.constrain(Math.round(pos.y + range), 0, this.height - 1)
 
         let tiles = []
         for (let x = x1; x < x2; x++)

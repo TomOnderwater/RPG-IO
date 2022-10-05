@@ -109,6 +109,7 @@ class Level {
     this.tiles = []
     this.entities = []
     this.events = []
+    this.buildingevents = []
   }
   checkTouches()
   {
@@ -169,6 +170,7 @@ class Level {
     if (viewport.entities) this.updateEntities(viewport.entities)
     if (viewport.events) this.updateEvents(viewport.events)
     if (viewport.updates) this.updateStructures(viewport.updates)
+    if (viewport.builds) this.updateBuildingEvents(viewport.builds)
   }
   draw()
   {
@@ -180,10 +182,29 @@ class Level {
     // DRAW ORDER 
     // surface -> structures -> entities -> events (blood etc.) -> roofing
     visibletiles.forEach(tile => tile.drawSurface())
+    this.drawBuildingEvents()
     visibletiles.forEach(tile => tile.drawStructure())
     this.entities.forEach(entity => entity.draw())
     this.events.forEach(event => event.draw())
     visibletiles.forEach(tile => tile.drawTop())
+  }
+  drawBuildingEvents()
+  {
+    //console.log(this.buildingevents)
+    for (let buildingevent of this.buildingevents)
+    {
+      let pos = cam.onScreen(buildingevent.p)
+      let border = buildingevent.c * cam.zoom * 0.25
+      push()
+      noFill()
+      stroke(255, 100 - buildingevent.c)
+      strokeWeight(border)
+      //console.log(border)
+      translate(pos.x, pos.y)
+
+      rect(border, border, cam.zoom - (2 * border), cam.zoom - (2 * border), 5, 5)
+      pop()
+    }
   }
   getVisibleTiles(range)
   {
@@ -201,12 +222,17 @@ class Level {
   {
     this.events.push(new Woosh(p1, p2, len))
   }
+  updateBuildingEvents(buildingevents)
+  {
+    this.buildingevents = buildingevents
+  }
   updateEvents(events)
   {
     //console.log(events)
     events.forEach(event => 
     {
-      if (event.type == 'damage') this.events.push(new Slash(event.pos, event.damage, event.dir))
+      if (event.type == 'damage') 
+        this.events.push(new Slash(event.pos, event.damage, event.dir))
     })
   }
   updateStructures(newtiles)
@@ -264,6 +290,9 @@ class Level {
         break
         case WOOD:
           this.entities.push(new Wood(entity))
+        break
+        case ROCK:
+          this.entities.push(new Stone(entity))
         break
         // case 'slime':
         //   console.log('slime spawn')

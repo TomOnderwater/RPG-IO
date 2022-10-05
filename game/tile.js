@@ -1,4 +1,5 @@
 const PhysicalBody = require('./hitboxes.js')
+const Func = require('./functions.js')
 
 module.exports = class Tile
 {
@@ -20,7 +21,7 @@ module.exports = class Tile
             id: TREE, 
             health: 100, 
             type: 'circle',
-            material: 'wood', 
+            material: WOOD, 
             pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.2, 
             static: true})
     }
@@ -29,10 +30,34 @@ module.exports = class Tile
         this.structure = new Structure({
             id: WALL, 
             type: 'rect',
-            material: 'stone', 
+            material: ROCK, 
             pos: {x: this.x, y: this.y}, 
             width: 1, 
             height: 1, 
+            static: true})
+    }
+    addStoneWall()
+    {
+        this.structure = new Structure({
+            id: STONEWALL, 
+            type: 'rect',
+            material: ROCK, 
+            pos: {x: this.x, y: this.y}, 
+            width: 1, 
+            height: 1,
+            health: 100, 
+            static: true})
+    }
+    addWoodWall()
+    {
+        this.structure = new Structure({
+            id: WOODWALL, 
+            type: 'rect',
+            material: WOOD, 
+            pos: {x: this.x, y: this.y}, 
+            width: 1, 
+            height: 1, 
+            health: 40,
             static: true})
     }
     addRock()
@@ -40,7 +65,7 @@ module.exports = class Tile
         this.structure = new Structure({
             id: ROCK, 
             type: 'circle',
-            material: 'stone', 
+            material: ROCK, 
             pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
             static: true})
     }
@@ -70,7 +95,10 @@ module.exports = class Tile
     }
     destroyStructure()
     {
+        let items = this.structure.getItems()
         this.structure.id = AIR
+        this.structure.health = 100 // dirty fix
+        return items
     }
 }
 
@@ -93,5 +121,16 @@ class Structure
         if (this.id !== WALL) // if destructible
             this.health -= damage
         //console.log('structure health: ', this.health)
+    }
+    getItems()
+    {
+        let count = 2 + Math.round(Math.random() * 2) // drop 2 to 4 items
+        let items = []
+        let drop = {pos: this.body.getCenter()}
+        drop.item = createItem(this.material)
+        drop.item.count = count
+        items.push(drop)
+        console.log('drop:', items)
+        return items
     }
 }

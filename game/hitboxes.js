@@ -76,7 +76,7 @@ function circleOnRect(circle, rect)
 function rectOnRect(rect1, rect2)
 {
     // return side of the collision
-    let collision = (rect1.pos.x + rect1.data.width >= rect2.pos.x && 
+    return (rect1.pos.x + rect1.data.width >= rect2.pos.x && 
     rect1.pos.x <= rect2.pos.x + rect2.data.width && 
     rect1.pos.y + rect1.data.height >= rect2.pos.y && 
     rect1.pos.y <= rect2.pos.y + rect2.data.height)
@@ -113,11 +113,10 @@ function collideRect(rect, body)
     switch(body.type)
     {
         case 'circle':
-        collision = circleOnRect(body, rect)
-        if (!collision) return false
-        return collision
+            collision = circleOnRect(body, rect)
+            if (!collision) return false
+            return collision
         case 'rect':
-        //console.log('not a thing')
             return rectOnRect(body, rect)
     }
 }

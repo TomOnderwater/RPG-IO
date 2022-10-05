@@ -21,17 +21,20 @@ function drawFrameRate(pos)
   text('fps: ' + round(getFrameRate()), pos.x, pos.y)
   pop()
 }
-function drawWood(pos, size, rot)
+
+function drawIcon(icon, pos, size, rot)
 {
   push()
   translate(pos.x, pos.y)
   rotate(rot || 0)
   imageMode(CENTER)
-  image(woodicon, 0, 0, size, size)
+  image(icon, 0, 0, size, size)
   pop()
 }
-function drawItem(type, pos, size)
+
+function drawItem(type, pos, size, _rot)
 {
+  let rot = _rot || 0
   let emoji = ''
   switch (type)
   {
@@ -42,15 +45,21 @@ function drawItem(type, pos, size)
       emoji = '🏹'
       break
     case WOOD:
-      drawWood(pos, size)
-      break
+      drawIcon(woodicon, pos, size, rot)
+      return
+    case ROCK:
+      drawIcon(stoneicon, pos, size, rot)
+      return
   }
   push()
+  translate(pos.x, pos.y)
+  rotate(rot)
   textAlign(CENTER, CENTER)
   textSize(size)
-  text(emoji, pos.x, pos.y)
+  text(emoji, 0, 0)
   pop()
 }
+
 function drawLeaderBoard(pos)
 {
   //console.log('leaderboard: ', leaderboard)
@@ -114,6 +123,29 @@ function touchStarted ()
   // {
   //   if (onField(t, area) && !fullscreen()) fullscreen(true)
   // }
+}
+
+function writeColor(image, x, y, red, green, blue, alpha) {
+  let index = (x + y * width) * 4
+  image.pixels[index] = red
+  image.pixels[index + 1] = green
+  image.pixels[index + 2] = blue
+  image.pixels[index + 3] = alpha
+}
+
+let allTextures = []
+function blendTextures()
+{
+
+  blendTexture(waterTexture)
+}
+
+function blendTexture(base, neighbours)
+{
+  base.loadPixels()
+  base.resize(50, 0)
+  console.log(base.width, base.height)
+  console.log(base.pixels.length)
 }
 
 function canvasGreatest()

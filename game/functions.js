@@ -229,6 +229,10 @@ function circleOnCircle(circle1, circle2)
    return (sqDist(circle1.pos, circle2.pos) <= Math.pow(circle1.rad + circle2.rad, 2))
 }
 
+function floorPos(pos)
+{
+  return {x: Math.floor(pos.x), y: Math.floor(pos.y)}
+}
 
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
@@ -236,5 +240,5 @@ module.exports = {
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, 
-    constrain, toBase64
+    constrain, toBase64, floorPos
 }

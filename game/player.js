@@ -99,7 +99,6 @@ module.exports = class Player
         //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
     }
-
     update(level, colliders)
     {
         this.level = level
@@ -175,38 +174,43 @@ module.exports = class Player
     handlePhysical(input)
     {
         //if (Func.magnitude)
+        let hand = this.hand
+        let item = hand.item
+        // what to do when input turns to zero physical ends after this loop
         if (Func.zeroVector(input)) 
         {
-            if (this.hand.moving)
+            if (hand.moving)
             {
-                if (this.hand.item.type === BOW)
+                if (item.type === BOW)
                 {
                     //shoot an arrow
-                    let dir = Func.multiply(Func.subtract(this.body.pos, this.hand.body.pos), 1.5)
+                    let dir = Func.multiply(Func.subtract(this.body.pos, hand.body.pos), 1.5)
                     if (Func.magnitude(dir) > 0.1)
                         this.level.addRangedAttack(
                             {
                                 owner: this, 
                                 pos: this.body.pos, 
-                                attack: this.hand.item.attack, 
+                                attack: item.attack, 
                                 dir, rad: 0.1, mass: 2,
                                 type: ARROW})
                     }
             }
-            this.hand.moving = false
-            this.hand.body.pos = this.body.pos // follow player pos
+            hand.moving = false
+            hand.body.pos = this.body.pos // follow player pos
             return
         }
-        if (!this.hand.moving) 
+        // spawn a new item
+        if (!hand.moving) 
             {
-                let item = this.hand.item
-                this.hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
-                this.hand.moving = true
+                hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
+                hand.moving = true
             }
         // set target
-        let target = Func.add(this.body.pos, Func.multiply(input, this.hand.item.reach))
-        this.hand.body.target(target)
-        if (!this.hand.item.physical) this.hand.body.update([])
+        let target = Func.add(this.body.pos, Func.multiply(input, item.reach))
+        hand.body.target(target)
+        if (!item.physical) hand.body.update([])
+        if (item.building)
+            this.level.build(hand) // will try to build
         //console.log(this.hand.body.pos)
     }
     getInventoryUpdate()

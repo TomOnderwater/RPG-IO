@@ -154,6 +154,7 @@ module.exports = class Dungeon {
             viewport.entities = level.getAllEntities()
             viewport.events = level.getAllEvents()
             viewport.updates = level.getUpdates()
+            viewport.builds = level.getBuildingEvents()
             return {type: 'update', data: viewport}
         }
         let active = this.getPlayerAndLevel(id)
@@ -166,6 +167,7 @@ module.exports = class Dungeon {
             viewport.entities = active.level.getEntities(active.player)
             viewport.events = active.level.getEvents(active.player)
             viewport.updates = active.level.getUpdates()
+            viewport.builds = active.level.getBuildingEvents(active.player)
         }
         let inventoryUpdate = active.player.getInventoryUpdate()
         if (inventoryUpdate) viewport.inventory = inventoryUpdate

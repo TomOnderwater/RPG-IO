@@ -17,6 +17,8 @@ let walltexture, woodicon, stoneicon, rocktexture,
 grassTexture, stoneTexture, waterTexture, sandTexture,
 dirtTexture, gravelTexture
 
+let textures = []
+
 // SERVER SETTINGS
 const host = location.host
 const httpPrefix = isSecure() ? 'https://' : 'http://'
@@ -53,6 +55,8 @@ function setup() {
   SEXYGREY = color(51, 51, 51)
   //sound.swoosh()
   cam = new Camera(createVector(0, 0), 20)
+
+  blendTextures()
 
   level = new Level()
 
@@ -190,7 +194,7 @@ function lobby()
       level.draw()
   }
 
-  let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 60}
+  let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 40}
   let s_area = {x1: box.x + box.w + 20, y1: box.y, x2: box.x + box.w + 150, y2: box.y + box.h + 5}
   if (box.w < minwidth)
   { //force wider
@@ -203,7 +207,7 @@ function lobby()
   nameinput.size(box.w, box.h)
 
   keyinput.position(box.x, box.y + 100)
-  keyinput.size(box.w * 0.5, box.h)
+  keyinput.size(box.w, box.h)
   push()
   noStroke()
   fill(255)

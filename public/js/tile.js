@@ -17,6 +17,10 @@ class Tile {
       this.structure = new Wall({x: this.x, y: this.y})
     if (type === ROCK)
       this.structure = new Rock({x: this.x, y: this.y})
+    if (type === WOODWALL)
+      this.structure = new WoodWall({x: this.x, y: this.y})
+    if (type === STONEWALL)
+      this.structure = new StoneWall({x: this.x, y: this.y})
   }
   update(tile)
   {
@@ -87,6 +91,35 @@ class Tile {
       //if (this.selected) rect(pos.x + this.selectborder * 0.5, pos.y + this.selectborder * 0.5, 
       //cam.zoom - this.selectborder , cam.zoom - this.selectborder)
       pop()
+  }
+}
+
+class StoneWall
+{
+  constructor(pos)
+  {
+    this.pos = pos
+  }
+  draw()
+  {
+    let pos = cam.onScreen(this.pos)
+    push()
+    image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    pop()
+  }
+}
+class WoodWall
+{
+  constructor(pos)
+  {
+    this.pos = pos
+  }
+  draw()
+  {
+    let pos = cam.onScreen(this.pos)
+    push()
+    image(walltexture, pos.x, pos.y, cam.zoom, cam.zoom)
+    pop()
   }
 }
 

@@ -1,7 +1,7 @@
 const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢', '🐸', '🦋', '🐞']
 function randomAnimal()
 {
-    let index = round(random(animals.length))
+    let index = round(random(animals.length - 1))
     return animals[index]
 }
 
@@ -183,6 +183,7 @@ class Bow extends HandItem
 
     }
 }
+
 class Wood extends HandItem
 {
     constructor(status)
@@ -198,9 +199,28 @@ class Wood extends HandItem
         if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         let pos = cam.onScreen(this.pos)
         let size = this.size * cam.zoom
-        drawWood(pos, size, rot)
+        drawItem(WOOD, pos, size, rot)
     }
 }
+class Stone extends HandItem
+{
+    constructor(status)
+    {
+        super(status)
+        this.size = 0.4
+        this.dist = 0.5
+        //console.log('new stone')
+    }
+    draw()
+    {
+        let rot = 0
+        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        let pos = cam.onScreen(this.pos)
+        let size = this.size * cam.zoom
+        drawItem(ROCK, pos, size, rot)
+    }
+}
+
 class Fist extends HandItem
 {
     constructor(status)
