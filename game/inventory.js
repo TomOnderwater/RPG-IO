@@ -43,11 +43,30 @@ module.exports = class Inventory {
         }
         return this.slots[0]
     }
+    isUpdated(item)
+    {
+        return (this.getSelectedSlot().item.type !== item.type)
+    }
     select(id)
     {
         this.slots.forEach(slot => slot.selected = false)
         this.slots[id].selected = true
         //console.log(this.slots)
+    }
+    remove(item)
+    {
+        for (let slot of this.slots)
+        {
+            console.log(slot.item, item)
+            if (slot.item.type === item.type)
+                {
+                    slot.item.count -= item.count
+                    if (slot.item.count <= 0) 
+                        slot.empty()
+                    this.updated = true
+                    break
+                }
+        }
     }
     add(item)
     {
@@ -76,5 +95,9 @@ class Slot
         this.id = id
         this.item = {type: NONE, count: 0}
         this.selected = false
+    }
+    empty()
+    {
+        this.item = {type: NONE, count: 0}
     }
 }

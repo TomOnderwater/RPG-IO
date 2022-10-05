@@ -21,7 +21,7 @@ module.exports = class Level
         this.items = []
         this.events = []
         this.mobs = []
-        this.maxMobs = 0 //0.05 * this.width * this.height
+        this.maxMobs = 0.05 * this.width * this.height
         this.updates = []
         this.rangedattacks = []
         this.buildManager = new BuildingManager(this)
@@ -223,6 +223,10 @@ module.exports = class Level
         // do something with the completed buildings
         for (let building of completed)
         {
+            this.getPlayer(building.id).removeItem({
+                type: building.type, 
+                count: 1
+            })
             let tile = this.getTile(building.pos)
             switch(building.type)
             {

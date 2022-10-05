@@ -41,7 +41,7 @@ global.createItem = function(type)
                     building: false, 
                     rad: 0.1, 
                     attack: 20, 
-                    destruction: 30,
+                    destruction: 3,
                     bounce: 0.7
                 }
             case NONE:

@@ -45,7 +45,8 @@ module.exports = class Tile
             pos: {x: this.x, y: this.y}, 
             width: 1, 
             height: 1,
-            health: 100, 
+            health: 100,
+            droprate: 0, 
             static: true})
     }
     addWoodWall()
@@ -58,6 +59,7 @@ module.exports = class Tile
             width: 1, 
             height: 1, 
             health: 40,
+            droprate: 0,
             static: true})
     }
     addRock()
@@ -114,6 +116,7 @@ class Structure
         data.entity = this
         this.structure = true
         this.body = new PhysicalBody(data)
+        this.droprate = data.droprate || 1 + Math.round(Math.random() * 2)
     }
     applyDamage(damage)
     {
@@ -124,11 +127,10 @@ class Structure
     }
     getItems()
     {
-        let count = 2 + Math.round(Math.random() * 2) // drop 2 to 4 items
         let items = []
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(this.material)
-        drop.item.count = count
+        drop.item.count = this.droprate
         items.push(drop)
         console.log('drop:', items)
         return items

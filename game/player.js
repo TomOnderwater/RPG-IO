@@ -99,6 +99,11 @@ module.exports = class Player
         //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
     }
+    removeItem(item)
+    {
+        console.log('removing:', item)
+        this.inventory.remove(item)
+    }
     update(level, colliders)
     {
         this.level = level
@@ -171,11 +176,19 @@ module.exports = class Player
             m: this.hand.moving, 
             o: this.hand.owner}
     }
+    resetHand(type)
+    {
+        this.hand.item = createItem(type)
+    }
     handlePhysical(input)
     {
         //if (Func.magnitude)
         let hand = this.hand
         let item = hand.item
+
+        if (this.inventory.isUpdated(item)) 
+            this.resetHand(this.inventory.getSelectedType())
+
         // what to do when input turns to zero physical ends after this loop
         if (Func.zeroVector(input)) 
         {
