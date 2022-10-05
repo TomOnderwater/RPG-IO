@@ -119,7 +119,14 @@ function isMobileDevice() {
 function touchStarted () 
 {
   //console.log(fullscreen())
-  fullscreen(true)
+  try 
+  {
+    fullscreen(true)
+  }
+  catch(err)
+  {
+    console.log(err)
+  }
   //let area = 
   // let area = {x1: 0, y1: 0, x2: width, y2: height}
   // for (let t of touches)

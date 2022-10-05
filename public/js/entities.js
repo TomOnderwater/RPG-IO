@@ -89,14 +89,27 @@ class HandItem extends Entity
         super(status)
         this.size = 0.4
         this.dist = 0.5
+        this.rot = 0
     }
     draw()
     {
         let rot = 0
         if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        rot += this.rot
         let pos = cam.onScreen(this.pos)
         let size = this.size * cam.zoom
         drawItem(this.type, pos, size, rot)
+    }
+}
+
+class Fist extends HandItem
+{
+    constructor(status)
+    {
+        super(status)
+        this.rot = -HALF_PI
+        this.bounce = 0.5
+        this.size = 0.3
     }
 }
 
@@ -117,6 +130,7 @@ function drawArrow(levelpos, dir, offset, size)
     //circle(60, 0, 10)
     pop()
 }
+
 class Bow extends HandItem
 {
     constructor(status)
@@ -126,6 +140,7 @@ class Bow extends HandItem
         this.bowpos = this.pos
         this.drawreach = 0.5
         this.size = 0.1
+        this.bounce = 0.5
     }
     draw()
     {

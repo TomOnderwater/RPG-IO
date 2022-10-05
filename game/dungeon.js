@@ -155,6 +155,8 @@ module.exports = class Dungeon {
             viewport.events = level.getAllEvents()
             viewport.updates = level.getUpdates()
             viewport.builds = level.getBuildingEvents()
+            if (this.ticks % 10 === 0)
+                viewport.leaderboard = this.getLeaderBoard()
             return {type: 'update', data: viewport}
         }
         let active = this.getPlayerAndLevel(id)

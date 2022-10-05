@@ -129,9 +129,13 @@ app.ws('/gamestream', (ws, req) => {
             connection.key = game.key
             connection.id = 'spectator'
             if (gameMaster.manageConnections(connection))
+            {
+              //console.log('connection:', connection)
+              //console.log(gameMaster.getLevelData(connection).width)
               ws.send(JSON.stringify({type: 'spectator',
                 key: connection.key, 
                 level: gameMaster.getLevelData(connection)}))
+            }
               break
           }
         gameMaster.startPlayer(connection)

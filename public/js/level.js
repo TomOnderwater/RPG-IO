@@ -27,16 +27,66 @@ class Event
   }
 }
 
+class Impact extends Event
+{
+  constructor(pos, damage, dir)
+  {
+    super (pos, damage)
+    let count = Math.round(random(1, (damage + 1) * 0.5))
+    this.splinters = []
+    for (let i = 0; i < count; i++)
+    {
+      this.splinters.push(new Splinter(pos, damage, dir))
+    }
+  }
+  draw()
+  {
+    for (let i = this.splinters.length - 1; i >= 0; i--)
+    {
+      let ended = this.splinters[i].draw()
+      if (ended) this.splinters.slice(i, 1)
+    }
+  }
+}
+
+class Splinter
+{
+  constructor(pos, damage, dir)
+  {
+    this.pos = createVector(pos.x, pos.y)
+    this.dia = random(0.02, 0.08 + 0.01 * damage) * cam.zoom
+    this.diaincrement = 0.004 * cam.zoom
+    this.mult = random(0.5, 0.9)
+    this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
+    this.ticks = Math.round(random(50, 60 + damage))
+  }
+  draw()
+  {
+    this.pos.add(this.dir)
+    this.dir.mult(this.mult)
+    let pos = cam.onScreen(this.pos)
+    this.dia += this.diaincrement
+    push()
+    noStroke()
+    fill(50, this.ticks * 2)
+    circle(pos.x, pos.y, this.dia)
+    pop()
+    this.ticks --
+    return (this.ticks <= 0)
+  }
+}
+
 class Slash extends Event
 {
   constructor(pos, damage, dir)
   {
     super (pos, damage)
+    this.maxticks = 50 + damage
     let splatters = Math.round(random(1, (damage + 1) * 0.5))
     this.bloodspatters = []
     for (let i = 0; i < splatters; i++)
     {
-      this.bloodspatters.push(new Blood(pos, damage, dir))
+      this.bloodspatters.push(new Blood(pos, damage, dir, this.maxticks))
     }
   }
   draw()
@@ -78,14 +128,14 @@ class Woosh extends Event
 }
 class Blood
 {
-  constructor(pos, damage, dir)
+  constructor(pos, damage, dir, maxticks)
   {
     this.pos = createVector(pos.x, pos.y)
-    this.dia = random(3, 5 + damage)
-    this.diaincrement = 0.1
+    this.dia = random(0.02, 0.08 + 0.01 * damage) * cam.zoom
+    this.diaincrement = 0.004 * cam.zoom
     this.mult = random(0.5, 0.9)
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
-    this.ticks = Math.round(random(50, 60 + damage))
+    this.ticks = Math.round(random(maxticks * 0.5, maxticks))
   }
   draw()
   {
@@ -231,10 +281,17 @@ class Level {
     //console.log(events)
     events.forEach(event => 
     {
-      if (event.type == 'damage') 
-        this.events.push(new Slash(event.pos, event.damage, event.dir))
-    })
-  }
+      switch(event.type)
+      {
+        case 'damage':
+          this.events.push(new Slash(event.pos, event.damage, event.dir))
+          break
+        default:
+          this.events.push(new Impact(event.pos, event.damage, event.dir))
+        break
+    }
+  })
+}
   updateStructures(newtiles)
   {
     // {x: y: s:, t: }
@@ -288,6 +345,9 @@ class Level {
         case SLIME:
           this.entities.push(new Entity(entity)) // CHANGE TO CRITTER
         break
+        case NONE:
+          this.entities.push(new Fist(entity))
+          break
         default:
           this.entities.push(new HandItem(entity))
         return 

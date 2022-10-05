@@ -20,8 +20,8 @@ function openStream() {
           case 'spectator':
             level.initLevel(msg.level)
             // set appropriate zoom level to display the level
-            //console.log(level)
             cam.updateZoom(width / level.width)
+            cam.updateFocus({x: level.width * 0.5, y: level.height * 0.5}, 1)
             //console.log(cam.zoom)
             //cam.zoom = width / level.width
             key = msg.key
@@ -48,6 +48,9 @@ function updateView(viewport)
   //print(leveldata)
   level.newData(viewport)
 
+  if (viewport.leaderboard)
+  leaderboard = viewport.leaderboard
+
   if (type == 'spectator') return
   player = level.getPlayer(game_id)
   if (viewport.perception)
@@ -64,9 +67,6 @@ function updateView(viewport)
 
   if (viewport.status)
     input.stats.updateData(viewport.status)
-
-  if (viewport.leaderboard)
-      leaderboard = viewport.leaderboard
     
   //print(player, game_id, level.entities)
 }
@@ -97,9 +97,8 @@ async function continueGame()
 
 async function startSpectator()
 {
-  setGameState('loading')
-  openStream()
   setGameState('spectator')
+  openStream()
 }
 
 async function loadLevelData(connection)

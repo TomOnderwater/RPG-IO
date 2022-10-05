@@ -26,6 +26,8 @@ module.exports = class GameMaster
 
     addDungeon()
     {
+
+        // 1 floor, 32 wide, 18 high
         let dungeon = new Dungeon(1, 32, 18, this.createKey(5))
         this.dungeons.push(dungeon)
         return dungeon

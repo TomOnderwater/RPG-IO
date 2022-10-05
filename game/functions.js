@@ -197,7 +197,7 @@ function calcAttack(attack)
             let damage = Math.round(attack.item.destruction * speed * attack.power)
             attack.collision.entity.applyDamage(damage)
             return {
-                type: 'damage', 
+                type: 'impact', 
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage, 

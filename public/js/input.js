@@ -3,17 +3,13 @@ class MobileInput {
     {
         this.inventory = new Inventory(inventorySpecs)
         // check the minimum height of the joysticks
-        let minimumheight = 250
-        let offset = 0
-        let shortage = (height * 0.5) - minimumheight
-        if (shortage < 0) offset = shortage
         this.joystick = new JoyStick({
             dia: 128,
-            area: {x1:  0, y1: (height * 0.5) + offset, x2: width / 2, y2: height
+            area: {x1:  0, y1: 0, x2: width / 2, y2: height
         }})
         this.handStick = new UtitlityStick({
             dia: 150,
-            area: {x1: width / 2, y1: (height * 0.5) + offset, x2: width, y2: height
+            area: {x1: width / 2, y1: 0, x2: width, y2: height
         }})
         this.usedTouches = []
         this.stats = new Stats()

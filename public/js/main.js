@@ -66,8 +66,6 @@ function setup() {
 
   setGameState('loading')
 
-  loadLevelData({key, id: 'spectator', type: 'spectator'})
-
   MOBILE = isMobileDevice()
 
   setFrameRate(30) //frame updates at 30 hz
@@ -75,6 +73,7 @@ function setup() {
   //register player
   if (type === 'player' || type === 'controller') 
   {
+    loadLevelData({key, id: 'spectator', type: 'spectator'})
     setupInput()
     registerPlayer()
   }
@@ -161,7 +160,6 @@ function drawGameOver()
   else cause += (' by ' + message.killer)
   text(info, width * 0.5, height * 0.3)
   text(cause, width * 0.5, height * 0.4)
-
   rectMode(CORNERS)
   fill(0, 255, 0, 100)
   rect(continueArea.x1, continueArea.y1, continueArea.x2, continueArea.y2, rounding)
@@ -279,9 +277,9 @@ function drawSpectator()
   noStroke()
   textSize(30)
   textAlign(TOP, LEFT)
-  text(httpPrefix + host + " key: " + key, 10, 30)
-  drawLeaderBoard({x: 5, y: 40})
-  drawFrameRate({x: width / 2, y: 40})
+  text("go to: " + httpPrefix + host + " and connect with key: " + key, 10, 30)
+  drawLeaderBoard({x: 5, y: 60})
+  drawFrameRate({x: width -70, y: height - 20})
   pop()
 }
 function drawGame()
@@ -309,7 +307,7 @@ function drawGame()
 
   drawLeaderBoard({x: 5, y: 15})
   input.draw()
-  drawFrameRate({x: width / 2, y: 40})
+  drawFrameRate({x: width -70, y: height - 20})
 }
 
 
