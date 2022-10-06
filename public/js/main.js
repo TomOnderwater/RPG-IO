@@ -121,9 +121,14 @@ function setGameState(state)
     case 'lobby':
     nameinput = createInput(inputname)
     nameinput.style('font-size', '30px')
+    nameinput.style('border-radius', '30px')
+    nameinput.style('padding-left', '15px')
+    nameinput.style('maxlength', '12')
 
     keyinput = createInput(key)
     keyinput.style('font-size', '30px')
+    keyinput.style('border-radius', '30px')
+    keyinput.style('padding-left', '15px')
     gamestate = state
     break
     case 'game':
@@ -179,9 +184,9 @@ function drawGameOver()
 
 function lobby()
 {
-  const margin = 100
+  const margin = 100 // for drawing label
   const rounding = 10
-  const minwidth = 120
+  const boxspacing = 70
   // draw the level
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
@@ -196,19 +201,15 @@ function lobby()
       level.draw()
   }
 
-  let box = {x: margin * 2, y: margin, w: width - (margin * 4), h: 40}
-  let s_area = {x1: box.x + box.w + 20, y1: box.y, x2: box.x + box.w + 150, y2: box.y + box.h + 5}
-  if (box.w < minwidth)
-  { //force wider
-    box.x -= (minwidth - box.w)
-    box.w += (minwidth - box.w)
-  }
-  let continueArea = {x1: s_area.x1, y1: s_area.y1 + 100, x2: s_area.x2, y2: s_area.y2 + 100}
+  let box = {x: margin, y: 50, w: width - margin * 2, h: 40}
+  let s_area = {x1: width * 0.55, y1: box.y + boxspacing * 2, x2: width * 0.85, y2: box.y + boxspacing * 3}
+  let continueArea = {x1: width * 0.15, y1: box.y + boxspacing * 2, x2: width * 0.45, y2: box.y + boxspacing * 3}
 
   nameinput.position(box.x, box.y)
   nameinput.size(box.w, box.h)
 
-  keyinput.position(box.x, box.y + 100)
+  console.log(nameinput.value())
+  keyinput.position(box.x, box.y + boxspacing)
   keyinput.size(box.w, box.h)
   push()
   noStroke()
@@ -221,7 +222,7 @@ function lobby()
   textSize(30)
   fill(255)
   text('name:', box.x - 10, box.y + (box.h / 2))
-  text('key:', box.x - 10, box.y + 100 + (box.h * 0.5))
+  text('key:', box.x - 10, box.y + boxspacing + (box.h * 0.5))
   textAlign(CENTER, CENTER)
   fill(0)
   text('start', (s_area.x1 + s_area.x2) / 2, (s_area.y1 + s_area.y2) / 2)
