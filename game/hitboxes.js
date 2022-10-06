@@ -174,19 +174,17 @@ module.exports = class PhysicalBody
         // check if speed is too large
         let loops = 1
         let spd = sqMag(this.speed)
-        let speed = this.speed
-        /*
+        let speedmult = 1
+        
         if (spd > this.diasq) 
         {
             spd = Math.sqrt(spd)
-            loops = Math.floor(Math.sqrt(spd) / this.dia)
-            console.log('loops: ', loops)
-            speed = this.speed / loops
+            loops = Math.round(Math.sqrt(spd) / this.dia)
+            speedmult = 1 / loops
         }
-        */
         for (let loop = 0; loop < loops; loop ++)
         {
-            this.pos = add(this.pos, this.speed) //update position
+            this.pos = add(this.pos, multiply(this.speed, speedmult)) //update position
             if (!this.collides) return []// non-collider
             let foundcollision = false
             let staticCollision = false
@@ -217,8 +215,8 @@ module.exports = class PhysicalBody
                         v2 = multiply(v2, this.collider)
                         this.speed = v1
                         body.speed = v2
-                        this.pos = add(this.pos, v1)
-                        body.pos = add(body.pos, v2)
+                        this.pos = add(this.pos, multiply(v1, speedmult))
+                        body.pos = add(body.pos, multiply(v2, speedmult))
                      
                         collisions.push(collisiondata)
                     } else 
@@ -235,7 +233,7 @@ module.exports = class PhysicalBody
             if (foundcollision) this.pos = this.ppos
             this.ppos = {x: this.pos.x, y: this.pos.y}
             if (staticCollision) 
-                this.pos = add(this.pos, this.speed)
+                this.pos = add(this.pos, multiply(this.speed, speedmult))
         }
         this.applyDrag()
         return collisions

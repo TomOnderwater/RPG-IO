@@ -70,7 +70,7 @@ global.createItem = function(type)
                     attack: 40, 
                     destruction: 2,
                     minimumdraw: 0.15,
-                    bounce: 0.2,
+                    bounce: 0.4,
                     persistent: true,
                     ammo: true}
             case WOOD:

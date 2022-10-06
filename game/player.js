@@ -235,7 +235,7 @@ module.exports = class Player
             if (hand.moving)
             { //hand was moving, what to do?
                 if (item.type === BOW)
-                    this.shoot(1.5)
+                    this.shoot(2)
             }
             hand.moving = false
             this.input.handbounce = {x: 0, y: 0}
@@ -268,7 +268,7 @@ module.exports = class Player
             // Full draw of the bow
         if (item.type === BOW)
         {
-            let treshold = item.reach * 124
+            let treshold = item.reach * 127
             let draw = Func.magnitude(Func.subtract(this.body.pos, hand.body.pos))
             if (draw > treshold && !item.primed) 
                 {
