@@ -113,6 +113,29 @@ function getTouchById(id)
     return null
 }
 
+const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+// binary to string lookup table
+const b2s = alphabet.split('');
+
+// string to binary lookup table
+// 123 == 'z'.charCodeAt(0) + 1
+const s2b = new Array(123);
+for (let i = 0; i < alphabet.length; i++) {
+  s2b[alphabet.charCodeAt(i)] = i;
+}
+
+const bton = (base64) => {
+  let number = 0;
+  const sign = base64.charAt(0) === '-' ? 1 : 0;
+
+  for (let i = sign; i < base64.length; i++) {
+    number = number * 64 + s2b[base64.charCodeAt(i)];
+  }
+
+  return sign ? -number : number;
+}
+
 function isMobileDevice() {
   return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 }

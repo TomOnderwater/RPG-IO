@@ -1,8 +1,12 @@
 const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢', '🐸', '🦋', '🐞']
-function randomAnimal()
+const monsters = ['🕷️', '🦇', '🐗', '🐞', '🦂', '🐙', '🦀', '🐲', '⛄', '🧟‍♀️', '🧟‍♂️']
+
+function randomAnimal(seed)
 {
-    let index = round(random(animals.length - 1))
-    return animals[index]
+    console.log(seed)
+    randomSeed(seed)
+    let index = round(random(monsters.length - 1))
+    return monsters[index]
 }
 
 class Entity
@@ -20,7 +24,7 @@ class Entity
         this.dia = 0.4
         this.speed = 0
         this.bounce = 0.2
-        this.face = randomAnimal()
+        this.face = randomAnimal(bton(this.id))
     }
     update()
     {
