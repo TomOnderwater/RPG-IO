@@ -58,6 +58,8 @@ function updateView(viewport)
         //console.log(viewport.perception)
         if (player) player.updatePerception(viewport.perception)
       }
+  if (viewport.feedback)
+      handleFeedback(viewport.feedback)
   //console.log(viewport)
   if (viewport.inventory)
   {

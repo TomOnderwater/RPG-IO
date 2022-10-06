@@ -13,6 +13,24 @@ function bounce(p, t, bounce)
   return createVector(p.x + ((t.x - p.x) * bounce), p.y + ((t.y - p.y) * bounce))
 }
 
+function rumble(duration)
+{
+  console.log('vibratingL:', duration)
+  navigator.vibrate(duration)
+}
+
+function handleFeedback(feedback)
+{
+  for (let event of feedback)
+  {
+    switch(event.type)
+    {
+      case 'prime':
+        rumble(50)
+      break
+    }
+  }
+}
 function drawFrameRate(pos)
 {
   push()

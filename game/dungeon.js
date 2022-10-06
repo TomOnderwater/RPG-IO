@@ -174,6 +174,8 @@ module.exports = class Dungeon {
         let inventoryUpdate = active.player.getInventoryUpdate()
         if (inventoryUpdate) viewport.inventory = inventoryUpdate
         
+        let controllerFeedback = active.player.getFeedback()
+            if (controllerFeedback) viewport.feedback = controllerFeedback
         // set update frequency for misc
         if (this.ticks % 10 === 0) 
         {

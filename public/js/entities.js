@@ -144,7 +144,6 @@ class Bow extends HandItem
         this.bowpos = this.pos
         this.drawreach = 0.5
         this.size = 0.1
-        this.bounce = 0.5
     }
     draw()
     {

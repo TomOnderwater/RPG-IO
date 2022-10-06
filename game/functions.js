@@ -142,7 +142,8 @@ function fixPos(pos, digits)
 }
   function rotatingBounce(v1, v2, b)
   {
-      return {mag: bounce(v1.mag, v2.mag, b), rot: convergeAngle(v1.rot, v2.rot, b)}
+      return getVector({mag: bounce(magnitude(v1), magnitude(v2), b), 
+        rot: convergeAngle(getAngle(v1), getAngle(v2), b)})
   }
 
   function constrain(val, min, max)

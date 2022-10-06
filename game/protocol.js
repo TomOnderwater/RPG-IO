@@ -43,7 +43,7 @@ global.createItem = function(type)
                     rad: 0.1, 
                     attack: 20, 
                     destruction: 3,
-                    bounce: 0.6,
+                    bounce: 0.4,
                     persistent: true,
                     ammo: false}
             case NONE:
@@ -56,7 +56,7 @@ global.createItem = function(type)
                     rad: 0.05, 
                     attack: 5, 
                     destruction: 3,
-                    bounce: 0.6,
+                    bounce: 0.4,
                     persistent: true,
                     ammo: false}
             case BOW:
@@ -84,6 +84,7 @@ global.createItem = function(type)
                     attack: 0, 
                     destruction: 0,
                     persistent: false,
+                    bounce: 0.4,
                     ammo: false}
             case ROCK:
                 return {
@@ -95,6 +96,7 @@ global.createItem = function(type)
                     rad: 0.1, 
                     attack: 0, 
                     destruction: 0,
+                    bounce: 0.4,
                     persistent: false,
                     ammo: false}
         }

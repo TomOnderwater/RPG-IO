@@ -13,7 +13,8 @@ module.exports = class Player
         this.body = new PhysicalBody({type: 'circle', entity: this, pos: data.pos, rad: 0.2})
         this.input = {
             dir: {x: 0, y: 0}, 
-            hand: {x: 0, y: 0}, 
+            hand: {x: 0, y: 0},
+            handbounce: {x: 0, y: 0}, 
             actions: []
         } //controller input
         this.inventory = new Inventory(6)
@@ -26,7 +27,7 @@ module.exports = class Player
             moving: false}
         
         // STATS
-        this.speedstat = 0.0005
+        this.speedstat = 0.0006
         this.perceptionstat = 8
         this.heading = 0
 
@@ -116,11 +117,14 @@ module.exports = class Player
 
         //get the ground surface
         let surfacespeed = level.getGroundSpeed(this.body.pos)
-        
+
+        // move the body
         this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
 
+        // move the hand
         this.handlePhysical(this.input.hand)
+
         // integrate into
         if (this.hand.moving && this.hand.item.physical)
         {
@@ -154,6 +158,18 @@ module.exports = class Player
     {
         return {id : this.id, name: this.name, score: this.status.xp}
     }
+    getFeedback()
+    {
+        //console.log("hi")
+        // some statement checking for feedback
+        if (this.primed)
+        {
+            this.primed = false
+            console.log('sending feedback')
+            return [{type: 'prime'}]
+        }
+        return false
+    }
     data() 
         {
             let pos = Func.fixPos(this.body.pos, 2)
@@ -178,14 +194,17 @@ module.exports = class Player
         this.hand.item = createItem(type)
         this.hand.moving = false
     }
-    shoot(_dir, power)
+    shoot(power, _dir)
     {
-        let item = this.hand.item
+        let hand = this.hand
+        let item = hand.item
         // check ammo before shooting:
+        let _d = _dir || Func.subtract(Func.subtract(this.body.pos, this.body.speed), hand.body.pos)
 
-        // get direction of the arrow and add it
-        let dir = Func.multiply(_dir, power)
-        if (Func.magnitude(_dir) > item.minimumdraw)
+        let dir = Func.multiply(_d, power)
+        // for debug purposes
+
+        if (Func.magnitude(dir) > item.minimumdraw)
         {
             if (!this.inventory.canRemove({type: item.type, count: 1}))
                 return
@@ -201,7 +220,7 @@ module.exports = class Player
                 })
             }
     }
-    handlePhysical(input)
+    handlePhysical()
     {
         //if (Func.magnitude)
         let hand = this.hand
@@ -211,14 +230,15 @@ module.exports = class Player
             this.resetHand(this.inventory.getSelectedType())
 
         // what to do when input turns to zero physical ends after this loop
-        if (Func.zeroVector(input)) 
+        if (Func.zeroVector(this.input.hand)) 
         {
             if (hand.moving)
             { //hand was moving, what to do?
                 if (item.type === BOW)
-                    this.shoot(Func.subtract(this.body.pos, hand.body.pos), 1.5)
+                    this.shoot(1.5)
             }
             hand.moving = false
+            this.input.handbounce = {x: 0, y: 0}
             hand.body.pos = this.body.pos // follow player pos
             return
         }
@@ -230,11 +250,35 @@ module.exports = class Player
                 hand.moving = true
             }
         // set target
-        let target = Func.add(this.body.pos, Func.multiply(input, item.reach))
-        hand.body.target(target)
-        if (!item.physical) hand.body.update([])
+        if (!item.physical)
+        {
+            //console.log(input, item.bounce)
+            let target = Func.multiply(this.input.hand, item.reach)
+            this.input.handbounce = Func.squareBounce(this.input.handbounce, target, item.bounce)
+            hand.body.pos = Func.add(this.body.pos, this.input.handbounce)
+        }
+        else 
+        {
+            let target = Func.add(this.body.pos, Func.multiply(this.input.hand, item.reach))
+            hand.body.target(target)
+        }
         if (item.building)
             this.level.build(hand) // will try to build
+
+            // Full draw of the bow
+        if (item.type === BOW)
+        {
+            let treshold = item.reach * 124
+            let draw = Func.magnitude(Func.subtract(this.body.pos, hand.body.pos))
+            if (draw > treshold && !item.primed) 
+                {
+                    //console.log('primed!', draw)
+                    this.primed = true
+                    // send prime signal to client
+                    item.primed = true
+                }
+            else if (draw < treshold) item.primed = false
+        }
         //console.log(this.hand.body.pos)
     }
     getInventoryUpdate()

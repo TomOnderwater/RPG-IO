@@ -244,11 +244,12 @@ class Level {
     for (let buildingevent of this.buildingevents)
     {
       let pos = cam.onScreen(buildingevent.p)
-      let border = buildingevent.c * cam.zoom * 0.25
+      let b2 = cam.zoom * 0.25
+      let border = (1 - buildingevent.c) * b2
       push()
       noFill()
       stroke(255, 100 - buildingevent.c)
-      strokeWeight(border)
+      strokeWeight(b2 - border)
       //console.log(border)
       translate(pos.x, pos.y)
 

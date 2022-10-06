@@ -7,6 +7,11 @@ function Dist(a, b) { // use sparingly
     return Math.sqrt(sqDist(a, b))
 }
 
+function sqMag(vec)
+{
+    return vec.x * vec.x + vec.y * vec.y
+}
+
 function subtract(p1, p2) {
     return {
         x: p1.x - p2.x,
@@ -149,6 +154,8 @@ module.exports = class PhysicalBody
         this.data = data
         this.entity = data.entity || null
         if (data.rad) this.rad = data.rad
+        if (this.rad) this.dia = this.rad * 2
+        if (this.rad) this.diasq = this.dia * this.dia
         if (data.height) this.height = data.height
         if (data.width) this.width = data.width
         this.static = data.static || false
@@ -163,57 +170,72 @@ module.exports = class PhysicalBody
     {
         let collisions = [] // init empty
         if (this.static) return []//static, no speed
-        this.pos = add(this.pos, this.speed) //update position
-        if (!this.collides) return []// non-collider
-        let foundcollision = false
-        let staticCollision = false
-        
-        for (let body of bodies)
-        {
-            //if (body.type == 'circle') console.log(body)
-            if (body === this || !body.collides || body === exception) continue //don't check with self or non-colliders
-            let collision = this.collide(body)
-            if (collision) 
-            {
-                let collisiondata = {pos: collision}
-                if (body.entity !== null) collisiondata.entity = body.entity
-                foundcollision = true
-                if (!body.static) //other body isn't static, divide forces
-                {
-                    // some if case if collider is 'arrow' or something to link object with parent and not do this:
 
-                    // calculate relative speed of the collision
-                    collisiondata.speed = subtract(this.speed, body.speed)
-                    // multiplying a matrix is cheaper than dividing
-                    let dr = 1 / Dist(this.pos, body.pos)
-                    let n = multiply(subtract(body.pos, this.pos), dr)
-                    let p = 2 * (this.speed.x * n.x + this.speed.y * n.y - body.speed.x * n.x - body.speed.y) / (this.mass + body.mass)
-                    let v1 = {x: this.speed.x - p * this.mass * n.x, y: this.speed.y - p * this.mass * n.y}
-                    let v2 = {x: body.speed.x + p * body.mass * n.x, y: body.speed.x + p * body.mass * n.y}
-                    v1 = multiply(v1, this.collider)
-                    v2 = multiply(v2, this.collider)
-                     this.speed = v1
-                     body.speed = v2
-                     this.pos = add(this.pos, v1)
-                     body.pos = add(body.pos, v2)
-                     
-                    collisions.push(collisiondata)
-                } else 
+        // check if speed is too large
+        let loops = 1
+        let spd = sqMag(this.speed)
+        let speed = this.speed
+        /*
+        if (spd > this.diasq) 
+        {
+            spd = Math.sqrt(spd)
+            loops = Math.floor(Math.sqrt(spd) / this.dia)
+            console.log('loops: ', loops)
+            speed = this.speed / loops
+        }
+        */
+        for (let loop = 0; loop < loops; loop ++)
+        {
+            this.pos = add(this.pos, this.speed) //update position
+            if (!this.collides) return []// non-collider
+            let foundcollision = false
+            let staticCollision = false
+        
+            for (let body of bodies)
+            {
+                //if (body.type == 'circle') console.log(body)
+                if (body === this || !body.collides || body === exception) continue //don't check with self or non-colliders
+                let collision = this.collide(body)
+                if (collision) 
                 {
-                    let normal = this.normal(collision, body)
-                    this.speed = reflect(this.speed, normal)
-                    this.speed = multiply(this.speed, this.collider)
-                    collisiondata.speed = this.speed
-                    collisions.push(collisiondata)
-                    staticCollision = true
+                    let collisiondata = {pos: collision}
+                    if (body.entity !== null) collisiondata.entity = body.entity
+                    foundcollision = true
+                    if (!body.static) //other body isn't static, divide forces
+                    {
+                        // some if case if collider is 'arrow' or something to link object with parent and not do this:
+
+                        // calculate relative speed of the collision
+                        collisiondata.speed = subtract(this.speed, body.speed)
+                        // multiplying a matrix is cheaper than dividing
+                        let dr = 1 / Dist(this.pos, body.pos)
+                        let n = multiply(subtract(body.pos, this.pos), dr)
+                        let p = 2 * (this.speed.x * n.x + this.speed.y * n.y - body.speed.x * n.x - body.speed.y) / (this.mass + body.mass)
+                        let v1 = {x: this.speed.x - p * this.mass * n.x, y: this.speed.y - p * this.mass * n.y}
+                        let v2 = {x: body.speed.x + p * body.mass * n.x, y: body.speed.x + p * body.mass * n.y}
+                        v1 = multiply(v1, this.collider)
+                        v2 = multiply(v2, this.collider)
+                        this.speed = v1
+                        body.speed = v2
+                        this.pos = add(this.pos, v1)
+                        body.pos = add(body.pos, v2)
+                     
+                        collisions.push(collisiondata)
+                    } else 
+                    {
+                        let normal = this.normal(collision, body)
+                        this.speed = reflect(this.speed, normal)
+                        this.speed = multiply(this.speed, this.collider)
+                        collisiondata.speed = this.speed
+                        collisions.push(collisiondata)
+                        staticCollision = true
+                    }
                 }
             }
-        }
-        if (foundcollision) this.pos = this.ppos
-        this.ppos = {x: this.pos.x, y: this.pos.y}
-        if (staticCollision) 
-        {
-            this.pos = add(this.pos, this.speed)
+            if (foundcollision) this.pos = this.ppos
+            this.ppos = {x: this.pos.x, y: this.pos.y}
+            if (staticCollision) 
+                this.pos = add(this.pos, this.speed)
         }
         this.applyDrag()
         return collisions
