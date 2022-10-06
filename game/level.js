@@ -97,6 +97,10 @@ module.exports = class Level
             this.placeItem(item)
         }
     }
+    addDrops(drops)
+    {
+        drops.forEach(drop => this.placeItem(drop))
+    }
     placeItem(data)
     {
         data.id = this.dungeon.assignID() //is handled like an entity
@@ -121,7 +125,6 @@ module.exports = class Level
         for (let i = this.rangedattacks.length - 1; i >= 0; i--)
         {
             let ended = this.rangedattacks[i].update(this, entities)
-            if (ended) console.log('hit')
             if (ended) this.rangedattacks.splice(i, 1)
         }
     }
@@ -170,6 +173,7 @@ module.exports = class Level
             let mob = this.mobs[i]
             if (mob.dead())
             {
+                this.addDrops(mob.getDrop())
                 let killer = this.getEntity(mob.lastattacker)
                 if (killer !== null)
                 {
@@ -205,7 +209,8 @@ module.exports = class Level
                     if (tile.structure.health <= 0)
                     {
                         let items = tile.destroyStructure()
-                        items.forEach(item => this.placeItem(item))
+                        this.addDrops(items)
+                        //items.forEach(item => this.placeItem(item))
                         this.updates.push(tile.getData())
                     }
                 }
@@ -318,7 +323,6 @@ module.exports = class Level
     }
     addEvent(event)
     {
-        //console.log('new event:', event)
         this.events.push(event)
     }
     closeBodies(pos, colliders, range)
@@ -334,7 +338,7 @@ module.exports = class Level
     }
     isFreeTile(_pos) //check if there's something on the tile
     {
-        let colliders = [...this.players, ...this.entities, ...this.rangedattacks, ...this.mobs]
+        let colliders = [...this.players, ...this.entities, ...this.mobs]
         // create a square body
         let pos = {
             x: Func.constrain(Math.floor(_pos.x), 0, this.width - 1),

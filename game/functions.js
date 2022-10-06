@@ -183,6 +183,16 @@ function zeroVector(vec)
     return (vec.x === 0 && vec.y === 0)
 }
 
+const names = ['Douglas', 'Harry', 'Peter', "Dennis", "Tom", "Margot", "Abraham",
+'Roger', 'Anne', 'Fatima', 'Jonathan', 'Arthur', 'Harriet', 'Kate', 'V', 'Mr. X',
+'Hannah', 'Ben', 'Bob', 'Henry', 'Bill', 'Ashley', "Jennifer", "T-Rex", 'Snoop']
+
+function randomName()
+{
+    let index = Math.round((Math.random() * names.length) - 0.5) 
+    return names[index]
+}
+
 function calcAttack(attack)
 {
     if (!attack.power) attack.power = 1
@@ -234,11 +244,16 @@ function floorPos(pos)
   return {x: Math.floor(pos.x), y: Math.floor(pos.y)}
 }
 
+function randomVector(max)
+{
+    return {x: (Math.random() - 0.5) * 2 * max, 
+        y: (Math.random() - 0.5) * 2 * max}
+}
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, 
-    constrain, toBase64, floorPos
+    constrain, toBase64, floorPos, randomName, randomVector
 }

@@ -15,6 +15,7 @@ const WOOD = 'W'
 const BOW = 'B'
 const ARROW = 'A'
 const NONE = 'N'
+const AMMO = '*'
 
 
 let inventorySpecs = {rowcount: 6, visible: 1}

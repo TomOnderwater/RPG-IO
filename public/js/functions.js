@@ -53,7 +53,10 @@ function drawItem(type, pos, size, _rot)
     case ROCK:
       drawIcon(stoneicon, pos, size, rot)
       return
-  }
+    case AMMO:
+      drawIcon(ammoicon, pos, size, rot)
+      return
+    }
   push()
   translate(pos.x, pos.y)
   rotate(rot)

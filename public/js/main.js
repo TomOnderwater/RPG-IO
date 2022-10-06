@@ -17,7 +17,8 @@ let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
 // TEXTURES
 let walltexture, woodicon, stoneicon, rocktexture, 
 grassTexture, stoneTexture, waterTexture, sandTexture,
-dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture
+dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture,
+ammoicon
 
 let textures = []
 
@@ -50,8 +51,7 @@ function preload()
   gravelTexture = loadImage('assets/textures/gravel_texture1.jpg')
   woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
-  //console.log('loading sounds')
-  //sound = new Sound()
+  ammoicon = loadImage('assets/textures/ammobox.png')
 }
 
 function setup() {

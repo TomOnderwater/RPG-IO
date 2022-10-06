@@ -12,7 +12,6 @@ class MobileInput {
             area: {x1: width / 2, y1: 0, x2: width, y2: height
         }})
         this.usedTouches = []
-        this.stats = new Stats()
     }
     update()
     {
@@ -27,10 +26,6 @@ class MobileInput {
         // get joysticks
         let joyout = this.joystick.update()
         let handout = this.handStick.update()
-
-        let pointallocations = this.stats.update()
-        if (pointallocations !== null) 
-            actions = [...actions, ...pointallocations]
 
         //print(actions)
         //print(joyout)
@@ -48,7 +43,6 @@ class MobileInput {
         this.joystick.draw()
         this.handStick.draw()
         this.inventory.draw()
-        this.stats.draw()
     }
     isFree(t)
     {
@@ -276,9 +270,9 @@ class Slot
     {
         push()
         if (this.selected)
-            fill(0, 100, 150, 100)
+            fill(100, 100, 200, 200)
         else
-            noFill()
+            fill(100, 150)
         stroke(0)
         strokeWeight(2)
         //if (this.doubleclicked) fill(0, 0, 255, 100)
@@ -291,7 +285,9 @@ class Slot
             noStroke() //strokeWeight(1)
             fill(255)
             stroke(255)
-            text(this.item.count, pos.x, pos.y)
+            textAlign(CENTER, CENTER)
+            if (this.item.count > 0)
+                text(this.item.count, pos.x, pos.y)
         }
         pop()
     }
@@ -323,59 +319,6 @@ class Slot
     }
 }
 
-/*
-class LeaderBoard
-{
-    constructor()
-    {
-        this.area = {x1:10, y1: 10, x2: 200, y2: 200}
-        this.width = this.area.x2 - this.area.x1
-        this.height = this.area.y2 - this.area.y1
-        this.top5 = []
-        this.you = {name: 'you', score: 0}
-        this.intop5 = false
-    }
-    updateLeaderBoard(leaderboard)
-    {
-        this.intop5 = false
-        for (let entry of leaderboard.top5)
-        {
-            entry.bold = false
-            if (leaderboard.you.name == entry.name && leaderboard.you.score == entry.score)
-            {
-                entry.bold = true
-                this.intop5 = true
-            }
-        }
-        this.top5 = leaderboard.top5
-        this.you = leaderboard.you
-    }
-    draw()
-    {
-        push()
-        textAlign(LEFT, TOP)
-        const s = 18
-        let ypos = this.area.y1
-        const spacing = s + 4
-        textSize(s)
-        fill(255)
-        stroke(255)
-        text('Leaderboard', this.area.x1, ypos)
-        ypos += spacing
-        for (let entry of this.top5)
-        {
-            if (entry.bold) strokeWeight(2)
-            else (strokeWeight(0))
-            text(entry.name + ' ' + entry.score, this.area.x1, ypos)
-            ypos += spacing
-        }
-        if (!this.intop5) 
-            text(this.you.name + ' ' + this.you.score, this.area.x1, ypos)
-        pop()
-    }
-}
-
-*/
 
 class Settings
 { // draw on the top left corner
@@ -383,118 +326,6 @@ class Settings
     constructor()
     {
 
-    }
-}
-
-class Stats
-{ // draw on the top right corner
-    constructor()
-    {
-        this.area = {x1:width - 130, y1: 15, x2: width - 20, y2: 40}
-        this.width = this.area.x2 - this.area.x1
-        this.height = this.area.y2 - this.area.y1
-        this.maxXP = 100
-        this.xp = 0
-        this.level = 1
-
-        this.open = false
-        this.points = 0
-        this.strength = 1
-        this.vitality = 1
-        this.speed = 1
-    }
-    updateData(status)
-    {
-        this.xp = status.xp
-        this.maxXP = status.xpnext
-        if (status.level > this.level) player.levelUP()
-        this.level = status.level
-        this.points = status.points
-
-        this.strength = status.strength
-        this.vitality = status.vitality
-        this.speed = status.speed
-
-        this.strengthButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 20}, '1P')
-        this.vitalityButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 50}, '1P')
-        this.speedButton = new SimpleButton({x: this.area.x2 - 10, y: this.area.y2 + 80}, '1P')
-    }
-    draw()
-    {
-        let w = map(this.xp, 0, this.maxXP, 0, this.width)
-        if (!this.open && this.points > 0) 
-        {
-            push()
-            textAlign(RIGHT)
-            stroke(0)
-            fill(255)
-            text('points available!', this.area.x1 - 20, (this.area.y2 + this.area.y1) * 0.5)
-            noFill()
-            stroke(0, 100, 255)
-            strokeWeight(3)
-            rect(this.area.x1 - 5, this.area.y1 - 5, this.width + 10, this.height + 10, 8)
-            pop()
-        }
-        // XP BAR
-        push()
-        stroke(0)
-        strokeWeight(1)
-        noFill()
-        rect(this.area.x1, this.area.y1, this.width, 12, 5)
-        noStroke()
-        fill(0, 255, 255, 100)
-        rect(this.area.x1, this.area.y1, w, 12, 5)
-
-        // TEXT
-        fill(255)
-        stroke(0)
-        strokeWeight(1)
-        textAlign(LEFT)
-        text('LVL ' + this.level, this.area.x1, this.area.y2)
-        textAlign(RIGHT)
-        text(this.xp + '/' + this.maxXP, this.area.x2, this.area.y2)
-
-        if (this.open) this.drawAttributes()
-        pop()
-    }
-    drawAttributes()
-    {
-        textSize(16)
-        textAlign(RIGHT, CENTER)
-        if (this.points)
-        {
-            this.strengthButton.draw()
-            this.vitalityButton.draw()
-            this.speedButton.draw()
-        }
-        const offset = 30
-        text('strength: ' + this.strength, this.strengthButton.pos.x - offset, this.strengthButton.pos.y)
-        text('vitality: ' + this.vitality, this.vitalityButton.pos.x - offset, this.vitalityButton.pos.y)
-        text('agility: ' + this.speed, this.speedButton.pos.x - offset, this.speedButton.pos.y)
-    }
-    toggleAttributes()
-    {
-        let allocations = []
-        if (this.strengthButton.update()) allocations.push({type: 'allocation', attribute: 'strength'})
-        if (this.speedButton.update()) allocations.push({type: 'allocation', attribute: 'speed'})
-        if (this.vitalityButton.update()) allocations.push({type: 'allocation', attribute: 'vitality'})
-        if (!allocations.length) return null
-        return allocations
-    }
-    update()
-    {
-        for (let t of touches)
-        {
-            if (onField(t, this.area) && !inList(t.id, input.usedTouches))
-            {
-                input.addTouch(t)
-                // switch to open
-                this.open = !this.open
-                return null
-            }
-        }
-        if (this.open) return this.toggleAttributes()
-        return null
     }
 }
 

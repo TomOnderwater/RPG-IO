@@ -258,13 +258,23 @@ module.exports = class Dungeon {
     createItem(type, count)
     {
         let item = createItem(type)
-        item.count = count || 1
+        item.count = count || 0
         item.id = this.assignID()
         return item
     }
     assignID()
     {
         return Func.toBase64(this.entitycount ++)
+    }
+    createLoadOut(type)
+    {
+        switch(type)
+        {
+            case 'archer':
+                return this.createItem(BOW, 20)
+            default:
+                return this.createItem(SWORD)
+        }
     }
     addPlayer(player)
     {
@@ -274,7 +284,7 @@ module.exports = class Dungeon {
         //let item = this.createItem('sword')
         let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
 
-        new_player.pickup(this.createItem(BOW))
+        new_player.pickup(this.createItem(BOW, 20))
         new_player.pickup(this.createItem(SWORD))
         new_player.initHand(this.assignID()) // assign an id for the item in hand
         // add to queue

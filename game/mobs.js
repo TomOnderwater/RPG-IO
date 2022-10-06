@@ -38,7 +38,7 @@ class Slime
         this.health = this.stats.health
         this.maxhealth = this.stats.health
         this.type = SLIME
-        this.name = SLIME
+        this.name = Func.randomName() + ' the Critter'
         this.xp = 0
         this.enemies = [PLAYER]
         this.attack = this.stats.attack
@@ -98,6 +98,19 @@ class Slime
     {
         if (this.health < this.maxhealth) this.health += 1
         if (this.stamina < this.stats.stamina) this.stamina += 1
+    }
+    getDrop()
+    {
+        let items = []
+        //drop.item = createItem(this.)
+        if (Math.random() > 0.4) 
+        {
+            let drop = {pos: this.body.getCenter()}
+            drop.item = {type: AMMO}
+            drop.item.count = Math.round(3 + Math.random() * 3)
+            items.push(drop)
+        }
+        return items
     }
     isEnemy(other)
     {

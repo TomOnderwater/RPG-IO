@@ -19,7 +19,13 @@ module.exports = class Player
         this.inventory = new Inventory(6)
         this.session = data.session
         this.name = data.name
-        this.hand = {id: 0, item: createItem('none'), body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), owner: this.id, moving: false}
+        this.hand = {id: 0, 
+            item: createItem('none'), 
+            body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), 
+            owner: this.id, 
+            moving: false}
+        
+        // STATS
         this.speedstat = 0.0005
         this.perceptionstat = 8
         this.heading = 0
@@ -94,7 +100,7 @@ module.exports = class Player
     }
     pickup(item)
     {
-        console.log(item)
+        console.log('picking up', item)
         this.inventory.add(item)
         //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
@@ -113,10 +119,6 @@ module.exports = class Player
         
         this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
-
-                // rotate sprite
-                if (Func.magnitude(this.body.speed) > 0.01)
-                this.heading = Math.atan2(this.body.speed.y, this.body.speed.x)
 
         this.handlePhysical(this.input.hand)
         // integrate into
@@ -152,11 +154,6 @@ module.exports = class Player
     {
         return {id : this.id, name: this.name, score: this.status.xp}
     }
-    sees(pos)
-    {
-        return (pos.x >= this.body.pos.x - this.perceptionstat && pos.x <= this.body.pos.x + this.perceptionstat &&
-        pos.y >= this.body.pos.y - this.perceptionstat && pos.y <= this.body.pos.y + this.perceptionstat)
-    }
     data() 
         {
             let pos = Func.fixPos(this.body.pos, 2)
@@ -179,6 +176,30 @@ module.exports = class Player
     resetHand(type)
     {
         this.hand.item = createItem(type)
+        this.hand.moving = false
+    }
+    shoot(_dir, power)
+    {
+        let item = this.hand.item
+        // check ammo before shooting:
+
+        // get direction of the arrow and add it
+        let dir = Func.multiply(_dir, power)
+        if (Func.magnitude(_dir) > item.minimumdraw)
+        {
+            if (!this.inventory.canRemove({type: item.type, count: 1}))
+                return
+            // remove ammo (based on shot type)
+            this.inventory.remove({type: item.type, count: 1})
+            this.level.addRangedAttack(
+                {
+                    owner: this, 
+                    pos: this.body.pos, 
+                    attack: item.attack, 
+                    dir, rad: 0.1, mass: 2,
+                    type: ARROW
+                })
+            }
     }
     handlePhysical(input)
     {
@@ -186,27 +207,16 @@ module.exports = class Player
         let hand = this.hand
         let item = hand.item
 
-        if (this.inventory.isUpdated(item)) 
+        if (this.inventory.isUpdated(item))
             this.resetHand(this.inventory.getSelectedType())
 
         // what to do when input turns to zero physical ends after this loop
         if (Func.zeroVector(input)) 
         {
             if (hand.moving)
-            {
+            { //hand was moving, what to do?
                 if (item.type === BOW)
-                {
-                    //shoot an arrow
-                    let dir = Func.multiply(Func.subtract(this.body.pos, hand.body.pos), 1.5)
-                    if (Func.magnitude(dir) > 0.1)
-                        this.level.addRangedAttack(
-                            {
-                                owner: this, 
-                                pos: this.body.pos, 
-                                attack: item.attack, 
-                                dir, rad: 0.1, mass: 2,
-                                type: ARROW})
-                    }
+                    this.shoot(Func.subtract(this.body.pos, hand.body.pos), 1.5)
             }
             hand.moving = false
             hand.body.pos = this.body.pos // follow player pos
@@ -215,7 +225,8 @@ module.exports = class Player
         // spawn a new item
         if (!hand.moving) 
             {
-                hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass})
+                let bounce = item.bounce
+                hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass, bounce})
                 hand.moving = true
             }
         // set target

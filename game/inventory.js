@@ -53,23 +53,45 @@ module.exports = class Inventory {
         this.slots[id].selected = true
         //console.log(this.slots)
     }
+    canRemove(item)
+    {
+        for (let slot of this.slots)
+        {
+            if (slot.item.type === item.type)
+            {
+                return (slot.item.count - item.count >= 0)
+            }
+        }
+        return false
+    }
     remove(item)
     {
         for (let slot of this.slots)
         {
-            console.log(slot.item, item)
             if (slot.item.type === item.type)
                 {
+                    console.log('removing', item, 'from', slot.item)
                     slot.item.count -= item.count
-                    if (slot.item.count <= 0) 
+                    if (slot.item.count <= 0 && !slot.item.persistent) 
                         slot.empty()
                     this.updated = true
                     break
                 }
         }
     }
+    addAmmo(count)
+    {
+        for (let slot of this.slots)
+        {
+            if (slot.ammo) 
+                slot.item.count += count
+        }
+    }
     add(item)
     {
+        if (item.type === AMMO)
+            return this.addAmmo(item.count)
+            
         for (let slot of this.slots)
         {
             if (slot.item.type === item.type) 
@@ -77,10 +99,12 @@ module.exports = class Inventory {
                 slot.item.count += item.count
                 break
             }
-            if (slot.item.count === 0)
+            if (slot.item.count === 0 && slot.item.type === NONE)
             {
                 slot.item.type = item.type
                 slot.item.count += item.count
+                slot.item.persistent = item.persistent
+                slot.ammo = item.ammo
                 break
             }
         }
@@ -94,10 +118,15 @@ class Slot
     {
         this.id = id
         this.item = {type: NONE, count: 0}
+        this.persistent = true
         this.selected = false
+        this.ammo = false
     }
     empty()
     {
+        console.log('emptying slot')
         this.item = {type: NONE, count: 0}
+        this.ammo = false
+        this.persistent = true
     }
 }

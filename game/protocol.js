@@ -27,6 +27,7 @@ global.SWORD = 'S'
 global.BOW = 'B'
 global.ARROW = 'A'
 global.NONE = 'N'
+global.AMMO = '*'
 
 global.createItem = function(type)
 {
@@ -42,8 +43,9 @@ global.createItem = function(type)
                     rad: 0.1, 
                     attack: 20, 
                     destruction: 3,
-                    bounce: 0.7
-                }
+                    bounce: 0.6,
+                    persistent: true,
+                    ammo: false}
             case NONE:
                 return {
                     type: NONE, 
@@ -53,7 +55,10 @@ global.createItem = function(type)
                     reach: 0.01, 
                     rad: 0.05, 
                     attack: 5, 
-                    destruction: 3}
+                    destruction: 3,
+                    bounce: 0.6,
+                    persistent: true,
+                    ammo: false}
             case BOW:
                 return {
                     type: BOW, 
@@ -63,7 +68,11 @@ global.createItem = function(type)
                     reach: 0.0025, 
                     rad: 0.05, 
                     attack: 40, 
-                    destruction: 2}
+                    destruction: 2,
+                    minimumdraw: 0.15,
+                    bounce: 0.2,
+                    persistent: true,
+                    ammo: true}
             case WOOD:
                 return {
                     type: WOOD, 
@@ -73,7 +82,9 @@ global.createItem = function(type)
                     reach: 0.01, 
                     rad: 0.1, 
                     attack: 0, 
-                    destruction: 0}
+                    destruction: 0,
+                    persistent: false,
+                    ammo: false}
             case ROCK:
                 return {
                     type: ROCK, 
@@ -83,6 +94,8 @@ global.createItem = function(type)
                     reach: 0.01, 
                     rad: 0.1, 
                     attack: 0, 
-                    destruction: 0}
+                    destruction: 0,
+                    persistent: false,
+                    ammo: false}
         }
 }
