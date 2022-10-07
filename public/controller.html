@@ -32,6 +32,15 @@
     <script src="js/tile.js"></script>
     <script>
         let type = 'controller'
+
+        window.addEventListener("touchstart", touchHandler, false)
+
+      function touchHandler(event){
+      if(event.touches.length > 1){
+          //the event is multi-touch
+          //you can then prevent the behavior
+          event.preventDefault()
+      }
     </script>
     <script src="js/main.js"></script>
   </head>
