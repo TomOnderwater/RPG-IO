@@ -2,7 +2,7 @@
 <html lang="">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>rpg.io</title>
     <style>
       body {
@@ -10,6 +10,7 @@
         margin: 0;
         position: fixed;
         overscroll-behavior: contain; /*supress page refresh by drag*/
+        touch-action: none;
       }
     </style>
 
@@ -32,16 +33,24 @@
     <script src="js/tile.js"></script>
     <script>
       let type = 'player'
+    
+      document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+    // special hack to prevent zoom-to-tabs gesture in safari
+    document.body.style.zoom = 0.99;
+});
 
-      window.addEventListener("touchstart", touchHandler, false)
+document.addEventListener('gesturechange', function(e) {
+    e.preventDefault();
+    // special hack to prevent zoom-to-tabs gesture in safari
+    document.body.style.zoom = 0.99;
+});
 
-      function touchHandler(event){
-      if(event.touches.length > 1){
-          //the event is multi-touch
-          //you can then prevent the behavior
-          event.preventDefault()
-      }
-}
+document.addEventListener('gestureend', function(e) {
+    e.preventDefault();
+    // special hack to prevent zoom-to-tabs gesture in safari
+    document.body.style.zoom = 0.99;
+});
   </script>
     <script src="js/main.js"></script>
   </head>
