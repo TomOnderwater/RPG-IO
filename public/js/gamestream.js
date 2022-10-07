@@ -53,11 +53,7 @@ function updateView(viewport)
 
   if (type == 'spectator') return
   player = level.getPlayer(game_id)
-  if (viewport.perception)
-      {
-        //console.log(viewport.perception)
-        if (player) player.updatePerception(viewport.perception)
-      }
+  
   if (viewport.feedback)
       handleFeedback(viewport.feedback)
   //console.log(viewport)
@@ -66,9 +62,6 @@ function updateView(viewport)
     inventory = viewport.inventory
     input.inventory.updateInventory(inventory)
   }
-
-  if (viewport.status)
-    input.stats.updateData(viewport.status)
     
   //print(player, game_id, level.entities)
 }

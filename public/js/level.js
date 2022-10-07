@@ -29,36 +29,39 @@ class Event
 
 class Impact extends Event
 {
-  constructor(pos, damage, dir)
+  constructor(pos, damage, dir, color)
   {
     super (pos, damage)
-    let count = Math.round(random(1, (damage + 1) * 0.5))
-    this.splinters = []
-    for (let i = 0; i < count; i++)
+    this.maxticks = 50 + damage
+    this.color = color
+    let splattercount = Math.round(random(1, (damage + 1) * 0.5))
+    this.splatters = []
+    for (let i = 0; i < splattercount; i++)
     {
-      this.splinters.push(new Splinter(pos, damage, dir))
+      this.splatters.push(new Splatter(pos, damage, dir, this.maxticks, this.color))
     }
   }
   draw()
   {
-    for (let i = this.splinters.length - 1; i >= 0; i--)
+    for (let i = this.splatters.length - 1; i >= 0; i--)
     {
-      let ended = this.splinters[i].draw()
-      if (ended) this.splinters.slice(i, 1)
+      let ended = this.splatters[i].draw()
+      if (ended) this.splatters.slice(i, 1)
     }
   }
 }
 
-class Splinter
+class Splatter
 {
-  constructor(pos, damage, dir)
+  constructor(pos, damage, dir, maxticks, color)
   {
     this.pos = createVector(pos.x, pos.y)
     this.dia = random(0.02, 0.08 + 0.01 * damage) * cam.zoom
     this.diaincrement = 0.004 * cam.zoom
     this.mult = random(0.5, 0.9)
+    this.color = color
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
-    this.ticks = Math.round(random(50, 60 + damage))
+    this.ticks = Math.round(random(maxticks * 0.5, maxticks))
   }
   draw()
   {
@@ -68,34 +71,11 @@ class Splinter
     this.dia += this.diaincrement
     push()
     noStroke()
-    fill(50, this.ticks * 2)
+    fill(this.color.r, this.color.g, this.color.b, this.ticks * 2)
     circle(pos.x, pos.y, this.dia)
     pop()
     this.ticks --
     return (this.ticks <= 0)
-  }
-}
-
-class Slash extends Event
-{
-  constructor(pos, damage, dir)
-  {
-    super (pos, damage)
-    this.maxticks = 50 + damage
-    let splatters = Math.round(random(1, (damage + 1) * 0.5))
-    this.bloodspatters = []
-    for (let i = 0; i < splatters; i++)
-    {
-      this.bloodspatters.push(new Blood(pos, damage, dir, this.maxticks))
-    }
-  }
-  draw()
-  {
-    for (let i = this.bloodspatters.length - 1; i >= 0; i--)
-    {
-      let ended = this.bloodspatters[i].draw()
-      if (ended) this.bloodspatters.slice(i, 1)
-    }
   }
 }
 
@@ -126,32 +106,7 @@ class Woosh extends Event
     pop()
   }
 }
-class Blood
-{
-  constructor(pos, damage, dir, maxticks)
-  {
-    this.pos = createVector(pos.x, pos.y)
-    this.dia = random(0.02, 0.08 + 0.01 * damage) * cam.zoom
-    this.diaincrement = 0.004 * cam.zoom
-    this.mult = random(0.5, 0.9)
-    this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
-    this.ticks = Math.round(random(maxticks * 0.5, maxticks))
-  }
-  draw()
-  {
-    this.pos.add(this.dir)
-    this.dir.mult(this.mult)
-    let pos = cam.onScreen(this.pos)
-    this.dia += this.diaincrement
-    push()
-    noStroke()
-    fill(255, 0, 0, this.ticks * 2)
-    circle(pos.x, pos.y, this.dia)
-    pop()
-    this.ticks --
-    return (this.ticks <= 0)
-  }
-}
+
 
 class Level {
   constructor()
@@ -285,13 +240,11 @@ class Level {
       switch(event.type)
       {
         case 'damage':
-          this.events.push(new Slash(event.pos, event.damage, event.dir))
+          this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.color))
           break
-        default:
-          this.events.push(new Impact(event.pos, event.damage, event.dir))
-        break
     }
   })
+  if (player) handleFeedback(events)
 }
   updateStructures(newtiles)
   {

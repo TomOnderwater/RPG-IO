@@ -23,11 +23,23 @@ function handleFeedback(feedback)
 {
   for (let event of feedback)
   {
+    console.log(event)
     switch(event.type)
     {
       case 'prime':
         rumble(50)
       break
+      case 'bowshot':
+        rumble(20)
+        //console.log(sound)
+        if (sound !== undefined)
+          sound.bowshot(1)
+      break
+      case 'damage':
+          if (player.id === event.owner)
+            rumble(event.damage)
+      break
+
     }
   }
 }

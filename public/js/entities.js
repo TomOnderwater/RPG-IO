@@ -3,7 +3,7 @@ const monsters = ['🕷️', '🦇', '🐗', '🐞', '🦂', '🐙', '🦀', '�
 
 function randomAnimal(seed)
 {
-    console.log(seed)
+    //console.log(seed)
     randomSeed(seed)
     let index = round(random(monsters.length - 1))
     return monsters[index]
@@ -24,15 +24,23 @@ class Entity
         this.dia = 0.4
         this.speed = 0
         this.bounce = 0.2
-        this.face = randomAnimal(bton(this.id))
+        this.face = randomAnimal(bton(this.id) * 1000)
     }
     update()
     {
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
         this.pos = bounce(this.pos, this.target, this.bounce)
         this.speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
-        if (this.type === SWORD && this.speed > 0.1 && this.moving)
-            level.addWoosh(this.pos, this.ppos, 0.3)
+        if (this.type === SWORD)
+        {
+            if (this.speed > 0.1 && this.moving)
+            {
+                level.addWoosh(this.pos, this.ppos, 0.3)
+                // ADDITIONAL: SOUND
+                if (this.speed > 0.2 && sound !== undefined)
+                    sound.woosh(this.speed * 6) // play a woosh
+            }
+        }
         if (this.speed > 0.005) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }

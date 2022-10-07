@@ -30,7 +30,7 @@ const wsPrefix = isSecure() ? 'wss://' : 'ws://'
 // SHORTCUTS
 let SEXYGREY // = color(51, 51, 51)
 
-//let sound
+let sound
 
 function setupInput()
 {
@@ -52,11 +52,14 @@ function preload()
   woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
   ammoicon = loadImage('assets/textures/ammobox.png')
+  
+  //sound = new Sound()
 }
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight)
   SEXYGREY = color(51, 51, 51)
+
   //sound.swoosh()
   cam = new Camera(createVector(0, 0), 20)
 

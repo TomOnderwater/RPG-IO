@@ -46,7 +46,7 @@ module.exports = class Player
         this.health = this.status.vitality
 
         // UTILITIES
-        this.arrows = 100
+        this.feedback = [] // keeps track of things you're doing
 
         //pos, angle, fov, resolution, range
         //this.perception = new Perception(Math.PI / 2, 10, 6)
@@ -162,12 +162,20 @@ module.exports = class Player
     {
         //console.log("hi")
         // some statement checking for feedback
+        let out = []
+
         if (this.primed)
         {
             this.primed = false
-            console.log('sending feedback')
-            return [{type: 'prime'}]
+            //console.log('sending feedback')
+            out.push({type: 'prime'})
         }
+        if (this.shotfired)
+        {
+            this.shotfired = false
+            out.push({type: 'bowshot'})
+        }
+        if (out.length) return out
         return false
     }
     data() 
@@ -218,6 +226,7 @@ module.exports = class Player
                     dir, rad: 0.1, mass: 2,
                     type: ARROW
                 })
+                this.shotfired = true
             }
     }
     handlePhysical()

@@ -208,13 +208,14 @@ function calcAttack(attack)
             let damage = Math.round(attack.item.destruction * speed * attack.power)
             attack.collision.entity.applyDamage(damage)
             return {
-                type: 'impact', 
+                type: 'damage', 
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage, 
                 item: attack.item.type,
-                target: {material: attack.collision.entity.material}
-            }
+                target: {color: {r:100, g: 100, b: 100}},
+                owner: attack.attacker
+            } // add a color to targets
         }
         else 
         {
@@ -228,7 +229,8 @@ function calcAttack(attack)
                 pos: attack.collision.pos, 
                 damage, 
                 item: attack.item.type,
-                target: {material: 'flesh', id: attack.collision.entity.id}
+                target: {color: {r:255, g: 0, b: 0}, id: attack.collision.entity.id},
+                owner: attack.attacker
             }
         }
     }

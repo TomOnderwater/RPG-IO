@@ -1,6 +1,6 @@
 //🥺😃🧐☹️🤪😶
 
-const happy = '😀', neutral = '😐', hurt = '🤕'
+const happy = '😶', neutral = '😐', hurt = '🤕'
 
 class Player extends Entity
 {
@@ -13,14 +13,8 @@ class Player extends Entity
     this.dia = 0.6
     this.health = data.h
     this.maxhealth = data.H
-    this.perception = []
     this.animationframe = 0
     this.animationlength = 60
-  }
-  updatePerception(perception)
-  {
-    this.perception = perception
-    //console.log(perception)
   }
   getFace()
   {
@@ -46,24 +40,6 @@ class Player extends Entity
     circle(pos.x, pos.y, 20 + (this.animationlength - this.animationframe) * 3)
     pop()
     this.animationframe --
-  }
-  drawPerception()
-  {
-    for (let l of this.perception)
-    {
-      push()
-      strokeWeight(2)
-      let opacity = (6 - l.ray.dist) * 40
-      stroke(255, 0, 0, opacity)
-      //console.log(l.a, l.dist)
-      rotate(l.a)
-      line(0, 0, l.ray.dist * cam.zoom, 0)
-      fill(255)
-      translate(l.ray.dist * cam.zoom, 0)
-      rotate(-l.a)
-      text(l.ray.obj, 0, -10)
-      pop()
-    }
   }
   drawHealthBar(offset)
   {
@@ -116,8 +92,6 @@ class Player extends Entity
     translate(pos.x, pos.y)
     fill(255)
     stroke(0)
-    // width = 100
-    this.drawPerception()
 
     rotate(this.dir + HALF_PI)
     //draw perception
