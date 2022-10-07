@@ -14,6 +14,23 @@
       }
     </style>
 
+<!-- SUPPRESS PINCH TO ZOOM-->
+
+<script>
+  let type = 'player'
+   // SUPPRESS PINCH TO ZOOM
+   document.addEventListener('touchstart', (event) => {
+    if(event.touches.length > 1){
+        //the event is multi-touch
+        //you can then prevent the behavior
+      event.preventDefault()
+    }
+  })
+
+    document.addEventListener("touchmove", (event) => {
+    event.preventDefault()
+  },{passive: false})
+</script>
     <!-- P5 lib-->
     <script src="assets/p5/p5.min.js"></script>
     <script src="assets/p5/p5.sound-min.js"></script>
@@ -31,27 +48,6 @@
     <script src="js/entities.js"></script>
     <script src="js/player.js"></script>
     <script src="js/tile.js"></script>
-    <script>
-      let type = 'player'
-    
-      document.addEventListener('gesturestart', function(e) {
-    e.preventDefault();
-    // special hack to prevent zoom-to-tabs gesture in safari
-    document.body.style.zoom = 0.99;
-});
-
-document.addEventListener('gesturechange', function(e) {
-    e.preventDefault();
-    // special hack to prevent zoom-to-tabs gesture in safari
-    document.body.style.zoom = 0.99;
-});
-
-document.addEventListener('gestureend', function(e) {
-    e.preventDefault();
-    // special hack to prevent zoom-to-tabs gesture in safari
-    document.body.style.zoom = 0.99;
-});
-  </script>
     <script src="js/main.js"></script>
   </head>
 

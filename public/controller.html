@@ -13,6 +13,23 @@
       }
     </style>
 
+<!-- SUPPRESS PINCH TO ZOOM-->
+<script>
+  let type = 'controller'
+   // SUPPRESS PINCH TO ZOOM
+   document.addEventListener('touchstart', (event) => {
+    if(event.touches.length > 1){
+        //the event is multi-touch
+        //you can then prevent the behavior
+      event.preventDefault()
+    }
+  })
+
+    document.addEventListener("touchmove", (event) => {
+    event.preventDefault()
+  },{passive: false})
+</script>
+
     <!-- P5 lib-->
     <script src="assets/p5/p5.min.js"></script>
     <script src="assets/p5/p5.sound-min.js"></script>
@@ -30,19 +47,6 @@
     <script src="js/entities.js"></script>
     <script src="js/player.js"></script>
     <script src="js/tile.js"></script>
-    <script>
-        let type = 'controller'
-
-        window.addEventListener("touchstart", touchHandler, false)
-
-      function touchHandler(event){
-      if(event.touches.length > 1){
-          //the event is multi-touch
-          //you can then prevent the behavior
-          event.preventDefault()
-      }
-    }
-    </script>
     <script src="js/main.js"></script>
   </head>
 
