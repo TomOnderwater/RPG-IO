@@ -333,8 +333,8 @@ module.exports = class Player
 
     updateInput(input)
     {
-        if (input.joy)
-            this.input.dir = Func.multiply(Func.constrainVector(input.joy, 128), this.speedstat)
+        if (input.dir)
+            this.input.dir = Func.multiply(Func.constrainVector(input.dir, 128), this.speedstat)
         if (input.hand)
             this.input.hand = Func.constrainVector(input.hand, 128)
         for (let action of input.actions)

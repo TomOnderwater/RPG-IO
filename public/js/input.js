@@ -21,17 +21,16 @@ class MobileInput {
         let actions = []
         let inventoryactions = this.inventory.update()
         if (inventoryactions !== null) 
-            actions = [...actions, ...inventoryactions]
+            actions = [...inventoryactions]
 
         // get joysticks
-        let joyout = this.joystick.update()
-        let handout = this.handStick.update()
+        let dir = this.joystick.update()
+        let hand = this.handStick.update()
 
         //print(actions)
         //print(joyout)
         return {
-            joy: {x: joyout.x, y: joyout.y}, 
-            hand: {x: handout.x, y: handout.y}, 
+            dir, hand, 
             actions}
     }
     time() //time since input was instantiated
@@ -532,5 +531,87 @@ class JoyStick
         this.center = createVector(t.x, t.y)
         this.active = true
         this.touch = t.id
+    }
+}
+
+// PC INPUT BELOW THIS LINE /////////////////////////////////////////////
+
+class PCInput {
+    constructor()
+    {
+        this.inventory = new PCInventory(inventorySpecs)
+        // check the minimum height of the joysticks
+        this.joystick = new GameKeyboard()
+
+        this.handStick = new PCUtilityStick()
+    }
+    update()
+    {
+        this.updateTouches()
+
+        //do the inventory first
+        let actions = []
+        let inventoryactions = this.inventory.update()
+        if (inventoryactions !== null) 
+            actions = [...inventoryactions]
+
+        // get joysticks
+        let dir = this.joystick.update()
+        let hand = this.handStick.update()
+
+        //print(actions)
+        //print(joyout)
+        return {
+            dir, hand, 
+            actions}
+    }
+    draw()
+    {
+        this.handStick.draw()
+        this.inventory.draw()
+    }
+}
+
+class GameKeyboard
+{
+    constructor()
+    {
+
+    }
+    update()
+    {
+        return {x: 100, y: 0}
+    }
+}
+
+class PCUtilityStick
+{
+    constructor()
+    {
+
+    }
+    update()
+    {
+        return {x: 100, y: 0}
+    }
+    draw()
+    {
+
+    }
+}
+
+class PCInventory
+{
+    constructor(specs)
+    {
+        
+    }
+    update()
+    {
+
+    }
+    draw()
+    {
+
     }
 }

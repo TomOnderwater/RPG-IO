@@ -95,7 +95,7 @@ function runGames()
 {
   gameMaster.update()
   //console.log('update')
-  setTimeout(runGames, 34)
+  setTimeout(runGames, 34) /// UPDATE FREQUENCY OF THE GAME
 }
 // identification is done via game id
 app.ws('/gamestream', (ws, req) => {

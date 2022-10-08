@@ -1,3 +1,5 @@
+p5.disableFriendlyErrors = true
+
 //GAME SPECIFIC
 let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', myitems = []
 
@@ -35,6 +37,7 @@ let sound
 function setupInput()
 {
   if (MOBILE) input = new MobileInput()
+  else input = new PCInput() // prototype, not yet fully supported
 }
 
 function preload()
@@ -71,7 +74,7 @@ function setup() {
 
   MOBILE = isMobileDevice()
 
-  setFrameRate(30) //frame updates at 30 hz
+  // setFrameRate(30) //frame updates at 30 hz
   console.log('connection type:', type)
   //register player
   if (type === 'player' || type === 'controller') 
