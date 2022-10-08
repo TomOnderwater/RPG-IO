@@ -103,7 +103,7 @@ function draw()
       timer = millis()
       updateInput()
     }
-    input.update()
+    //input.update()
     drawGame()
     break
     case 'game over':
