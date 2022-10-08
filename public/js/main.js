@@ -14,7 +14,7 @@ let ticks = 0
 const entityborder = 0.03
 
 // DATA SPECIFIC
-let input, gamestream, nameinput, message, keyinput, leaderboard, inventory
+let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0
 
 // TEXTURES
 let walltexture, woodicon, stoneicon, rocktexture, 
@@ -86,6 +86,7 @@ function setup() {
   if (type === 'spectator') startSpectator()
   }
 
+  // update loop
 function draw() 
 {
   //blank grey
@@ -96,7 +97,12 @@ function draw()
     lobby()
     break
     case 'game':
-    updateInput()
+    // time output:
+    if (millis() > timer + 34)
+    {
+      timer = millis()
+      updateInput()
+    }
     input.update()
     drawGame()
     break
@@ -114,7 +120,6 @@ function draw()
   //fullscreen()
   ticks ++
 }
-
 function updateInput()
 {
   sendInput(input.update())
