@@ -27,10 +27,10 @@ function handleFeedback(feedback)
     switch(event.type)
     {
       case 'prime':
-        rumble(50)
+        rumble(30)
       break
       case 'bowshot':
-        rumble(20)
+        rumble(15)
         //console.log(sound)
         if (sound !== undefined)
           sound.bowshot(1)

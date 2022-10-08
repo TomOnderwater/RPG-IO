@@ -51,7 +51,7 @@ function preload()
   gravelTexture = loadImage('assets/textures/gravel_texture1.jpg')
   woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
-  ammoicon = loadImage('assets/textures/ammobox.png')
+  ammoicon = loadImage('assets/textures/ammobag.png')
   
   //sound = new Sound()
 }
