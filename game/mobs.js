@@ -10,10 +10,12 @@ function baseSlime()
     stats.type = SLIME
     stats.fov = 2 * Math.PI
     stats.resolution = 10
-    stats.range = 3
+    stats.range = 5
     stats.mass = 0.5
     stats.stamina = 100
-    stats.attack = 1
+    stats.speed = 0.02
+    stats.attack = 2
+    stats.frequency = 5
     return stats
 }
 
@@ -30,7 +32,7 @@ class Slime
         this.id = id
         this.body = new PhysicalBody({type: 'circle', mass: this.stats.mass, entity: this, pos, rad: this.stats.rad})
         this.perception = new Perception(this.stats.fov, this.stats.resolution, this.stats.range)
-        this.maxspeed = 0.01
+        this.maxspeed = this.stats.speed
         this.sight = false
         this.dir = {x: 0, y: 0}
         this.heading = 0
@@ -54,7 +56,7 @@ class Slime
         switch(action.action)
         {
             case 'attack':
-                if (action.dist < 1) this.dir = this.sprint(action.dir)
+                if (action.dist < this.perception.range * 0.5) this.dir = this.sprint(action.dir)
                 else this.dir = Func.multiply(action.dir, this.maxspeed)
             break
             case 'flee':
@@ -70,15 +72,16 @@ class Slime
     }
     update(level, colliders)
     {
-        if (this.ticks === 0 || this.ticks % 10 === 0)
+        if (this.ticks === 0 || this.ticks % this.stats.frequency === 0)
             this.updateActions(level, colliders)
         this.handleAction(this.action)
         //get closest bodies to collide with
         //random movement event
         
         //if (Math.random() > 0.99) this.dir = randomWalk(this.maxspeed * 0.5)
-        
-        this.body.bounceSpeed(this.dir)
+        let surfacespeed = level.getGroundSpeed(this.body.pos)
+        // move the body
+        this.body.bounceSpeed(Func.multiply(this.dir, surfacespeed))
         let closebodies = level.closeBodies(this.body.pos, colliders, 1)
         let collisions = this.body.update(closebodies)
         for (let collision of collisions)

@@ -12,10 +12,11 @@ module.exports = class RangedAttack
         this.owner = data.owner
         this.id = data.id
         this.body = new PhysicalBody({type: 'circle', pos: data.pos, rad: data.rad, bounce: 0.8})
+        this.body.setSpeed(this.dir)
     }
     update(level, colliders)
     {
-        this.body.bounceSpeed(this.dir)
+        //this.body.bounceSpeed(this.dir)
         //console.log(this.body.pos)
         let things = level.closeBodies(this.body.pos, colliders, 1)
         //console.log(things.length)

@@ -40,7 +40,8 @@ module.exports = class Player
         this.status.strength = 1
         this.status.speed = 1
         this.status.vitality = data.health || 100
-        this.status.stamina = 100
+        this.status.stamina = 30
+        this.status.sprintModifier = 1.4
 
         this.stamina = this.status.stamina
         this.health = this.status.vitality
@@ -64,13 +65,6 @@ module.exports = class Player
             speed: this.status.speed
         }
     }
-    levelUP()
-    {
-        this.usedXP += this.status.xp
-        //this.xp -= this.calcXPForLevel()
-        this.status.level ++
-        this.status.points ++
-    }
     calcXPForLevel()
     {
         return 100 + (this.status.level - 1) * 50
@@ -84,6 +78,10 @@ module.exports = class Player
         //if (this.xp >= this.calcXPForLevel()) this.levelUP()
         if (this.health < this.status.vitality) this.health += 1
         if (this.stamina < this.status.stamina) this.stamina += 5
+    }
+    handleSprint(action)
+    {
+        this.sprinting = action.condition
     }
     addXP(xp)
     {
@@ -111,13 +109,22 @@ module.exports = class Player
         console.log('removing:', item)
         this.inventory.remove(item)
     }
+    updateSprint()
+    {
+        if (this.sprinting && this.stamina > 0)
+        {
+            this.stamina --
+            return this.status.sprintModifier
+        }
+        return 1
+    }
     update(level, colliders)
     {
         this.level = level
 
+        let sprintModifier = this.updateSprint()
         //get the ground surface
-        let surfacespeed = level.getGroundSpeed(this.body.pos)
-
+        let surfacespeed = level.getGroundSpeed(this.body.pos) * sprintModifier
         // move the body
         this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
@@ -341,6 +348,7 @@ module.exports = class Player
         {
             if (action.type == 'inventory') this.handleInventory(action)
             if (action.type == 'allocation') this.manageAttributes(action.attribute)
+            if (action.type == 'sprint') this.handleSprint(action)
         }
     }
 }

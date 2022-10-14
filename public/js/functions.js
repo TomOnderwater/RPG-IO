@@ -43,6 +43,11 @@ function handleFeedback(feedback)
     }
   }
 }
+function posAngle(angle)
+{
+     return (Math.PI * 2 + (angle % (Math.PI * 2))) % (Math.PI * 2)
+}
+
 function drawFrameRate(pos)
 {
   push()
@@ -114,6 +119,11 @@ function drawLeaderBoard(pos)
     text(entry.name + " " + entry.score, x + 15, y)
   }
   pop()
+}
+
+function onCircle(p, circlepos, dia)
+{ 
+  return (dist(p.x, p.y, circlepos.x, circlepos.y) < dia)
 }
 
 function onField(p, area)

@@ -60,7 +60,7 @@ function updateView(viewport)
   if (viewport.inventory)
   {
     inventory = viewport.inventory
-    input.inventory.updateInventory(inventory)
+    input.weaponWheel.updateInventory()
   }
     
   //print(player, game_id, level.entities)

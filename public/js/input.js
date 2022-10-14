@@ -1,7 +1,9 @@
+
 class MobileInput {
     constructor()
     {
-        this.inventory = new Inventory(inventorySpecs)
+        //this.inventory = new Inventory(inventorySpecs)
+        this.weaponWheel = new WeaponWheel({})
         // check the minimum height of the joysticks
         this.joystick = new JoyStick({
             dia: 128,
@@ -19,29 +21,32 @@ class MobileInput {
 
         //do the inventory first
         let actions = []
-        let inventoryactions = this.inventory.update()
+        let inventoryactions = this.weaponWheel.update()
         if (inventoryactions !== null) 
             actions = [...inventoryactions]
 
+        //this.weaponWheel.update()
         // get joysticks
         let dir = this.joystick.update()
         let hand = this.handStick.update()
 
-        //print(actions)
+        actions.push({type: 'sprint', condition: this.joystick.sprinting})
+        print(actions)
         //print(joyout)
         return {
             dir, hand, 
             actions}
     }
-    time() //time since input was instantiated
+    closeInventory()
     {
-        return new Date().getTime() - this.starttime
+        this.weaponWheel.close()
     }
     draw()
     {
         this.joystick.draw()
         this.handStick.draw()
-        this.inventory.draw()
+        //this.inventory.draw()
+        this.weaponWheel.draw()
     }
     isFree(t)
     {
@@ -82,6 +87,211 @@ class MobileInput {
     }
 }
 
+
+class WeaponWheel
+{
+    constructor()
+    {
+        this.open = false
+        this.center = createVector(width * 0.5, height * 0.5)
+        //console.log('inventory center:', this.center)
+        this.dia = 75
+        this.focus = createVector(width * 0.5, height * 0.5)
+        this.touchid = -1
+        this.weight = 50
+        this.startAngle = -PI / 2
+        this.margin = 0.01
+        this.selection = {id: -1}
+        this.updateInventory()
+    }
+    close()
+    {
+        this.open = false
+    }
+    updateInventory()
+    {
+        this.sections = []
+        let count = 6
+        if (inventory !== undefined) 
+            count = inventory.items.length
+
+        let div = (2 * PI) / count
+        let startAngle = -((PI / 2) + (PI / (count)))
+        let a = startAngle
+        for (let i = 0; i < count; i++)
+        {
+            let a1 = a + this.margin
+            let a2 = (a + div) - this.margin
+            let section = new Section(i, a1, a2, this)
+            if (inventory !== undefined) section.fill(inventory.items[i])
+            this.sections.push(section)
+            a += div
+        }
+        this.select(this.selection)
+    }
+    draw() 
+    {
+        if (this.open)
+            this.sections.forEach(section => section.draw())
+    }
+    select(selection)
+    {
+        console.log('selecting:', selection)
+        for (let section of this.sections)
+        {
+            section.deselect()
+            if (section.id === selection.id)
+                section.select(selection)
+        }
+        this.selection = selection
+        return [{type: 'inventory', selection: selection.id}]
+    }
+    update()
+    {
+        for (let t of touches)
+        {
+            // check if it is opened and if we're pressing an entry
+            if (this.open && onCircle(t, this.focus, this.dia * 1.25) && !inList(t.id, input.usedTouches))
+            {
+                console.log('open and pressed on button!')
+                let selection = this.selectSection(t)
+                //if (!selection) this.open = false
+                //console.log(selection)
+                this.close()
+                input.addTouch(t)
+                if (selection !== false && this.selection.id !== selection.id)
+                    return this.select(selection)
+            }
+            // on center and not opened
+            if (!this.open && onCircle(t, this.center, this.dia) && !inList(t.id, input.usedTouches)) 
+            {
+                //console.log('opening')
+                this.openInventory(t)
+            }
+            // existing touch
+            if (this.open && t.id === this.touchid)
+            {
+                this.pTouch = createVector(t.x, t.y)
+                let selection = this.selectSection(t)
+                //if (selection !== false) console.log('selection: ', selection)
+                if (selection !== false && selection.id !== this.selection.id)
+                        return this.select(selection) 
+            }
+        }
+        let touchended = false
+        if (this.touchid !== -1) 
+            touchended = !inList(this.touchid, input.usedTouches)
+        // touch is not found
+        if (touchended && this.pTouch !== undefined)
+        {
+            //console.log('touch not found')
+            if (!onCircle(this.pTouch, this.focus, this.dia * 0.15))
+                this.open = false
+            this.touchid = -1
+        }
+        return null
+    }
+    selectSection(t)
+    {
+        // if still on the circle
+        console.log(this.focus, t, this.dia * 0.15)
+        if (onCircle(this.focus, t, this.dia * 0.15)) 
+            return false
+        // select the section
+        let angle = posAngle(atan2(t.y - this.focus.y, t.x - this.focus.x))
+        for (let section of this.sections)
+        {
+            let selected = section.update(angle)
+            if (selected) return selected
+        }
+        return false
+    }
+    openInventory(t)
+    {
+        this.focus = createVector(t.x, t.y)
+        this.touchid = t.id
+        this.open = true
+        input.addTouch(t)
+        return false
+    }
+}
+
+class Section
+{
+    constructor(id, a1, a2, weaponWheel)
+    {
+        this.id = id
+        this.a1 = a1
+        this.a2 = a2
+        this.fieldangle = a2 - a1
+        this.selected = false
+        this.weaponWheel = weaponWheel
+        this.width = weaponWheel.dia * 0.5
+        this.item = {count: 0, type: NONE}
+    }
+    deselect()
+    {
+        this.selected = false
+    }
+    select(section)
+    {
+        this.selected = true
+        navigator.vibrate(5)
+        //console.log(this.id, 'is selected', this.selected)
+    }
+    update(angle)
+    {
+        //let angle = posAngle(atan2(t.y - this.weaponWheel.focus.y, t.x - this.weaponWheel.focus.y))
+        let rot1 = posAngle(this.a1)
+        let rot2 = posAngle(this.a2)
+        if (angle < this.fieldangle) rot1 = rot2 - this.fieldangle
+        else if (angle > Math.PI * 2 - this.fieldangle) rot2 = rot1 + this.fieldangle
+
+        if (angle > rot1 && angle < rot2) 
+            return {id: this.id}
+        return false
+    }
+    fill(item)
+    {
+        this.item = item
+        // FUTURE: further subdivide the item
+    }
+    draw()
+    {
+        let focus = this.weaponWheel.focus
+        let dia = this.weaponWheel.dia
+        push()
+        noFill()
+        stroke(150, 100)
+        if (this.selected) stroke(255, 120)
+        strokeWeight(this.width)
+        strokeCap(SQUARE)
+        // section ARC
+        arc(focus.x, focus.y, dia * 2, dia * 2, this.a1, this.a2)
+        // DRAW ITEM ICON
+        let a = (this.a1 + this.a2) * 0.5
+        let itempos = {x: focus.x + cos(a) * dia, y: focus.y + sin(a) * dia}
+        let itemspacing = 1.4
+        let textpos = {x: focus.x + cos(a) * dia * itemspacing, y: focus.y + sin(a) * dia * itemspacing}
+        if (this.item.type !== NONE)
+        {
+            drawItem(this.item.type, itempos, 20)
+            if (this.item.count > 0)
+            {
+                push()
+                textSize(16)
+                fill(255)
+                noStroke()
+                textAlign(CENTER, CENTER)
+                text(this.item.count, textpos.x, textpos.y)
+                pop()
+            }
+        }
+        pop()
+    }
+}
+
+/*
 class Inventory
 {
     constructor(specs)
@@ -318,7 +528,7 @@ class Slot
         return null
     }
 }
-
+*/
 
 class Settings
 { // draw on the top left corner
@@ -449,7 +659,9 @@ class UtitlityStick
     {
         //print(t)
         this.center = createVector(t.x, t.y)
+        this.joy = createVector(t.x, t.y)
         this.active = true
+        input.closeInventory()
         this.touch = t.id
     }
 }
@@ -465,6 +677,7 @@ class JoyStick
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.touch = null
+        this.sprintRange = 1.2
         this.hintcompleted = false
     }
     draw() 
@@ -474,7 +687,10 @@ class JoyStick
 
         push()
         noStroke()
-        fill(100, 100, 100, 100)
+        if (this.sprinting)
+            fill(255, 100, 100, 100)
+        else    
+            fill(100, 100, 100, 100)
         circle(this.center.x, this.center.y, this.dia)
         fill(200, 200, 200, 150)
         circle(this.joy.x, this.joy.y, this.dia / 3)
@@ -516,12 +732,21 @@ class JoyStick
     {
         this.touch = null
         this.active = false
+        this.sprinting = false
         return createVector(0, 0)
     }
     updateJoy(t)
     {
         this.joy = createVector(t.x, t.y) //register pos
-        let diff = p5.Vector.sub(this.joy, this.center).limit(this.dia / 2) // get output and limit
+        let diff = p5.Vector.sub(this.joy, this.center)
+        // get magnitude of diff
+        let mag = diff.mag()
+        if (mag > this.dia * this.sprintRange) 
+        {
+            if (!this.sprinting) rumble(15)
+            this.sprinting = true 
+        } else this.sprinting = false
+        diff = diff.limit(this.dia * 0.5)// get output and limit
         this.joy = p5.Vector.add(this.center, diff) //apply limit
         return diff.mult(2 * this.max / this.dia) //scale
     }
@@ -529,6 +754,7 @@ class JoyStick
     {
         //print(t)
         this.center = createVector(t.x, t.y)
+        this.joy = createVector(t.x, t.y)
         this.active = true
         this.touch = t.id
     }

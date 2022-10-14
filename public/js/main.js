@@ -11,6 +11,7 @@ let key = ''
 
 let ticks = 0
 
+// VISUAL CONSTANTS
 const entityborder = 0.03
 
 // DATA SPECIFIC
@@ -305,7 +306,7 @@ function drawGame()
         let jump = height / (cam.zoom * 8)
         if (player)
         {
-          let focus = {x: player.pos.x, y: input.inventory.open ? player.pos.y + jump : player.pos.y}
+          let focus = player.pos // player.pos.y}
           cam.updateFocus(focus, 0.2)
           if (player)
               cam.updateZoom(player.getZoom(), 0.05)
