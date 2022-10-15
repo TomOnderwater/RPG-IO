@@ -70,7 +70,6 @@ module.exports = class Inventory {
         {
             if (slot.item.type === item.type)
                 {
-                    console.log('removing', item, 'from', slot.item)
                     slot.item.count -= item.count
                     if (slot.item.count <= 0 && !slot.item.persistent) 
                         slot.empty()
@@ -78,6 +77,11 @@ module.exports = class Inventory {
                     break
                 }
         }
+    }
+    getAmmo()
+    {
+        let slot = this.getSelectedSlot()
+        return {t: slot.item.type, c: slot.item.count}
     }
     addAmmo(count)
     {
@@ -124,7 +128,7 @@ class Slot
     }
     empty()
     {
-        console.log('emptying slot')
+        //console.log('emptying slot')
         this.item = {type: NONE, count: 0}
         this.ammo = false
         this.persistent = true

@@ -40,11 +40,9 @@ module.exports = class Player
         this.status.strength = 1
         this.status.speed = 1
         this.status.vitality = data.health || 100
-        this.status.stamina = 30
-        this.status.sprintModifier = 1.4
 
-        this.stamina = this.status.stamina
         this.health = this.status.vitality
+        this.boostSpeed = this.speedstat * 5
 
         // UTILITIES
         this.feedback = [] // keeps track of things you're doing
@@ -77,15 +75,14 @@ module.exports = class Player
     {
         //if (this.xp >= this.calcXPForLevel()) this.levelUP()
         if (this.health < this.status.vitality) this.health += 1
-        if (this.stamina < this.status.stamina) this.stamina += 5
     }
-    handleSprint(action)
+    handleBoost(action)
     {
-        this.sprinting = action.condition
+        this.boost = action
     }
     addXP(xp)
     {
-        console.log('gained', xp, 'XP points')
+        //console.log('gained', xp, 'XP points')
         this.status.xp += xp
     }
     initHand(id)
@@ -99,34 +96,38 @@ module.exports = class Player
     }
     pickup(item)
     {
-        console.log('picking up', item)
+        //console.log('picking up', item)
         this.inventory.add(item)
         //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
     }
     removeItem(item)
     {
-        console.log('removing:', item)
+        //console.log('removing:', item)
         this.inventory.remove(item)
     }
-    updateSprint()
+    boosting(surface)
     {
-        if (this.sprinting && this.stamina > 0)
+        if (this.boost === undefined) return false
+        if (this.boost.boost > 0)
         {
-            this.stamina --
-            return this.status.sprintModifier
+            let spd = Func.multiply(this.boost.dir, this.boostSpeed * surface)
+            this.body.bounceSpeed(spd)
+            this.boost.boost -= 2
+            //console.log('boosting!', spd, this.boost)
+            return true
         }
-        return 1
+        return false
     }
     update(level, colliders)
     {
         this.level = level
 
-        let sprintModifier = this.updateSprint()
         //get the ground surface
-        let surfacespeed = level.getGroundSpeed(this.body.pos) * sprintModifier
+        let surfacespeed = level.getGroundSpeed(this.body.pos)
         // move the body
-        this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
+        if (!this.boosting(surfacespeed))
+            this.body.bounceSpeed(Func.multiply(this.input.dir, surfacespeed))
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
 
         // move the hand
@@ -193,7 +194,8 @@ module.exports = class Player
                 p: pos, 
                 n: this.name, 
                 h: this.health, 
-                H: this.status.vitality}
+                H: this.status.vitality,
+                a: this.inventory.getAmmo()}
         }
     getHand()
     {
@@ -348,7 +350,7 @@ module.exports = class Player
         {
             if (action.type == 'inventory') this.handleInventory(action)
             if (action.type == 'allocation') this.manageAttributes(action.attribute)
-            if (action.type == 'sprint') this.handleSprint(action)
+            if (action.type == 'boost') this.handleBoost(action)
         }
     }
 }

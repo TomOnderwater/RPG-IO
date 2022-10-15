@@ -30,7 +30,9 @@ class MobileInput {
         let dir = this.joystick.update()
         let hand = this.handStick.update()
 
-        actions.push({type: 'sprint', condition: this.joystick.sprinting})
+        let moveactions = this.joystick.getActions()
+        if (moveactions)
+            actions = [...actions, ...moveactions]
         print(actions)
         //print(joyout)
         return {
@@ -107,6 +109,7 @@ class WeaponWheel
     close()
     {
         this.open = false
+        return null
     }
     updateInventory()
     {
@@ -153,21 +156,17 @@ class WeaponWheel
             // check if it is opened and if we're pressing an entry
             if (this.open && onCircle(t, this.focus, this.dia * 1.25) && !inList(t.id, input.usedTouches))
             {
-                console.log('open and pressed on button!')
+                //console.log('open and pressed on button!')
                 let selection = this.selectSection(t)
-                //if (!selection) this.open = false
-                //console.log(selection)
-                this.close()
                 input.addTouch(t)
+                if (onCircle(t, this.focus, this.dia * 0.5))
+                    return this.close()
                 if (selection !== false && this.selection.id !== selection.id)
                     return this.select(selection)
             }
             // on center and not opened
             if (!this.open && onCircle(t, this.center, this.dia) && !inList(t.id, input.usedTouches)) 
-            {
-                //console.log('opening')
                 this.openInventory(t)
-            }
             // existing touch
             if (this.open && t.id === this.touchid)
             {
@@ -181,10 +180,8 @@ class WeaponWheel
         let touchended = false
         if (this.touchid !== -1) 
             touchended = !inList(this.touchid, input.usedTouches)
-        // touch is not found
         if (touchended && this.pTouch !== undefined)
-        {
-            //console.log('touch not found')
+        { // DETECT DRAG TO SWITCH
             if (!onCircle(this.pTouch, this.focus, this.dia * 0.15))
                 this.open = false
             this.touchid = -1
@@ -677,8 +674,14 @@ class JoyStick
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.touch = null
-        this.sprintRange = 1.2
+        this.mag = 0
+        this.boostRange = 0.9
+        this.boostdir = createVector(0, 0)
+        this.boost = 0
+        this.bg = color(100, 100)
+        this.maxboost = 10
         this.hintcompleted = false
+        this.actions = []
     }
     draw() 
     {
@@ -686,12 +689,10 @@ class JoyStick
         if (!this.active) return
 
         push()
+        if (this.boosting) fill(255, 100, 100, 100 + this.boost * 2)
+        else fill(100, 100, 100, 100)
         noStroke()
-        if (this.sprinting)
-            fill(255, 100, 100, 100)
-        else    
-            fill(100, 100, 100, 100)
-        circle(this.center.x, this.center.y, this.dia)
+        circle(this.center.x, this.center.y, this.dia + (this.boost * 2))
         fill(200, 200, 200, 150)
         circle(this.joy.x, this.joy.y, this.dia / 3)
         pop()
@@ -699,8 +700,8 @@ class JoyStick
     drawHint()
     {
         push()
-        stroke(100, 100, 100, 100)
-        fill(100, 100, 100, 100)
+        stroke(this.bg)
+        fill(this.bg)
         strokeWeight(5)
         rectMode(CORNERS)
         rect(this.area.x1, this.area.y1, this.area.x2, this.area.y2, 20)
@@ -730,25 +731,58 @@ class JoyStick
     }
     cancelJoy()
     {
+        this.actions = [] // first empty any previous actions
         this.touch = null
         this.active = false
-        this.sprinting = false
+        let boost = this.getBoost()
+        if (boost) this.actions.push(boost)
         return createVector(0, 0)
+    }
+    getActions()
+    {
+        if (this.actions.length > 0) 
+            return this.actions
+        return false
+    }
+    getBoost()
+    {
+        let out = false
+        if (this.boosting)
+            out = {type: 'boost', boost: this.boost, dir: this.boostdir}
+        this.zeroBoost()
+        return out
+    }
+    buildupBoost()
+    {
+        if (this.boost < this.maxboost) 
+        {
+            this.boost ++
+            if (this.boost == this.maxboost) rumble(20)
+        }
+    }
+    zeroBoost()
+    {
+        this.boosting = false
+        this.boost = 0
     }
     updateJoy(t)
     {
         this.joy = createVector(t.x, t.y) //register pos
         let diff = p5.Vector.sub(this.joy, this.center)
         // get magnitude of diff
-        let mag = diff.mag()
-        if (mag > this.dia * this.sprintRange) 
-        {
-            if (!this.sprinting) rumble(15)
-            this.sprinting = true 
-        } else this.sprinting = false
+        this.mag = diff.mag()
         diff = diff.limit(this.dia * 0.5)// get output and limit
         this.joy = p5.Vector.add(this.center, diff) //apply limit
-        return diff.mult(2 * this.max / this.dia) //scale
+        diff = diff.mult(2 * this.max / this.dia) // scale diff
+
+        if (this.mag > this.dia * this.boostRange) 
+        {
+            if (!this.boosting) rumble(15)
+            this.boosting = true
+            this.buildupBoost()
+            this.boostdir = {x: diff.x, y: diff.y} 
+        } else this.zeroBoost()
+        return diff
     }
     place(t)
     {

@@ -15,6 +15,7 @@ class Player extends Entity
     this.maxhealth = data.H
     this.animationframe = 0
     this.animationlength = 60
+    this.ammo = {t: NONE, c: 0}
   }
   getFace()
   {
@@ -63,6 +64,21 @@ class Player extends Entity
     rect(w - W * 0.5, 0, W - w, H)
     pop()
   }
+  drawAmmo(offset)
+  {
+    if (this.ammo.c == 0) return
+    let pos = cam.onScreen({
+      x: this.pos.x + offset.x, 
+      y: this.pos.y + offset.y})
+    push()
+      drawItem(this.ammo.t, pos, 0.2 * cam.zoom)
+      fill(255)
+      textSize(16)
+      noStroke()
+      textAlign(CENTER, CENTER)
+      text(this.ammo.c, pos.x + 20, pos.y)
+    pop()
+  }
   drawName(offset)
   {
     let pos = cam.onScreen({
@@ -85,6 +101,9 @@ class Player extends Entity
     let pos = cam.onScreen(this.pos)
     if (this.animationframe) this.drawLevelUP(pos)
     this.drawHealthBar({x: 0, y: -0.7})
+    if (type === 'spectator' || player === this)
+      this.drawAmmo({x: 0, y: 0.7})
+  
     this.drawName({x: 0, y: -0.9})
     push()
     //console.log(this.rot)
@@ -108,6 +127,7 @@ class Player extends Entity
         if (data.p) this.target = data.p
         if (data.h) this.health = data.h
         if (data.H) this.maxhealth = data.H
+        if (data.a) this.ammo = data.a
     }
   getHandPos(distance)
   {
