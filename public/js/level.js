@@ -27,6 +27,33 @@ class Event
   }
 }
 
+class Explosion
+{
+  constructor(pos)
+  {
+    this.pos = pos
+    this.ticks = 0
+    this.maxticks = 30
+    this.fire = new Fire(this.pos)
+    this.fire.addParticles(30)
+    this.fire.pressure = 0.0005
+    this.fire.pressurelimit = 0.1
+    this.fire.temp = 0
+  }
+  draw()
+  {
+    this.fire.draw(this.pos)
+  }
+  update()
+  {
+    this.ticks ++
+  }
+  ended()
+  {
+    return this.ticks > this.maxticks
+  }
+}
+
 class Impact extends Event
 {
   constructor(pos, damage, dir, color)
@@ -242,6 +269,9 @@ class Level {
         case 'damage':
           this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.color))
           break
+        case 'explosion':
+          this.events.push(new Explosion(event.pos))
+        break
     }
   })
   if (player) handleFeedback(events)
@@ -292,6 +322,12 @@ class Level {
         break
         case BOW:
           this.entities.push(new Bow(entity))
+          break
+        case STAFF:
+          this.entities.push(new Staff(entity))
+          break
+        case FIREBALL:
+          this.entities.push(new FireBall(entity))
           break
         case ARROW:
           this.entities.push(new Arrow(entity))

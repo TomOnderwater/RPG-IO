@@ -102,7 +102,7 @@ class Player extends Entity
     if (this.animationframe) this.drawLevelUP(pos)
     this.drawHealthBar({x: 0, y: -0.7})
     if (type === 'spectator' || player === this)
-      this.drawAmmo({x: 0, y: 0.7})
+      this.drawAmmo({x: 1, y: -0.7})
   
     this.drawName({x: 0, y: -0.9})
     push()

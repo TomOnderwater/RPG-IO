@@ -1,7 +1,7 @@
 const Func = require("./functions.js")
 const PhysicalBody = require('./hitboxes.js')
 const Inventory = require('./inventory.js')
-const Perception = require('./perception.js')
+const Hand = require('./hand.js')
 
 module.exports = class Player
 {
@@ -16,16 +16,21 @@ module.exports = class Player
             hand: {x: 0, y: 0},
             handbounce: {x: 0, y: 0}, 
             actions: []
-        } //controller input
+        }
+
+        // UPDATE
         this.inventory = new Inventory(6)
         this.session = data.session
         this.name = data.name
+        this.hand = new Hand(this, createItem(NONE), this.body.pos)
+
+        /*
         this.hand = {id: 0, 
             item: createItem('none'), 
             body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), 
             owner: this.id, 
             moving: false}
-        
+        */
         // STATS
         this.speedstat = 0.0006
         this.perceptionstat = 8
@@ -62,10 +67,6 @@ module.exports = class Player
             vitality: this.status.vitality,
             speed: this.status.speed
         }
-    }
-    calcXPForLevel()
-    {
-        return 100 + (this.status.level - 1) * 50
     }
     getXP()
     {
@@ -131,29 +132,7 @@ module.exports = class Player
         this.body.update(level.closeBodies(this.body.pos, colliders, 1))
 
         // move the hand
-        this.handlePhysical(this.input.hand)
-
-        // integrate into
-        if (this.hand.moving && this.hand.item.physical)
-        {
-            let closebodies = level.closeBodies(this.hand.body.pos, colliders, 1)
-            let collisions = this.hand.body.update(closebodies, this.body) // except player body
-            if (collisions)
-            {
-                if (collisions.length)
-                {
-                    for (let collision of collisions)
-                    {
-                        if (collision.entity.health !== undefined)
-                            level.addEvent(Func.calcAttack({
-                                collision, 
-                                item: this.hand.item, 
-                                attacker: this.id, 
-                                power: 1 + (this.status.strength * 0.2)}))
-                    }
-                }
-            }
-        }
+        this.hand.update(level, colliders)
 
     }
     applyDamage(damage, attacker)
@@ -172,15 +151,14 @@ module.exports = class Player
         // some statement checking for feedback
         let out = []
 
-        if (this.primed)
+        if (this.hand.primed)
         {
-            this.primed = false
-            //console.log('sending feedback')
+            this.hand.primed = false
             out.push({type: 'prime'})
         }
-        if (this.shotfired)
+        if (this.hand.shotfired)
         {
-            this.shotfired = false
+            this.hand.shotfired = false
             out.push({type: 'bowshot'})
         }
         if (out.length) return out
@@ -199,106 +177,9 @@ module.exports = class Player
         }
     getHand()
     {
-        return {
-            i: this.hand.id, 
-            t: this.hand.item.type, 
-            p: this.hand.body.pos, 
-            m: this.hand.moving, 
-            o: this.hand.owner}
+        return this.hand.data()
     }
-    resetHand(type)
-    {
-        this.hand.item = createItem(type)
-        this.hand.moving = false
-    }
-    shoot(power, _dir)
-    {
-        let hand = this.hand
-        let item = hand.item
-        // check ammo before shooting:
-        let _d = _dir || Func.subtract(Func.subtract(this.body.pos, this.body.speed), hand.body.pos)
-
-        let dir = Func.multiply(_d, power)
-        // for debug purposes
-
-        if (Func.magnitude(dir) > item.minimumdraw)
-        {
-            if (!this.inventory.canRemove({type: item.type, count: 1}))
-                return
-            // remove ammo (based on shot type)
-            this.inventory.remove({type: item.type, count: 1})
-            this.level.addRangedAttack(
-                {
-                    owner: this, 
-                    pos: this.body.pos, 
-                    attack: item.attack, 
-                    dir, rad: 0.1, mass: 2,
-                    type: ARROW
-                })
-                this.shotfired = true
-            }
-    }
-    handlePhysical()
-    {
-        //if (Func.magnitude)
-        let hand = this.hand
-        let item = hand.item
-
-        if (this.inventory.isUpdated(item))
-            this.resetHand(this.inventory.getSelectedType())
-
-        // what to do when input turns to zero physical ends after this loop
-        if (Func.zeroVector(this.input.hand)) 
-        {
-            if (hand.moving)
-            { //hand was moving, what to do?
-                if (item.type === BOW)
-                    this.shoot(2)
-            }
-            hand.moving = false
-            this.input.handbounce = {x: 0, y: 0}
-            hand.body.pos = this.body.pos // follow player pos
-            return
-        }
-        // spawn a new item
-        if (!hand.moving) 
-            {
-                let bounce = item.bounce
-                hand.body = new PhysicalBody({type: 'circle', pos: this.body.pos, rad: item.rad, mass: item.mass, bounce})
-                hand.moving = true
-            }
-        // set target
-        if (!item.physical)
-        {
-            //console.log(input, item.bounce)
-            let target = Func.multiply(this.input.hand, item.reach)
-            this.input.handbounce = Func.squareBounce(this.input.handbounce, target, item.bounce)
-            hand.body.pos = Func.add(this.body.pos, this.input.handbounce)
-        }
-        else 
-        {
-            let target = Func.add(this.body.pos, Func.multiply(this.input.hand, item.reach))
-            hand.body.target(target)
-        }
-        if (item.building)
-            this.level.build(hand) // will try to build
-
-            // Full draw of the bow
-        if (item.type === BOW)
-        {
-            let treshold = item.reach * 127
-            let draw = Func.magnitude(Func.subtract(this.body.pos, hand.body.pos))
-            if (draw > treshold && !item.primed) 
-                {
-                    //console.log('primed!', draw)
-                    this.primed = true
-                    // send prime signal to client
-                    item.primed = true
-                }
-            else if (draw < treshold) item.primed = false
-        }
-        //console.log(this.hand.body.pos)
-    }
+    
     getInventoryUpdate()
     {
         return this.inventory.updates()
@@ -314,6 +195,7 @@ module.exports = class Player
         this.inventory.updated = true
         //console.log(action)
     }
+    /*
     manageAttributes(attribute)
     {
         if (this.points <= 0) return
@@ -339,13 +221,14 @@ module.exports = class Player
             break
         }
     }
-
+*/
     updateInput(input)
     {
         if (input.dir)
             this.input.dir = Func.multiply(Func.constrainVector(input.dir, 128), this.speedstat)
         if (input.hand)
-            this.input.hand = Func.constrainVector(input.hand, 128)
+            this.hand.updateInput(input.hand)
+            //this.input.hand = Func.constrainVector(input.hand, 128)
         for (let action of input.actions)
         {
             if (action.type == 'inventory') this.handleInventory(action)

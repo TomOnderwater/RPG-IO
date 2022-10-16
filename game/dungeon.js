@@ -286,8 +286,9 @@ module.exports = class Dungeon {
         //let item = this.createItem('sword')
         let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
 
-        new_player.pickup(this.createItem(BOW, 20))
+        new_player.pickup(this.createItem(BOW, 100))
         new_player.pickup(this.createItem(SWORD))
+        new_player.pickup(this.createItem(STAFF, 100))
         new_player.initHand(this.assignID()) // assign an id for the item in hand
         // add to queue
         console.log('adding player: ', new_player.name, 'id: ', new_player.id)

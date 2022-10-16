@@ -1,7 +1,7 @@
 
-//random functions meant for general in game purposes
-function isClose(a, b) {
-    return (dist(a.x, a.y, b.x, b.y) < 100)   
+function isAbout(a, b, tolerance)
+{
+    return (a > b - tolerance && a < b + tolerance)
 }
 
 function getRelativeAngle(a, b) {
@@ -91,6 +91,9 @@ function drawItem(type, pos, size, _rot)
     case AMMO:
       drawIcon(ammoicon, pos, size, rot)
       return
+    case STAFF:
+      drawIcon(stafficon, pos, size, rot)
+      return
     }
   push()
   translate(pos.x, pos.y)
@@ -119,6 +122,38 @@ function drawLeaderBoard(pos)
     text(entry.name + " " + entry.score, x + 15, y)
   }
   pop()
+}
+
+function randomVector(max)
+{
+  //return createVector(random(-max, max), random(-max, max))
+  return {x: random(-max, max), y: random(-max, max)}
+}
+
+function subtract(p1, p2) {
+  return {
+      x: p1.x - p2.x,
+      y: p1.y - p2.y
+  }
+}
+
+function add(p1, p2) {
+  return {
+      x: p1.x + p2.x,
+      y: p1.y + p2.y
+  }
+}
+
+function multiply(a, factor) {
+  return {
+      x: a.x * factor,
+      y: a.y * factor
+  }
+}
+
+function sqDist(p1, p2)
+{
+  return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)
 }
 
 function onCircle(p, circlepos, dia)

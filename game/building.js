@@ -14,7 +14,7 @@ module.exports = class BuildManager
         for (let buildingevent of this.buildingevents)
         {
             // same id and event
-            if (buildingevent.id === hand.owner &&
+            if (buildingevent.id === hand.owner.id &&
                 buildingevent.type === hand.item.type)
                 {
                     found = buildingevent
@@ -50,7 +50,7 @@ module.exports = class BuildManager
         {
             //console.log('successful')
             this.buildingevents.push(new BuildingEvent({
-                id: hand.owner,
+                id: hand.owner.id,
                 pos: Func.floorPos(pos),
                 type: hand.item.type
             }))

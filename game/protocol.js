@@ -25,7 +25,9 @@ global.ROCK = 'r'
 // item definitions
 global.SWORD = 'S'
 global.BOW = 'B'
+global.STAFF = '@'
 global.ARROW = 'A'
+global.FIREBALL = '$'
 global.NONE = 'N'
 global.AMMO = '*'
 
@@ -72,6 +74,22 @@ global.createItem = function(type)
                     minimumdraw: 0.15,
                     bounce: 0.4,
                     persistent: true,
+                    projectile: ARROW,
+                    ammo: true}
+            case STAFF:
+                return {
+                    type: STAFF, 
+                    physical: false,
+                    building: false, 
+                    mass: 0.1, 
+                    reach: 0.005, 
+                    rad: 0.05, 
+                    attack: 50, 
+                    destruction: 25,
+                    bounce: 0.4,
+                    persistent: true,
+                    minimumdraw: 0.1,
+                    projectile: FIREBALL,
                     ammo: true}
             case WOOD:
                 return {

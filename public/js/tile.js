@@ -55,41 +55,25 @@ class Tile {
       switch (this.surface) {
         case STONE:
           image(stoneTexture, pos.x, pos.y, cam.zoom, cam.zoom)
-          //fill(120, 120, 120)
-          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
           break
           case GRAVEL:
-          //fill(160, 160, 180)
-          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
           image(gravelTexture, pos.x, pos.y, cam.zoom, cam.zoom)
           break
         case DIRT:
           image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
-          //fill(200, 100, 50)
-          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case GRASS:
           image(grassTexture, pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case WATER:
           image(waterTexture, pos.x, pos.y, cam.zoom, cam.zoom)
-          //fill(0, 0, 255)
-          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case SAND:
           image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
-          //fill(255, 255, 0)
-          //rect(pos.x, pos.y, cam.zoom, cam.zoom)
         break
         default:
           break
       }
-      //draw thing on top
-      //noFill()
-      //stroke(255, 255, 255, 180)
-      //strokeWeight(this.selectborder)
-      //if (this.selected) rect(pos.x + this.selectborder * 0.5, pos.y + this.selectborder * 0.5, 
-      //cam.zoom - this.selectborder , cam.zoom - this.selectborder)
       pop()
   }
 }

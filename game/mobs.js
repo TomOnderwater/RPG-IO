@@ -86,12 +86,16 @@ class Slime
         let collisions = this.body.update(closebodies)
         for (let collision of collisions)
         {
-            //console.log(collision.entity)
             if (collision.entity.type == PLAYER)
             {
                 let damage = this.stats.attack
-                collision.entity.applyDamage(this.attack, this.id)
-                level.addEvent({type: 'damage', dir: collision.speed, pos: collision.pos, damage, item: SLIME})
+
+                let attack = Func.calcAttack({
+                    collision, 
+                    attacker: this.id, 
+                    damage})
+
+                level.addEvent(attack)
             }
         }
         // apply damage if player

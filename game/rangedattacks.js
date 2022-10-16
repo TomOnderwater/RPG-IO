@@ -6,7 +6,7 @@ module.exports = class RangedAttack
     constructor(data)
     {
         this.owner = data.owner
-        this.attack = data.attack
+        this.item = data.item
         this.type = data.type
         this.dir = data.dir
         this.owner = data.owner
@@ -16,23 +16,23 @@ module.exports = class RangedAttack
     }
     update(level, colliders)
     {
-        //this.body.bounceSpeed(this.dir)
-        //console.log(this.body.pos)
         let things = level.closeBodies(this.body.pos, colliders, 1)
         //console.log(things.length)
         let collisions = this.body.update(things, this.owner.body)
         
         for (let collision of collisions)
         {
-            //console.log(collision)
-            let item = createItem(BOW)
             if (collision.entity.health !== undefined)
                             level.addEvent(Func.calcAttack({
                                 collision, 
-                                item, 
+                                item: this.item, 
                                 attacker: this.owner.id}))
+            if (this.type === FIREBALL)
+                level.addEvent({
+                    type: 'explosion',
+                    pos: collision.pos
+                })                       
             return true
-            //if (collision) return true
         }
         return false
     }

@@ -228,7 +228,7 @@ module.exports = class Level
         // do something with the completed buildings
         for (let building of completed)
         {
-            this.getPlayer(building.id).removeItem({
+            this.getPlayer(building.id).inventory.remove({
                 type: building.type, 
                 count: 1
             })

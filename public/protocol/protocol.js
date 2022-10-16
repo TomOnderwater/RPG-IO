@@ -13,9 +13,10 @@ const SLIME = 's'
 const SWORD = 'S'
 const WOOD = 'W'
 const BOW = 'B'
+const STAFF = '@'
 const ARROW = 'A'
 const NONE = 'N'
 const AMMO = '*'
-
+const FIREBALL = '$'
 
 let inventorySpecs = {rowcount: 6, visible: 1}

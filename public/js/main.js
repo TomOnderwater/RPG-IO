@@ -21,7 +21,7 @@ let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, tim
 let walltexture, woodicon, stoneicon, rocktexture, 
 grassTexture, stoneTexture, waterTexture, sandTexture,
 dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture,
-ammoicon
+ammoicon, stafficon
 
 let textures = []
 
@@ -56,6 +56,7 @@ function preload()
   woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
   ammoicon = loadImage('assets/textures/ammobag.png')
+  stafficon = loadImage('assets/textures/staff.png')
   
   //sound = new Sound()
 }

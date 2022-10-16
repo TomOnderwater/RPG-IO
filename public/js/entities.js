@@ -22,7 +22,6 @@ class Entity
         this.dir = 0
         this.owner = false
         this.dia = 0.4
-        this.speed = 0
         this.bounce = 0.2
         this.face = randomAnimal(bton(this.id) * 1000)
     }
@@ -30,18 +29,18 @@ class Entity
     {
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
         this.pos = bounce(this.pos, this.target, this.bounce)
-        this.speed = dist(this.pos.x, this.pos.y, this.ppos.x, this.ppos.y)
+        let sqspeed = sqDist(this.pos, this.ppos)
         if (this.type === SWORD)
         {
-            if (this.speed > 0.1 && this.moving)
+            if (sqspeed > 0.01 && this.moving)
             {
                 level.addWoosh(this.pos, this.ppos, 0.3)
                 // ADDITIONAL: SOUND
-                if (this.speed > 0.2 && sound !== undefined)
-                    sound.woosh(this.speed * 6) // play a woosh
+                //if (this.speed > 0.2 && sound !== undefined)
+                    //sound.woosh(this.speed * 6) // play a woosh
             }
         }
-        if (this.speed > 0.005) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
+        if (sqspeed > 0.00001) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }
     newData(data)
@@ -114,6 +113,28 @@ class HandItem extends Entity
     }
 }
 
+class Staff extends HandItem
+{
+    constructor(status)
+    {
+        super(status)
+        this.size = 1
+        this.offset = 0.3
+        this.rot = - HALF_PI
+        this.bounce = 0.5
+    }
+    draw()
+    {
+        let rot = 0
+        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        if (!this.moving) rot += HALF_PI 
+        rot += this.rot
+        let pos = cam.onScreen(this.pos)
+        let size = this.size * cam.zoom
+        drawItem(this.type, pos, size, rot)
+    }
+}
+
 class Fist extends HandItem
 {
     constructor(status)
@@ -142,6 +163,7 @@ function drawArrow(levelpos, dir, offset, size)
     //circle(60, 0, 10)
     pop()
 }
+
 
 class Bow extends HandItem
 {
@@ -205,6 +227,7 @@ class Bow extends HandItem
     }
 }
 
+
 class Sword extends HandItem
 {
     constructor(status)
@@ -243,4 +266,117 @@ class Sword extends HandItem
         line(0,0,hilt, 0)
         pop()
     }
+}
+
+class FireBall extends Entity
+{
+    constructor(status)
+    {
+        super(status)
+        this.fire = new Fire(this.pos)
+    }
+    draw()
+    {
+        this.fire.draw(this.pos)
+    }
+}
+
+
+
+// SHOULD GET AN EFFECTS TAB
+
+function getFireColor(progression)
+{
+   const hot = color(255, 255, 200, 200)
+   const orange = color(255, 150, 50, 150)
+   const red = color(255, 100, 20, 100)
+   const smoke = color(100, 100, 100, 50)
+   let stages = 3
+   let factor = 1 / stages
+   if (progression < factor)
+   {
+     let p = (factor - progression) * stages
+     return lerpColor(orange, hot, p)
+   }
+   if (progression < factor * 2)
+   {
+     let p = ((factor * 2) - progression) * stages
+     return lerpColor(red, orange, p)
+   }
+     let p = ((factor * 3) - progression) * stages
+     return lerpColor(smoke, red, p)
+}
+
+class Fire
+{
+  constructor(pos)
+  {
+    this.pos = pos
+    this.pressure = 0.0001
+    this.pressurelimit = 0.01
+    this.fireparticles = []
+    this.temp = 1
+  }
+  addParticles(count)
+  {
+    for (let i = 0; i < count; i++)
+    {
+      this.fireparticles.push(new FireParticle(this))
+    }
+  }
+  draw(pos)
+  {
+    this.pos = pos
+    for (let i = 0; i < this.temp; i++)
+    {
+      this.fireparticles.push(new FireParticle(this))
+    }
+    this.fireparticles.forEach(particle => particle.draw())
+    for (let i = this.fireparticles.length - 1; i >= 0; i--)
+    {
+      if (this.fireparticles[i].ended())
+        this.fireparticles.splice(i, 1)
+    }
+  }
+}
+
+class FireParticle
+{
+  constructor(fire)
+  {
+    this.fire = fire
+    this.speed = randomVector(0.01)
+    this.pos = add(fire.pos, this.speed)
+    this.maxlifetime = round(random(10, 20))
+    this.lifetime = this.maxlifetime
+    this.dia = random(0.3, 0.4)
+  }
+  draw()
+  {
+    // UPDATE
+    // PRESSURE COMING FROM THE FIRE
+    let pressure = this.fire.pressure / sqDist(this.pos, this.fire.pos)
+    if (pressure > this.fire.pressurelimit) 
+        pressure = this.fire.pressurelimit
+    // VECTOR TO FIRE
+    let dir = multiply(subtract(this.pos, this.fire.pos), pressure)
+    this.speed = add(this.speed, add(dir, randomVector(0.001)))
+    //this.speed.add(randomVector(0.1))
+    this.pos = add(this.pos, this.speed)
+    this.lifetime --
+
+    // DRAW
+    let pos = cam.onScreen(this.pos)
+    push()
+    let progression = 1 - (this.lifetime / this.maxlifetime)
+    noStroke()
+    let c = getFireColor(progression)
+    fill(c)
+    circle(pos.x, pos.y, cam.zoom * (this.dia - (progression * 0.2)))
+    pop()
+  }
+  ended()
+  {
+    return this.lifetime < 0
+  }
 }

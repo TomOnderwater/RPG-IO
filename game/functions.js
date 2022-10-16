@@ -197,6 +197,17 @@ function randomName()
 function calcAttack(attack)
 {
     if (!attack.power) attack.power = 1
+    if (attack.damage !== undefined) 
+    {
+        attack.collision.entity.applyDamage(attack.damage)
+            return {
+                type: 'damage', 
+                dir: attack.collision.speed, 
+                pos: attack.collision.pos, 
+                damage: attack.damage,
+                target: {color: {r:100, g: 100, b: 100}}
+            }
+    }
     if (attack.collision)
     {
         let speed = magnitude(attack.collision.speed)
@@ -211,8 +222,7 @@ function calcAttack(attack)
                 type: 'damage', 
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
-                damage, 
-                item: attack.item.type,
+                damage,
                 target: {color: {r:100, g: 100, b: 100}},
                 owner: attack.attacker
             } // add a color to targets
@@ -227,8 +237,7 @@ function calcAttack(attack)
                 type: 'damage', 
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
-                damage, 
-                item: attack.item.type,
+                damage,
                 target: {color: {r:255, g: 0, b: 0}, id: attack.collision.entity.id},
                 owner: attack.attacker
             }
