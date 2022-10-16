@@ -33,7 +33,7 @@ class MobileInput {
         let moveactions = this.joystick.getActions()
         if (moveactions)
             actions = [...actions, ...moveactions]
-        print(actions)
+        //print(actions)
         //print(joyout)
         return {
             dir, hand, 
@@ -95,7 +95,7 @@ class WeaponWheel
     constructor()
     {
         this.open = false
-        this.center = createVector(width * 0.5, height * 0.5)
+        this.center = createVector(width * 0.5, height * 0.4)
         //console.log('inventory center:', this.center)
         this.dia = 75
         this.focus = createVector(width * 0.5, height * 0.5)
@@ -105,6 +105,7 @@ class WeaponWheel
         this.margin = 0.01
         this.selection = {id: -1}
         this.updateInventory()
+        this.hintcompleted = false
     }
     close()
     {
@@ -132,14 +133,29 @@ class WeaponWheel
         }
         this.select(this.selection)
     }
+    drawHint()
+    {
+        push()
+        fill(255, 0, 0, 50)
+        //strokeWeight(5)
+        circle(this.center.x, this.center.y, this.dia * 2)
+        fill(255, 150)
+        textSize(20)
+        textAlign(CENTER, CENTER)
+        strokeWeight(2)
+        text("inventory", this.center.x, this.center.y)
+        pop()
+        if (this.open) this.hintcompleted = true
+    }
     draw() 
     {
+        if (!this.hintcompleted) this.drawHint()
         if (this.open)
             this.sections.forEach(section => section.draw())
     }
     select(selection)
     {
-        console.log('selecting:', selection)
+        //console.log('selecting:', selection)
         for (let section of this.sections)
         {
             section.deselect()
@@ -260,6 +276,7 @@ class Section
         push()
         noFill()
         stroke(150, 100)
+        if (this.item.type === NONE) stroke(150, 50)
         if (this.selected) stroke(255, 120)
         strokeWeight(this.width)
         strokeCap(SQUARE)
@@ -272,11 +289,13 @@ class Section
         let textpos = {x: focus.x + cos(a) * dia * itemspacing, y: focus.y + sin(a) * dia * itemspacing}
         if (this.item.type !== NONE)
         {
-            drawItem(this.item.type, itempos, 20)
+            fill(255)
+            if (this.item.type === STAFF) drawItem(this.item.type, itempos, 45, PI * 0.15)
+            else drawItem(this.item.type, itempos, 20)
             if (this.item.count > 0)
             {
                 push()
-                textSize(16)
+                textSize(20)
                 fill(255)
                 noStroke()
                 textAlign(CENTER, CENTER)

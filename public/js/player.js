@@ -71,7 +71,8 @@ class Player extends Entity
       x: this.pos.x + offset.x, 
       y: this.pos.y + offset.y})
     push()
-      drawItem(this.ammo.t, pos, 0.2 * cam.zoom)
+    if (this.ammo.t === STAFF) drawItem(this.ammo.t, pos, 0.4 * cam.zoom)
+    else drawItem(this.ammo.t, pos, 0.2 * cam.zoom)
       fill(255)
       textSize(16)
       noStroke()
@@ -102,7 +103,7 @@ class Player extends Entity
     if (this.animationframe) this.drawLevelUP(pos)
     this.drawHealthBar({x: 0, y: -0.7})
     if (type === 'spectator' || player === this)
-      this.drawAmmo({x: 1, y: -0.7})
+      this.drawAmmo({x: 0.8, y: -0.6})
   
     this.drawName({x: 0, y: -0.9})
     push()

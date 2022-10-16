@@ -15,7 +15,7 @@ function bounce(p, t, bounce)
 
 function rumble(duration)
 {
-  console.log('vibratingL:', duration)
+ // console.log('vibratingL:', duration)
   navigator.vibrate(duration)
 }
 
@@ -23,7 +23,7 @@ function handleFeedback(feedback)
 {
   for (let event of feedback)
   {
-    console.log(event)
+    //console.log(event)
     switch(event.type)
     {
       case 'prime':
