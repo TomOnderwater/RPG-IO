@@ -296,7 +296,7 @@ module.exports = class PhysicalBody
     {
         this.speed = vectorBounce(this.speed, spd, this.bounce)
     }
-    applyForce(dir) // continues force, such as gravity
+    applyForce(dir) // continuous force, such as gravity or shockwaves
     {
         this.speed = add(this.speed, dir)
     }

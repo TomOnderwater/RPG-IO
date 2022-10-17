@@ -205,7 +205,7 @@ function calcAttack(attack)
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage: attack.damage,
-                target: {color: {r:100, g: 100, b: 100}}
+                target: {color: {r:255, g: 0, b: 0}}
             }
     }
     if (attack.collision)
@@ -261,11 +261,19 @@ function randomVector(max)
     return {x: (Math.random() - 0.5) * 2 * max, 
         y: (Math.random() - 0.5) * 2 * max}
 }
+
+function normalize(vec)
+{
+    // use ratio for fewer divisions
+    let ratio = 1 / Math.sqrt(vec.x * vec.x + vec.y * vec.y)
+    return {x: vec.x * ratio, y: vec.y * ratio }
+}
+
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, 
-    constrain, toBase64, floorPos, randomName, randomVector
+    constrain, toBase64, floorPos, randomName, randomVector, normalize
 }

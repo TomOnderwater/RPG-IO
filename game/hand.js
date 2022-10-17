@@ -1,6 +1,6 @@
 const PhysicalBody = require("./hitboxes")
 const Func = require('./functions.js')
-
+//const Items = require('./item.js')
 
 module.exports = class Hand
 {
@@ -8,7 +8,7 @@ module.exports = class Hand
     {
         this.owner = owner
         this.level = owner.level
-        this.item = item
+        this.item = item //Items.createItem(NONE)
         this.body = new PhysicalBody({type: 'circle', pos, rad: 0.15})
         this.moving = false
         this.handbounce = {x: 0, y: 0}
@@ -125,12 +125,15 @@ module.exports = class Hand
             if (!inventory.canRemove({type: item.type, count: 1}))
                 return
             // remove ammo (based on shot type)
+            //get start pos
+            let pos = owner.body.pos
+            if (item.type === STAFF)
+                pos = this.body.pos
             inventory.remove({type: item.type, count: 1})
             this.level.addRangedAttack(
                 {
                     owner, 
-                    pos: owner.body.pos, 
-                    item, 
+                    pos, item, 
                     dir, rad: 0.1, mass: 2,
                     type: item.projectile
                 })
@@ -145,6 +148,7 @@ module.exports = class Hand
 
     updateInput(hand)
     {
+        //this.item.update(hand)
         this.hand = Func.constrainVector(hand, 128)
     }
 

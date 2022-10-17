@@ -28,10 +28,11 @@ module.exports = class RangedAttack
                                 item: this.item, 
                                 attacker: this.owner.id}))
             if (this.type === FIREBALL)
-                level.addEvent({
+                level.addPhysicalEvent({
                     type: 'explosion',
-                    pos: collision.pos
-                })                       
+                    pos: collision.pos,
+                    owner: this.owner
+                }, level)                       
             return true
         }
         return false

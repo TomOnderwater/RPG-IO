@@ -6,6 +6,7 @@ const RangedAttack = require('./rangedattacks.js')
 const GroundItem = require('./grounditems.js')
 const BuildingManager = require('./building.js')
 const PhysicalBody = require('./hitboxes.js')
+const PhysicalEvent = require('./physicalevents.js')
 
 module.exports = class Level 
 {
@@ -24,6 +25,7 @@ module.exports = class Level
         this.maxMobs = 0.05 * this.width * this.height
         this.updates = []
         this.rangedattacks = []
+        this.physicalevents = [] // stuff like explosions and fires
         this.buildManager = new BuildingManager(this)
         this.addRandomItems()
     }
@@ -128,16 +130,32 @@ module.exports = class Level
             if (ended) this.rangedattacks.splice(i, 1)
         }
     }
+    addPhysicalEvent(data)
+    {
+        this.physicalevents.push(new PhysicalEvent(data, this))
+    }
+    updatePhysicalEvents(entities)
+    {
+        for (let i = this.physicalevents.length - 1; i >= 0; i--)
+        {
+            let ended = this.physicalevents[i].update(this, entities)
+            if (ended) this.physicalevents.splice(i, 1)
+        }
+    }
     update(ticks)
     {
         //spawn mobs
         this.spawnMobs()
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
-        entities.forEach(entity => entity.update(this, entities))
+        for (let i = 0; i < entities.length; i++)
+        {
+            entities[i].update(this, entities)
+        }
 
         // update buildings being built
         this.updateBuildManager()
         this.updateRangedAttacks(entities)
+        this.updatePhysicalEvents(entities)
         this.updateGroundItems(this.players)
         let recoverytick = ((ticks % 30) === 0)
         if (recoverytick) 
@@ -403,8 +421,10 @@ module.exports = class Level
     }
     getGroundSpeed(pos)
     {
-        let x = Func.constrain(Math.floor(pos.x), 0, this.width)
-        let y = Func.constrain(Math.floor(pos.y), 0, this.height)
+        if (this.outOfBounds(pos))
+            return 0
+        let x = Math.floor(pos.x)
+        let y = Math.floor(pos.y)
         return this.tiles[x][y].groundSpeed()
     }
 
