@@ -187,7 +187,6 @@ class Bow extends HandItem
         super(status)
         this.dist = 0.6
         this.bowpos = this.pos
-        console.log('bow', this.bowpos)
         this.drawreach = 0.5
         this.size = 0.1
     }

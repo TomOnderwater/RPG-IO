@@ -22,7 +22,7 @@ module.exports = class Level
         this.items = []
         this.events = []
         this.mobs = []
-        this.maxMobs = 0.05 * this.width * this.height
+        this.maxMobs = 0.03 * this.width * this.height
         this.updates = []
         this.rangedattacks = []
         this.physicalevents = [] // stuff like explosions and fires
@@ -33,12 +33,19 @@ module.exports = class Level
     {
         this.players.forEach(player => player.health = -1000) // effective kill
     }
+    getRandomLandPos()
+    {
+        let pos = this.randomPos()
+        let tile = this.getTile(pos)
+        if (tile.surface === WATER) // TRY AGAIN
+            return this.getRandomLandPos()
+        return pos
+    }
     getSpawnPos(body)
     {
         //return {x: this.size / 2, y: this.size / 8}
         //let startpos = {x: this.width / 2, y: this.height / 8}
-        let startpos = this.randomPos()
-        console.log('start pos: ', startpos)
+        let startpos = this.getRandomLandPos()
         return this.getFreeSpot(startpos, body)
     }
     takePlayer(id)
@@ -181,7 +188,7 @@ module.exports = class Level
                                             name: player.name,
                                             killer: 'natural causes'})
                 this.players.splice(i, 1)
-                console.log('player died', this.players)
+                //console.log('player died', this.players)
             }
             else if (recoverytick)
                 player.recover()

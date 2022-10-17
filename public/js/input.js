@@ -175,11 +175,15 @@ class WeaponWheel
         for (let t of touches)
         {
             // check if it is opened and if we're pressing an entry
+            let used = inList(t.id, input.usedTouches)
+            if (this.open && used && this.touchid === t.id && this.swapping)
+            {
+                this.dragpos = createVector(t.x, t.y)
+                touchended = false
+            }
             if (this.open && onCircle(t, this.focus, this.dia * 1.25))
             {
-                // open, and pressed on the wheel area
-                // first press
-                if (!inList(t.id, input.usedTouches))
+                if (!used)
                 {
                     let selection = this.selectSection(t)
                     input.addTouch(t)
@@ -187,52 +191,46 @@ class WeaponWheel
                         return this.close()
                     if (selection !== false)
                     {
-                        //selection.addTouch(t) // add the touch to the section to track it
-                        //console.log('selection: ', selection)
                         this.swapping = selection
+                        this.dragpos = createVector(t.x, t.y)
+                        this.touchid = t.id
                         touchended = false
                     }
                     if (selection !== false && this.selection.id !== selection.id)
                         return this.select(selection)
-                } else 
-                {
-                    this.dragpos = createVector(t.x, t.y)
-                    touchended = false
                 }
             }
             // on center and not opened
-            if (!this.open && onCircle(t, this.center, this.dia) && !inList(t.id, input.usedTouches)) 
+            if (!this.open && onCircle(t, this.center, this.dia) && !inList(t.id, input.usedTouches))
+            {
+                touchended = false
                 this.openInventory(t)
+            } 
             // existing touch
-            if (this.open && t.id === this.touchid)
+            if (this.open && t.id === this.touchid && !this.swapping)
             {
                 this.pTouch = createVector(t.x, t.y)
                 let selection = this.selectSection(t)
-                //if (selection !== false) console.log('selection: ', selection)
-                touchended = false
                 if (selection !== false && selection.id !== this.selection.id)
-                        return this.select(selection) 
+                    return this.select(selection) 
             }
         }
 
         if (touchended && this.swapping)
         {
-            //console.log('swapping: ', this.swapping)
-            //console.log(this.dragpos)
             let other = this.selectSection(this.dragpos)
-            //console.log(other)
             if (other)
-            {
+            { // if other = false, drop the item on the floor FUTURE UPDATE
                 if (other.id !== this.swapping.id)
                 {
                     let swapping = {a: other.id, b: this.swapping.id}
                     this.swapping = false
-
+                    this.touchid = -1
                     return [{type: 'inventory', swapping}]
                 }
             } 
         }
-
+        touchended = !inList(this.touchid, input.usedTouches)
         if (touchended && this.pTouch !== undefined)
         { // DETECT DRAG TO SWITCH
             if (!onCircle(this.pTouch, this.focus, this.dia * 0.15))
@@ -258,9 +256,11 @@ class WeaponWheel
     }
     openInventory(t)
     {
+        //console.log('opening inventory')
         this.focus = createVector(t.x, t.y)
         this.touchid = t.id
         this.open = true
+        this.swapping = false
         input.addTouch(t)
         return false
     }

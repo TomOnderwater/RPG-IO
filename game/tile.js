@@ -78,13 +78,13 @@ module.exports = class Tile
             case STONE:
                 return 1
             case DIRT:
-                return 0.8
+                return 0.85
             case GRASS:
                 return 0.95
             case GRAVEL:
-                return 0.7
+                return 0.8
             case SAND:
-                return 0.6
+                return 0.7
             case WATER:
                 return 0.3
             default:

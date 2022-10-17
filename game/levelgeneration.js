@@ -45,10 +45,13 @@ module.exports = class LevelGenerator
                 let waterval = watermap[x][y]
                 let surface = STONE
                 // check surface
+                //console.log(terrainval)
                 if (terrainval > vegetationbias && terrainval < vegetationbias + stepsize) surface = STONE
-                else if (terrainval > vegetationbias + stepsize && terrainval < vegetationbias + stepsize * 1.5) surface = GRAVEL
-                else if (terrainval > vegetationbias + stepsize && terrainval < vegetationbias + stepsize * 2) surface = DIRT
+                //let step = 1.5
+                else if (terrainval > vegetationbias + stepsize && terrainval < vegetationbias + stepsize * 2) surface = GRAVEL
+                else if (terrainval > vegetationbias + stepsize * 2 && terrainval < vegetationbias + stepsize * 3) surface = DIRT
                 else surface = GRASS
+                //if (surface === DIRT) console.log('dirt')
                 if (waterval < level.water) surface = WATER
                 else 
                 {

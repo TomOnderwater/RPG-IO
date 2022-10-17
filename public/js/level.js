@@ -173,7 +173,7 @@ class Level {
   {
     for (let entity of entities)
     {
-      console.log(entity.t)
+      //console.log(entity.t)
       switch (entity.t)
       {
         case PLAYER:

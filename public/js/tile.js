@@ -60,7 +60,7 @@ class Tile {
           image(gravelTexture, pos.x, pos.y, cam.zoom, cam.zoom)
           break
         case DIRT:
-          image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          image(dirtTexture, pos.x, pos.y, cam.zoom, cam.zoom)
         break
         case GRASS:
           image(grassTexture, pos.x, pos.y, cam.zoom, cam.zoom)
