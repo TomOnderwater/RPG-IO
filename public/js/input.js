@@ -106,6 +106,7 @@ class WeaponWheel
         this.selection = {id: -1}
         this.updateInventory()
         this.hintcompleted = false
+        this.swapping = false
     }
     close()
     {
@@ -114,6 +115,7 @@ class WeaponWheel
     }
     updateInventory()
     {
+        //console.log('updating inventory:', inventory)
         this.sections = []
         let count = 6
         if (inventory !== undefined) 
@@ -131,6 +133,8 @@ class WeaponWheel
             this.sections.push(section)
             a += div
         }
+        if (inventory !== undefined)
+            this.selection = {id: inventory.selection}
         this.select(this.selection)
     }
     drawHint()
@@ -167,18 +171,34 @@ class WeaponWheel
     }
     update()
     {
+        let touchended = true
         for (let t of touches)
         {
             // check if it is opened and if we're pressing an entry
-            if (this.open && onCircle(t, this.focus, this.dia * 1.25) && !inList(t.id, input.usedTouches))
+            if (this.open && onCircle(t, this.focus, this.dia * 1.25))
             {
-                //console.log('open and pressed on button!')
-                let selection = this.selectSection(t)
-                input.addTouch(t)
-                if (onCircle(t, this.focus, this.dia * 0.5))
-                    return this.close()
-                if (selection !== false && this.selection.id !== selection.id)
-                    return this.select(selection)
+                // open, and pressed on the wheel area
+                // first press
+                if (!inList(t.id, input.usedTouches))
+                {
+                    let selection = this.selectSection(t)
+                    input.addTouch(t)
+                    if (onCircle(t, this.focus, this.dia * 0.5))
+                        return this.close()
+                    if (selection !== false)
+                    {
+                        //selection.addTouch(t) // add the touch to the section to track it
+                        //console.log('selection: ', selection)
+                        this.swapping = selection
+                        touchended = false
+                    }
+                    if (selection !== false && this.selection.id !== selection.id)
+                        return this.select(selection)
+                } else 
+                {
+                    this.dragpos = createVector(t.x, t.y)
+                    touchended = false
+                }
             }
             // on center and not opened
             if (!this.open && onCircle(t, this.center, this.dia) && !inList(t.id, input.usedTouches)) 
@@ -189,13 +209,30 @@ class WeaponWheel
                 this.pTouch = createVector(t.x, t.y)
                 let selection = this.selectSection(t)
                 //if (selection !== false) console.log('selection: ', selection)
+                touchended = false
                 if (selection !== false && selection.id !== this.selection.id)
                         return this.select(selection) 
             }
         }
-        let touchended = false
-        if (this.touchid !== -1) 
-            touchended = !inList(this.touchid, input.usedTouches)
+
+        if (touchended && this.swapping)
+        {
+            //console.log('swapping: ', this.swapping)
+            //console.log(this.dragpos)
+            let other = this.selectSection(this.dragpos)
+            //console.log(other)
+            if (other)
+            {
+                if (other.id !== this.swapping.id)
+                {
+                    let swapping = {a: other.id, b: this.swapping.id}
+                    this.swapping = false
+
+                    return [{type: 'inventory', swapping}]
+                }
+            } 
+        }
+
         if (touchended && this.pTouch !== undefined)
         { // DETECT DRAG TO SWITCH
             if (!onCircle(this.pTouch, this.focus, this.dia * 0.15))
@@ -207,7 +244,7 @@ class WeaponWheel
     selectSection(t)
     {
         // if still on the circle
-        console.log(this.focus, t, this.dia * 0.15)
+        //console.log(this.focus, t, this.dia * 0.15)
         if (onCircle(this.focus, t, this.dia * 0.15)) 
             return false
         // select the section

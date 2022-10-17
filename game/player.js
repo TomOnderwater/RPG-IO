@@ -179,49 +179,24 @@ module.exports = class Player
     {
         return this.hand.data()
     }
-    
     getInventoryUpdate()
     {
         return this.inventory.updates()
     }
     handleInventory(action)
     {
-        if (action.selection !== null) 
+        if (action.selection !== undefined) 
         {
             this.inventory.select(action.selection)
             let type = this.inventory.getSelectedType()
             this.hand.item = createItem(type)
         }
+        if (action.swapping !== undefined)
+            this.inventory.swap(action.swapping)
+
         this.inventory.updated = true
         //console.log(action)
     }
-    /*
-    manageAttributes(attribute)
-    {
-        if (this.points <= 0) return
-        switch(attribute)
-        {
-            case 'strength':
-            this.strength ++
-            this.points --
-            break
-            case 'speed':
-            this.speed ++
-            this.speedstat = 0.0005 + (0.0001 * (this.speed - 1))
-            this.points --
-            break
-            case 'vitality':
-            this.vitality++
-            this.maxhealth = 100 + ((this.vitality - 1) * 50)
-            this.health += 50
-            this.points --
-            break
-            default:
-
-            break
-        }
-    }
-*/
     updateInput(input)
     {
         if (input.dir)

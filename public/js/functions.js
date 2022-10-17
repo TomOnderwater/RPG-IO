@@ -10,7 +10,7 @@ function getRelativeAngle(a, b) {
 
 function bounce(p, t, bounce)
 {
-  return createVector(p.x + ((t.x - p.x) * bounce), p.y + ((t.y - p.y) * bounce))
+  return {x: p.x + ((t.x - p.x) * bounce), y: p.y + ((t.y - p.y) * bounce)}
 }
 
 function rumble(duration)
@@ -151,6 +151,12 @@ function multiply(a, factor) {
   }
 }
 
+function divide(a, divisor)
+{
+  let factor = 1 / divisor
+  return {x: a.x * factor, y: a.y * factor}
+}
+
 function sqDist(p1, p2)
 {
   return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2)
@@ -267,7 +273,7 @@ function canvasGreatest()
 
 function halfScreen()
 {
-  return createVector(width / 2, height / 2)
+  return {x: width * 0.5, y: height * 0.5}
 }
 
 function isSecure()

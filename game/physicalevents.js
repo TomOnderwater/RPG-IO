@@ -8,6 +8,7 @@ module.exports = class PhysicalEvent
         this.ticks = 0
         this.level = level
         this.owner = data.owner
+        this.maxticks = data.maxticks || 3
         switch(data.type)
         {
             case 'explosion':
@@ -16,8 +17,8 @@ module.exports = class PhysicalEvent
                 level.addEvent({
                     type: 'explosion', pos: data.pos
                 })
-                this.maxticks = 3
                 this.event = new Explosion(this, data.pos, rad)
+                if (data.growth !== undefined) this.event.growth = data.growth
             break
         }
     }
@@ -62,7 +63,7 @@ class Explosion
         //console.log(body)
         if (!body.static)
         {
-            let mag = Func.constrain(this.growth / Func.sqDist(this.body.pos, collision), 0, 0.5)
+            let mag = Func.constrain(this.growth / (Func.sqDist(this.body.pos, collision) + 0.0001), 0, 0.5)
             let normal = Func.normalize(Func.subtract(collision, this.body.pos))
             let dir = Func.multiply(normal, mag)
             //console.log(dir)

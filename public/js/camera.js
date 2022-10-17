@@ -2,9 +2,8 @@ class Camera
 {
   constructor(focus, zoom)
   {
-    this.focus = p5.Vector.add(focus, halfScreen())
+    this.focus = add(focus, halfScreen()) //p5.Vector.add(focus, halfScreen())
     this.zoom = zoom //zoom is ratio higher is more zoomed in
-    this.invzoom = 1 / this.zoom
   }
   updateFocus(pos, _bounce)
   {
@@ -18,15 +17,18 @@ class Camera
     this.zoom += (zoom - this.zoom) * b
     //this.zoom = this.zoom, zoom, b
   }
-  onLevel(p) //which tile does the touch hit?
+  onLevel(p)
   {
-    let pos = createVector(p.x, p.y).sub(halfScreen())
-    return p5.Vector.div(pos, this.zoom).add(this.focus)
+    let pos = subtract(p, halfScreen())
+    return add(divide(pos, this.zoom), this.focus)
+    //return p5.Vector.div(pos, this.zoom).add(this.focus)
   }
-  onScreen(p) //where do we draw that tile on the screen?
+  onScreen(p)
   {
-    let pos = createVector(p.x, p.y).sub(this.focus)
-    return p5.Vector.mult(pos, this.zoom).add(halfScreen())
+    let pos = subtract(p, this.focus)
+    return add(multiply(pos, this.zoom), halfScreen())
+    //let pos = createVector(p.x, p.y).sub(this.focus)
+    //return p5.Vector.mult(pos, this.zoom).add(halfScreen())
   }
   zoomToLevel(level)
   {

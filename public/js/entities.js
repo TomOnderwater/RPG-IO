@@ -187,6 +187,7 @@ class Bow extends HandItem
         super(status)
         this.dist = 0.6
         this.bowpos = this.pos
+        console.log('bow', this.bowpos)
         this.drawreach = 0.5
         this.size = 0.1
     }
@@ -199,11 +200,15 @@ class Bow extends HandItem
                 if (this.moving) 
                 {
                     draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y)
-                    bowtarget = p5.Vector.fromAngle(rot).mult(this.drawreach).add(this.owner.pos)
+                    bowtarget = add(p5.Vector.fromAngle(rot).mult(this.drawreach), this.owner.pos)
                 }
             }
+        //console.log(this.bowpos)
+        //let bp = bounce(this.bowpos, bowtarget, 1)
         this.bowpos = bounce(this.bowpos, bowtarget, 1)
+        //console.log(bp, this.bowpos)
         let bowpos = cam.onScreen(this.bowpos)
+        //console.log(bowpos)
         //if (this.moving && this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         // draw the bow
         push()
@@ -232,7 +237,10 @@ class Bow extends HandItem
         {
             strokeWeight(0.05 * cam.zoom)
             stroke(0, 100)
-            let arrowpos = cam.onScreen(this.pos).sub(bowpos).rotate(-rot)
+
+            let p = subtract(cam.onScreen(this.pos), bowpos)
+            let arrowpos = createVector(p.x, p.y).rotate(-rot)
+
             line(p1.x, p1.y, arrowpos.x, arrowpos.y)
             line(p4.x, p4.y, arrowpos.x, arrowpos.y)
         }

@@ -141,7 +141,7 @@ class Explosion
     this.fire.pressurelimit = 0.1
     this.fire.mindia = 0.3
     this.fire.temp = 0
-    this.fire.addParticles(30)
+    this.fire.addParticles(30) //30
   }
   draw()
   {

@@ -31,7 +31,9 @@ module.exports = class RangedAttack
                 level.addPhysicalEvent({
                     type: 'explosion',
                     pos: collision.pos,
-                    owner: this.owner
+                    owner: this.owner,
+                    growth: 0.2,
+                    maxticks: 3,
                 }, level)                       
             return true
         }

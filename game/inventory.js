@@ -17,6 +17,7 @@ module.exports = class Inventory {
     {
         if (this.updated)
         {
+            //console.log('inventory updated, selection:', this.getSelectedSlot())
             let inventory = {}
             inventory.items = []
             for (let slot of this.slots)
@@ -35,6 +36,13 @@ module.exports = class Inventory {
         // returns the item
         return this.getSelectedSlot().item.type
     }
+    getSlotByID(id)
+    {
+        for (let slot of this.slots)
+        {
+            if (slot.id === id) return slot
+        }
+    }
     getSelectedSlot() // returns id
     {
         for (let slot of this.slots)
@@ -47,8 +55,21 @@ module.exports = class Inventory {
     {
         return (this.getSelectedSlot().item.type !== item.type)
     }
+    swap(swapping)
+    {
+        //console.log('swapping:', swapping)
+        let a = this.getSlotByID(swapping.a)
+        let a_data = a.getContent()
+        let b = this.getSlotByID(swapping.b)
+        let b_data = b.getContent()
+        a.setContent(b_data)
+        b.setContent(a_data)
+        this.select(swapping.a)
+        this.updated = true
+    }
     select(id)
     {
+        //console.log('selecting:', id)
         this.slots.forEach(slot => slot.selected = false)
         this.slots[id].selected = true
         //console.log(this.slots)
@@ -132,5 +153,19 @@ class Slot
         this.item = {type: NONE, count: 0}
         this.ammo = false
         this.persistent = true
+    }
+    setContent(content)
+    {
+        this.item = content.item
+        this.persistent = content.persistent
+        this.selected = content.selected
+        this.ammo = content.ammo
+    }
+    getContent()
+    {
+        return {item: this.item, 
+            persistent: this.persistent, 
+            selected: this.selected, 
+            ammo: this.ammo}
     }
 }

@@ -204,9 +204,7 @@ function lobby()
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
   cam.updateZoom(30, 0.1)
-  //cam.updateZoom(20)
-
-  //level.update()
+  
   if (ticks % 3 == 0) 
   {
     background(SEXYGREY)
@@ -221,7 +219,6 @@ function lobby()
   nameinput.position(box.x, box.y)
   nameinput.size(box.w, box.h)
 
-  console.log(nameinput.value())
   keyinput.position(box.x, box.y + boxspacing)
   keyinput.size(box.w, box.h)
   push()
