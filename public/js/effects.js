@@ -25,7 +25,7 @@ class Fire
   constructor(pos)
   {
     this.pos = pos
-    this.pressure = 0.0001
+    this.pressure = 0.001
     this.pressurelimit = 0.01
     this.fireparticles = []
     this.mindia = 0.2

@@ -275,9 +275,9 @@ class Section
         let dia = this.weaponWheel.dia
         push()
         noFill()
-        stroke(150, 100)
+        stroke(150, 150)
         if (this.item.type === NONE) stroke(150, 50)
-        if (this.selected) stroke(255, 120)
+        if (this.selected) stroke(255, 150)
         strokeWeight(this.width)
         strokeCap(SQUARE)
         // section ARC
@@ -285,7 +285,7 @@ class Section
         // DRAW ITEM ICON
         let a = (this.a1 + this.a2) * 0.5
         let itempos = {x: focus.x + cos(a) * dia, y: focus.y + sin(a) * dia}
-        let itemspacing = 1.4
+        let itemspacing = 1.45
         let textpos = {x: focus.x + cos(a) * dia * itemspacing, y: focus.y + sin(a) * dia * itemspacing}
         if (this.item.type !== NONE)
         {
