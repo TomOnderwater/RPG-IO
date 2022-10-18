@@ -2,6 +2,9 @@ const PhysicalBody = require("./hitboxes")
 const Func = require('./functions.js')
 //const Items = require('./item.js')
 
+const createItem = require('./item.js')
+
+
 module.exports = class Hand
 {
     constructor(owner, item, pos)
@@ -9,6 +12,7 @@ module.exports = class Hand
         this.owner = owner
         this.level = owner.level
         this.item = item //Items.createItem(NONE)
+        //this.item = Items.createItem(NONE)
         this.body = new PhysicalBody({type: 'circle', pos, rad: 0.15})
         this.moving = false
         this.handbounce = {x: 0, y: 0}
@@ -18,6 +22,9 @@ module.exports = class Hand
     }
     update(level, colliders)
     {
+
+        // this.item.update(level, colliders)
+
         this.level = level
 
         this.handleAction()

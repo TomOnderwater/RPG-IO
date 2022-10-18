@@ -27,7 +27,7 @@ module.exports = class Level
         this.rangedattacks = []
         this.physicalevents = [] // stuff like explosions and fires
         this.buildManager = new BuildingManager(this)
-        this.addRandomItems()
+        //this.addRandomItems()
     }
     killAll()
     {
@@ -279,7 +279,7 @@ module.exports = class Level
         for (let entity of entities)
         {
             let pos = entity.body.pos
-            if (pos.x <= 0 || pos.x >= this.width || pos.y <= 0 || pos.y >= this.height)
+            if (this.outOfBounds(pos))
                 entity.health = -100
         }
     }
@@ -410,6 +410,7 @@ module.exports = class Level
     }
     outOfBounds(pos)
     {
+        if (pos.x === undefined || pos.x === NaN || pos.y === undefined || pos.y === NaN) return true
         if (pos.x >= 0 && pos.x <= this.width && pos.y >= 0 && pos.y <= this.height) return false
         return true
     }

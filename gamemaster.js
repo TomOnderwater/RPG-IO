@@ -19,17 +19,25 @@ module.exports = class GameMaster
         this.connections = []
         this.ticks = 0
         // base dungeon
-        this.dungeons.push(new Dungeon(1, 50, 50, this.createKey(5)))
-        console.log('dungeons: ', this.dungeons, this.dungeons[0].key)
+        this.dungeons.push(new Dungeon({
+            floorcount: 1, 
+            size: {width: 50, height: 50}, 
+            mode: 'survival'}, 
+            this.createKey(5)))
         // example {socket: bla bla, id: '1, 2, 3, spectator', key: 'adfei'}
     }
 
     addDungeon()
     {
 
-        // 1 floor, 32 wide, 18 high
-        let dungeon = new Dungeon(1, 32, 18, this.createKey(5))
+        let dungeon = new Dungeon({
+            floorcount: 1, 
+            size: {width: 32, height: 18}, 
+            mode: 'survival'}, 
+            this.createKey(5))
+
         this.dungeons.push(dungeon)
+        console.log('dungeons: ', this.dungeons)
         return dungeon
     }
     getDungeon(key)
@@ -70,7 +78,7 @@ module.exports = class GameMaster
                 // remove the socket 
                 if (connection.type === 'spectator')
                     {
-                        console.log('dead spectator')
+                        console.log('dead spectator', connection.id, connection.key)
                         let dungeon = this.getDungeon(connection.key)
                         dungeon.end()
                         this.connections.splice(i, 1)
@@ -102,15 +110,11 @@ module.exports = class GameMaster
         {
             if (connection.socket.readyState === connection.socket.OPEN)
             {
-                // check if it's a controller
-                //if (connection.type === 'controller') continue
-                //console.log('connection: ', connection)
                 let data = this.getViewPort(connection)
                 //console.log(connection.player)
+                if (!data) continue
                 if (data.type === 'game over' && connection.player !== null)
                 {
-                    //console.log('player: ', connection.player)
-                    //console.log('connection: ', connection)
                     connection.player = null //dead, set for removal
                     console.log('sending end message')
                     connection.socket.send(JSON.stringify(data))

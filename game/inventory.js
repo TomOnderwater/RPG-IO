@@ -111,29 +111,35 @@ module.exports = class Inventory {
             if (slot.ammo) 
                 slot.item.count += count
         }
+        return true
     }
     add(item)
     {
         if (item.type === AMMO)
             return this.addAmmo(item.count)
-            
+        
+        // check if the item is present first
         for (let slot of this.slots)
         {
             if (slot.item.type === item.type) 
             {
                 slot.item.count += item.count
-                break
+                return true
             }
+        }
+        // check for empty slots
+        for (let slot of this.slots) {
             if (slot.item.count === 0 && slot.item.type === NONE)
             {
                 slot.item.type = item.type
                 slot.item.count += item.count
                 slot.item.persistent = item.persistent
                 slot.ammo = item.ammo
-                break
+                return true
             }
         }
-
+        // inventory full
+        return false
     }
 }
 

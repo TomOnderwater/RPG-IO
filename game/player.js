@@ -2,6 +2,7 @@ const Func = require("./functions.js")
 const PhysicalBody = require('./hitboxes.js')
 const Inventory = require('./inventory.js')
 const Hand = require('./hand.js')
+const createItem = require('./item.js')
 
 module.exports = class Player
 {
@@ -23,14 +24,8 @@ module.exports = class Player
         this.session = data.session
         this.name = data.name
         this.hand = new Hand(this, createItem(NONE), this.body.pos)
-
-        /*
-        this.hand = {id: 0, 
-            item: createItem('none'), 
-            body: new PhysicalBody({type: 'circle', pos: data.pos, rad: 0.15}), 
-            owner: this.id, 
-            moving: false}
-        */
+        
+        // alt method this.hand = new Hand(this)
         // STATS
         this.speedstat = 0.0006
         this.perceptionstat = 8
@@ -83,7 +78,6 @@ module.exports = class Player
     }
     addXP(xp)
     {
-        //console.log('gained', xp, 'XP points')
         this.status.xp += xp
     }
     initHand(id)
@@ -97,10 +91,8 @@ module.exports = class Player
     }
     pickup(item)
     {
-        //console.log('picking up', item)
-        this.inventory.add(item)
-        //items.forEach(item => this.inventory.add(item))
         this.inventory.updated = true
+        return this.inventory.add(item)
     }
     removeItem(item)
     {
@@ -147,8 +139,6 @@ module.exports = class Player
     }
     getFeedback()
     {
-        //console.log("hi")
-        // some statement checking for feedback
         let out = []
 
         if (this.hand.primed)

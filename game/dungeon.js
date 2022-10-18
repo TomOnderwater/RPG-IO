@@ -1,90 +1,41 @@
-
-/* RPG-IO CONCEPT
-    RPG-IO is a multi-level mobile dungeon crawler. The game is meant to be playable for a few minutes to a couple of hours. It is 
-    constructed as a top down mmorpg thay you play in the browser.
-        In the game you spawn on the top level of a dungeon, carrying nothing but a simple wooden sword. The way back up is blocked, 
-    so you decide to take the plunge. 
-        Soon you find yourself surrounded by enemies. Luckily, they're only slimes, which you can handle learning how to 
-    swing your sword. Their gelatonous bodies are weak and fragile and shatter after only one or two hits, whilst they can
-    barely scratch you, if they even notice you at all.
-    They're no big deal. 
-        But they do leave a mess. You try not to step on it. 
-    You wonder if slimes have emotions as you mercilessly slice apart their squishy bodies.
-        Suddenly the next slime parries your sword with some stick the blob just got stuck in its body when 
-    munching leaves under a tree.
-        Your sword cracks as it collides at a badly executed angle. That was sloppy, if you just payed a bit more attention 
-    you could have easily avoided that. Or maybe it was lag. You don't know.
-        You gasp in horror as your trusty weapon shatters, leaving you barehanded and surrounded by enemies. 
-        You back away and stumble. The slime jiggles after the impact, but is quick to regain its stupor.
-    Its buddies line up behind, and the monsters squish ever closer. The mob careful to stay behind their leader.
-        The slime almost seems to grin as it approaches. But how could it smile? It's only gelatin.
-    But the stick this gelatin wields is starting to look awfully large. It apparently figured out how to swing it.
-    It eagerly approaches, there's no easy way back, it's sticky, and more importantly -- how could you look anyone in the eyes 
-    ever again after running away from gelatin?
-        You consider your options. 
-        With half your health left, you've got a good chance of beating it. But the only weapon is the skin of your fist...
-        You're not sure if you're ready for that, but you decide to take the plunge before you dare consider it further and 
-    launch an attack just as the slime swings the stick.
-        It all seems to happen in slow motion.
-        Your hand crashes against the sharp branches portruding from the stick, swiping the skin of your hand. The wood is harder
-    than you thought, your fingerbones crack under the stress.
-        Blood sprays. Your blood. Your health keeps diving as you keep pushing on the stick. You grit your teeth against the pain.
-        It works, the stick is deflected. You launch again, and this time the slime isn't ready as you smash it. 
-        The fucker did snark. You watch the frozen expression splinter apart in seperate pieces of gelatin, no longer moving. 
-        
-        Slimes do have emotions. 
-
-        A blue light surrounds you, it is so beautiful that it must be divine. The pain in your hand dissapears.
-        
-        There's a message.
-
-        [LVL UP! 1->2 Points available: 1']
-
-        You grasp the light surrounding you and are confronted with your options.
-
-        tbc
-*/
 //water threshold: 0.6180857890987179
 //stone treshold: 0.36184257261766134
 //structure threshhold 0.3651568282751072
-
-const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
 
 const protocol = require('./protocol.js')
 const Player = require('./player.js')
 const Level = require('./level.js')
 const Func = require('./functions.js')
+const createItem = require('./item.js')
+const Game = require('./gamemodes.js')
 
 module.exports = class Dungeon {
-    constructor(floorcount, width, height, key) {
+    constructor(settings, key) {
+        this.game = new Game(settings, this)
         this.entitycount = 1
         this.key = key
         this.ticks = 0
         this.queue = []
-        this.scores = []
-        this.leaderboard = []
-        this.ended = false
-        this.levels = this.generateLevel(floorcount, width || 40, height || 20)
+
+        this.levels = this.generateLevel(this.game.getLevelSpecs(0))
     }
-    generateLevel(floorcount, width, height)
+    generateLevel(specs)
     {
         let levels = []
-        for (let i = 0; i < floorcount; i++)
+        let width = specs.size.width
+        let height = specs.size.height
+        for (let i = 0; i < specs.floorcount; i++)
         {
-            let water = riverPlains.water //Math.random() * 0.7 //don't produce full seas
-            let stone = riverPlains.stone //0.2 + Math.random() * 0.6 //always keep some stone
-            let structurerate = riverPlains.structure //0.2 + Math.random() * 0.2 //somewhat sparse
-            console.log('floor:', i)
-            console.log('water threshold:', water)
-            console.log('stone treshold:', stone)
-            console.log('structure threshhold', structurerate)
+            let water = specs.seed.water
+            let stone = specs.seed.stone
+            let structurerate = specs.seed.structure
             levels.push(new Level({width, height, water, stone, structurerate}, this)) //contains tiles, which contain objects and items
         }
         return levels
     }
     addScore(score)
     {
-        this.scores.push(score)
+        this.game.addScore(score)
     }
     end()
     {
@@ -96,52 +47,20 @@ module.exports = class Dungeon {
     }
     update() 
     {
-        this.levels.forEach(level => level.update(this.ticks))
+        for (let i = 0; i < this.levels.length; i++)
+        {
+            this.levels[i].update(this.ticks)
+        }
         if (this.ticks % 30 === 0) 
-            this.updateLeaderBoard()
+            this.game.updateLeaderBoard()
         this.ticks ++
-    }
-    updateLeaderBoard()
-    {
-        this.leaderboard = []
-        for (let level of this.levels)
-        {
-            let entries = level.getLeaderBoard()
-            for (let entry of entries)
-            {
-                this.leaderboard.push(entry)
-            }
-        }
-        this.leaderboard.sort((a, b) => b.score - a.score)
-    }
-    getLeaderBoard(visible)
-    {
-        let out = {}
-        out.top = []
-        for (let i = 0; i < visible || 5 && i < this.leaderboard.length; i++)
-        {
-            out.top.push(this.leaderboard[i])
-        }
-        return out
     }
     reset()
     {
-        this.levels.forEach(level => 
-            {
-                level.resetEvents()
-                level.clearUpdates()
-            })
-    }
-    getScore(id)
-    {
-        //let outpu
-        for (let i = this.scores.length - 1; i >= 0; i--)
+        for (let i = 0; i < this.levels.length; i++)
         {
-            if (this.scores[i].id === id) 
-                return {type: 'game over', 
-                        killer: this.scores[i].killer, 
-                        score: this.scores[i].score,
-                        name: this.scores[i].name}
+            this.levels[i].resetEvents()
+            this.levels[i].clearUpdates()
         }
     }
     getViewPort(connection) 
@@ -156,12 +75,12 @@ module.exports = class Dungeon {
             viewport.updates = level.getUpdates()
             viewport.builds = level.getBuildingEvents()
             if (this.ticks % 10 === 0)
-                viewport.leaderboard = this.getLeaderBoard()
+                viewport.leaderboard = this.game.getLeaderBoard()
             return {type: 'update', data: viewport}
         }
         let active = this.getPlayerAndLevel(id)
         if (!active) 
-            return this.getScore(id)
+            return this.game.getScore(id)
 
         let viewport = {}
         if (connection.type === 'player')
@@ -180,7 +99,7 @@ module.exports = class Dungeon {
         if (this.ticks % 10 === 0) 
         {
             viewport.status = active.player.getStatusData()
-            viewport.leaderboard = this.getLeaderBoard()
+            viewport.leaderboard = this.game.getLeaderBoard()
         }
         return {type: 'update', data: viewport}
     }
@@ -249,9 +168,7 @@ module.exports = class Dungeon {
         {
             if (this.queue[i].id === id) 
             {
-                //console.log('player ready:', this.queue[i])
-                // add player to level
-                this.levels[0].addPlayer(this.queue[i])
+                this.levels[0].addPlayer(this.queue[i], this.game.getSpawnPos())
                 // remove from queue
                 this.queue.splice(i, 1)
             }
@@ -261,22 +178,12 @@ module.exports = class Dungeon {
     {
         let item = createItem(type)
         item.count = count || 0
-        item.id = this.assignID()
+        //item.id = this.assignID()
         return item
     }
     assignID()
     {
         return Func.toBase64(this.entitycount ++)
-    }
-    createLoadOut(type)
-    {
-        switch(type)
-        {
-            case 'archer':
-                return this.createItem(BOW, 20)
-            default:
-                return this.createItem(SWORD)
-        }
     }
     addPlayer(player)
     {
@@ -284,12 +191,16 @@ module.exports = class Dungeon {
         let id = this.assignID()
         //create an item for the player
         //let item = this.createItem('sword')
-        let new_player = new Player({id, session: player.session, name: player.name, pos: {x: 0, y:0}})
+        let new_player = new Player({
+            id, session: player.session, name: player.name, 
+            pos: {x: 0, y: 0}
+        })
 
-        new_player.pickup(this.createItem(BOW, 100))
-        new_player.pickup(this.createItem(SWORD))
-        new_player.pickup(this.createItem(STAFF, 100))
-        new_player.initHand(this.assignID()) // assign an id for the item in hand
+        let items = this.game.getLoadout(new_player)
+        items.forEach(item => new_player.pickup(item))
+
+        // DEPRECIATED SOON
+        new_player.initHand(this.assignID())
         // add to queue
         console.log('adding player: ', new_player.name, 'id: ', new_player.id)
         this.queue.push(new_player)

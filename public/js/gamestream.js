@@ -22,8 +22,6 @@ function openStream() {
             // set appropriate zoom level to display the level
             cam.updateZoom(width / level.width)
             cam.updateFocus({x: level.width * 0.5, y: level.height * 0.5}, 1)
-            //console.log(cam.zoom)
-            //cam.zoom = width / level.width
             key = msg.key
             setGameState('spectator')
             break
@@ -92,7 +90,6 @@ async function continueGame()
 
 async function startSpectator()
 {
-  setGameState('spectator')
   openStream()
 }
 

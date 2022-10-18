@@ -276,7 +276,9 @@ function lobby()
 
 function drawSpectator()
 {
+  //console.log('drawing spectator', cam)
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
+  //console.log(focus, level.width, level.height)
   cam.updateFocus(focus, 0.1)
   cam.zoomToLevel(level)
   //cam.updateZoom(20)

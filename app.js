@@ -57,6 +57,8 @@ app.post("/continue", (req, res) => {
   res.send({id})
 })
 
+
+// signature = 'whatgameisthisbad?'
 app.post("/newcode", (req, res) =>
 {
   exec("git pull", (error, stdout, stderr) =>
