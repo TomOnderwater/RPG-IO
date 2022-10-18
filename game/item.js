@@ -105,9 +105,9 @@ class Bow extends Item
         super(data)
         this.physical = false
         this.attack = 40
-        this.minimumdraw = 0.15
+        this.minimumdraw = 0.4
         this.destruction = 2
-        this.bounce = 0.4
+        this.bounce = 0.2
         this.reach = 0.0025
         this.persistent = true
         this.projectile = ARROW
@@ -122,9 +122,9 @@ class Staff extends Item
         super(data)
         this.physical = false
         this.attack = 50
-        this.minimumdraw = 0.15
+        this.minimumdraw = 0.25
         this.destruction = 2
-        this.bounce = 0.4
+        this.bounce = 0.3
         this.reach = 0.005
         this.persistent = true
         this.projectile = FIREBALL
