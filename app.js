@@ -6,6 +6,7 @@ const port = 3000
 const expressWS = require('express-ws')(app)
 const bodyParser = require("body-parser")
 
+const { exec } = require("child_process")
 
 var dogsArr = []
 app.use(bodyParser.json())
@@ -58,7 +59,20 @@ app.post("/continue", (req, res) => {
 
 app.post("/newcode", (req, res) =>
 {
-  console.log('got new code ... maybe?')
+  console.log('GOT NEW CODE', req)
+  exec("git pull", (error, stdout, stderr) =>
+  {
+    if (error) 
+    {
+      console.log(`error: ${error.message}`)
+      return
+    } if (stderr)
+    {
+      console.log(`stderr: ${stderr}`)
+        return
+    }
+    console.log(`stdout: ${stdout}`)
+  })
 })
 
 app.post("/start", (req, res) => {
