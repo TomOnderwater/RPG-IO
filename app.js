@@ -64,7 +64,7 @@ app.post("/newcode", (req, res) =>
   {
     if (error) 
     {
-      console.log(`error: ${error.message}`)
+      console.log(`error: ${error.message}`);
       return
     } if (stderr)
     {
