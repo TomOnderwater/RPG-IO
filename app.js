@@ -56,6 +56,11 @@ app.post("/continue", (req, res) => {
   res.send({id})
 })
 
+app.post("/newcode", (req, res) =>
+{
+  console.log('got new code ... maybe?')
+})
+
 app.post("/start", (req, res) => {
   //console.log(req)
   // contains a key
