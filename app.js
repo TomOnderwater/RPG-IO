@@ -59,12 +59,11 @@ app.post("/continue", (req, res) => {
 
 app.post("/newcode", (req, res) =>
 {
-  console.log('GOT NEW CODE', req)
   exec("git pull", (error, stdout, stderr) =>
   {
     if (error) 
     {
-      console.log(`error: ${error.message}`);
+      console.log(`error: ${error.message}`)
       return
     } if (stderr)
     {
