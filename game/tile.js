@@ -122,6 +122,7 @@ class TreasureChest
         this.material = data.material
         this.health = 100
         data.entity = this
+        this.structure = true
         this.body = new PhysicalBody(data)
     }
     applyDamage(damage)
@@ -135,7 +136,7 @@ class TreasureChest
         let option = Func.chooseOne(options)
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(option)
-        drop.item.count = 20
+        drop.item.count = drop.item.ammo ? 20 : 0
         //console.log('drop:', items)
         items.push(drop)
         return items

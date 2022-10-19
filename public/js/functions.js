@@ -15,7 +15,6 @@ function bounce(p, t, bounce)
 
 function rumble(duration)
 {
- // console.log('vibratingL:', duration)
   navigator.vibrate(duration)
 }
 
