@@ -57,6 +57,19 @@ module.exports = class Inventory {
     {
         return (this.getSelectedSlot().item.type !== item.type)
     }
+    getAll()
+    {
+        let out = []
+        for (let slot of this.slots)
+        {
+            if (slot.item.type !== NONE) 
+            {
+                out.push(slot.getContent())
+                slot.empty()
+            }
+        }
+        return out
+    }
     swap(swapping)
     {
         if (swapping.a === NONE)
@@ -117,7 +130,7 @@ module.exports = class Inventory {
     {
         for (let slot of this.slots)
         {
-            if (slot.ammo) 
+            if (slot.item.ammo) 
                 slot.item.count += count
         }
         return true
@@ -143,7 +156,7 @@ module.exports = class Inventory {
                 slot.item.type = item.type
                 slot.item.count += item.count
                 slot.item.persistent = item.persistent
-                slot.ammo = item.ammo
+                slot.item.ammo = item.ammo
                 return true
             }
         }
@@ -157,30 +170,22 @@ class Slot
     constructor(id)
     {
         this.id = id
-        this.item = {type: NONE, count: 0}
-        this.persistent = true
+        this.empty()
         this.selected = false
-        this.ammo = false
     }
     empty()
     {
         //console.log('emptying slot')
-        this.item = {type: NONE, count: 0}
-        this.ammo = false
-        this.persistent = true
+        this.item = {type: NONE, count: 0, persistent: true, ammo: false}
     }
     setContent(content)
     {
         this.item = content.item
-        this.persistent = content.persistent
         this.selected = content.selected
-        this.ammo = content.ammo
     }
     getContent()
     {
         return {item: this.item, 
-            persistent: this.persistent, 
-            selected: this.selected, 
-            ammo: this.ammo}
+            selected: this.selected}
     }
 }

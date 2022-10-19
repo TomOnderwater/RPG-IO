@@ -388,10 +388,13 @@ class Inventory
     fill(items)
     {
         //console.log(items)
+        let changed = false
         for (let i in items)
         {
+            if (!this.slots[i].equals(items[i])) changed = true
             this.slots[i].set(items[i])
         }
+        if (changed) rumble(5)
     }
     initslots()
     {
@@ -559,6 +562,10 @@ class Slot
                 text(this.item.count, pos.x, pos.y)
         }
         pop()
+    }
+    equals(item)
+    {
+        return (this.item.type === item.type && this.item.count === item.count)
     }
     set(item)
     {

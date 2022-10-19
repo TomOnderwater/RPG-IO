@@ -27,6 +27,11 @@ module.exports = class Level
         this.rangedattacks = []
         this.physicalevents = [] // stuff like explosions and fires
         this.buildManager = new BuildingManager(this)
+
+        for (let i = 0; i < 10; i++)
+        {
+            this.addTreasureChest()
+        }
         //this.addRandomItems()
     }
     killAll()
@@ -98,11 +103,12 @@ module.exports = class Level
         }
         return null
     }
-    addRandomItems()
+    addRandomItems(count)
     {
-        for (let i = 0; i < 100; i++)
+        const options = [WOOD, STONE, AMMO]
+        for (let i = 0; i < count; i++)
         {
-            let item = {item: {type: WOOD, count: 1}, pos: this.randomPos()}
+            let item = {item: {type: Func.chooseOne(options), count: 1}, pos: this.randomPos()}
             this.placeItem(item)
         }
     }
@@ -173,6 +179,7 @@ module.exports = class Level
             if (player.dead()) 
             {
                 // get killer
+                this.addDrops(player.getDrop())
                 let killer = this.getEntity(player.lastattacker)
                 if (killer !== null)
                 {
@@ -282,6 +289,12 @@ module.exports = class Level
             if (this.outOfBounds(pos))
                 entity.health = -100
         }
+    }
+    addTreasureChest(p)
+    {
+        let pos = p || this.getRandomLandPos()
+        if (this.isFreeTile(pos))
+            this.getTile(pos).addTreasureChest()
     }
     getLeaderBoard()
     {

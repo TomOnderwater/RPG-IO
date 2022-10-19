@@ -72,6 +72,15 @@ module.exports = class Tile
             pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
             static: true})
     }
+    addTreasureChest()
+    {
+        this.structure = new TreasureChest({
+            id: TREASURECHEST, 
+            type: 'circle',
+            material: WOOD, 
+            pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
+            static: true})
+    }
     groundSpeed()
     {
         switch(this.surface)
@@ -105,15 +114,42 @@ module.exports = class Tile
     }
 }
 
+class TreasureChest
+{
+    constructor(data)
+    {
+        this.id = data.id
+        this.material = data.material
+        this.health = 100
+        data.entity = this
+        this.body = new PhysicalBody(data)
+    }
+    applyDamage(damage)
+    {
+        this.health -= damage
+    }
+    getItems()
+    {
+        let items = []
+        const options = [SWORD, STAFF, BOW]
+        let option = Func.chooseOne(options)
+        let drop = {pos: this.body.getCenter()}
+        drop.item = createItem(option)
+        drop.item.count = 20
+        //console.log('drop:', items)
+        items.push(drop)
+        return items
+    }
+}
 class Structure 
 {
     constructor(data)
     {
         this.id = data.id
-        this.material = data.material || 'wood'
+        this.material = data.material || WOOD
         this.status = {}
-        this.status.vitality = data.health || 100
-        this.health = this.status.vitality
+        //this.status.vitality = data.health || 100
+        this.health = data.health || 100
         data.entity = this
         this.structure = true
         this.body = new PhysicalBody(data)

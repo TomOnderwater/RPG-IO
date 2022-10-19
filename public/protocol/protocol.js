@@ -4,7 +4,7 @@ WATER = 'w', SAND = 'z', WALL = 'x'
 const STONEWALL = '/'
 const WOODWALL = ']'
 // structure definitions
-const TREE = 't', AIR = 'a', ROCK = 'r'
+const TREE = 't', AIR = 'a', ROCK = 'r', TREASURECHEST = 'Y'
 
 const PLAYER = 'p'
 const SLIME = 's'

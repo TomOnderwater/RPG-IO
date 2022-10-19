@@ -195,4 +195,14 @@ module.exports = class Player
             if (action.type == 'boost') this.handleBoost(action)
         }
     }
+    getDrop()
+    {
+        let items = this.inventory.getAll()
+        for (let item of items)
+        {
+            item.pos = this.body.pos
+        }
+        //console.log('dropping:', items)
+        return items
+    }
 }

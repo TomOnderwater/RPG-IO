@@ -23,7 +23,7 @@ let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, tim
 let walltexture, woodicon, stoneicon, rocktexture, 
 grassTexture, stoneTexture, waterTexture, sandTexture,
 dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture,
-ammoicon, stafficon, gearicon
+ammoicon, stafficon, gearicon, chestIcon
 
 let textures = []
 
@@ -59,7 +59,7 @@ function preload()
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
   ammoicon = loadImage('assets/textures/ammobag.png')
   stafficon = loadImage('assets/textures/staff.png')
-
+  chestIcon = loadImage('assets/textures/treasurechest.png')
   //
   gearicon = loadImage('assets/textures/gearicon.png')
   

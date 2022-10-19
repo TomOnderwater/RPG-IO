@@ -21,6 +21,8 @@ class Tile {
       this.structure = new WoodWall({x: this.x, y: this.y})
     if (type === STONEWALL)
       this.structure = new StoneWall({x: this.x, y: this.y})
+    if (type === TREASURECHEST)
+      this.structure = new TreasureChest({x: this.x, y: this.y})
   }
   update(tile)
   {
@@ -154,6 +156,26 @@ class Rock {
     pop()
   }
 }
+
+class TreasureChest {
+  constructor(pos)
+  {
+    this.pos = {x: pos.x + 0.5, y: pos.y + 0.5}
+    //console.log('rock:', this.pos)
+  }
+  draw()
+  {
+    //console.log('drawing a rock')
+    let pos = cam.onScreen(this.pos)
+    let dia = cam.zoom
+    push()
+    translate(pos.x, pos.y)
+    imageMode(CENTER, CENTER)
+    image(chestIcon, 0, 0, dia, dia)
+    pop()
+  }
+}
+
 
 class Tree {
   constructor(pos, seed)

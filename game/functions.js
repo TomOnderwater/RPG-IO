@@ -269,11 +269,18 @@ function normalize(vec)
     return {x: vec.x * ratio, y: vec.y * ratio }
 }
 
+function chooseOne(list)
+{
+    let n = (Math.random() * list.length) - 0.5
+    let i = Math.round(n)
+    return list[i]
+}
+
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, 
-    constrain, toBase64, floorPos, randomName, randomVector, normalize
+    constrain, toBase64, floorPos, randomName, randomVector, normalize, chooseOne
 }

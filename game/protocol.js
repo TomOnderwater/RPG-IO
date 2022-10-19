@@ -9,6 +9,7 @@ global.SAND = 'z'
 global.WALL = 'x'
 global.STONEWALL = '/'
 global.WOODWALL = ']'
+global.TREASURECHEST = 'Y'
 
 // STRUCTURE DEFINITIONS
 global.TREE = 't'
