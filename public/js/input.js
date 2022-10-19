@@ -15,7 +15,14 @@ class MobileInput {
             dia: 150,
             area: {x1: width / 2, y1: 0, x2: width, y2: height
         }})
+
+        this.settings = new Settings()
+
         this.usedTouches = []
+    }
+    handleClick(pos)
+    {
+        this.settings.click(pos)
     }
     update()
     {
@@ -50,6 +57,7 @@ class MobileInput {
         this.joystick.draw()
         this.handStick.draw()
         this.inventory.draw()
+        //this.settings.draw()
     }
     isFree(t)
     {
@@ -428,7 +436,7 @@ class Inventory
         {
             if (slot.touched(touch)) return slot.id
         }
-        return false
+        return NONE
     }
     getActions()
     {
@@ -586,7 +594,40 @@ class Settings
 // includes sound settings,mu
     constructor()
     {
+        this.pos = createVector(30, 30)
+        this.open = false
 
+        this.settings = []
+        this.settings.push({
+            description: 'select prefered inventory style',
+            options: [{type: 'weaponwheel'}, {type: 'boxes'}]
+        })
+
+    }
+    click(pos)
+    {
+        let gearpressed = (onCircle(pos, this.pos, 30))
+        if (gearpressed)
+            this.open = !this.open
+        //console.log(gearpressed)
+    }
+    update()
+    {
+        if (this.open)
+        {
+            for (let setting of this.settings)
+            {
+                console.log(setting)
+            }
+        }
+    }
+    draw()
+    {
+        this.update()
+        push()
+        imageMode(CENTER)
+        image(gearicon, this.pos.x, this.pos.y, 40, 40)
+        pop()
     }
 }
 

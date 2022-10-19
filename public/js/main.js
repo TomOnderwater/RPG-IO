@@ -23,7 +23,7 @@ let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, tim
 let walltexture, woodicon, stoneicon, rocktexture, 
 grassTexture, stoneTexture, waterTexture, sandTexture,
 dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture,
-ammoicon, stafficon
+ammoicon, stafficon, gearicon
 
 let textures = []
 
@@ -59,6 +59,9 @@ function preload()
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
   ammoicon = loadImage('assets/textures/ammobag.png')
   stafficon = loadImage('assets/textures/staff.png')
+
+  //
+  gearicon = loadImage('assets/textures/gearicon.png')
   
   //sound = new Sound()
 }
@@ -293,7 +296,7 @@ function drawSpectator()
   textSize(30)
   textAlign(TOP, LEFT)
   text("go to: " + httpPrefix + host + " and connect with key: " + key, 10, 30)
-  drawLeaderBoard({x: 5, y: 60})
+  drawLeaderBoard({x: width - 20, y: 20}, RIGHT)
   drawFrameRate({x: width -70, y: height - 20})
   pop()
 }
@@ -320,7 +323,7 @@ function drawGame()
       }
     }
 
-  drawLeaderBoard({x: 5, y: 15})
+  drawLeaderBoard({x: width - 15, y: 15}, RIGHT)
   input.draw()
   drawFrameRate({x: width -70, y: height - 20})
 }

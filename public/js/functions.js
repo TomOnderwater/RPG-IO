@@ -104,22 +104,28 @@ function drawItem(type, pos, size, _rot)
   pop()
 }
 
-function drawLeaderBoard(pos)
+function mouseClicked()
 {
+  input.handleClick({x: mouseX, y: mouseY})
+}
+
+function drawLeaderBoard(pos, align)
+{
+  let a = align || RIGHT
   //console.log('leaderboard: ', leaderboard)
   if (leaderboard === undefined) return
   push()
   fill(255)
-  textSize(14)
+  textSize(16)
   let x = pos.x, y = pos.y, spacing = 16
+  textAlign(a)
   text("LEADERBOARD", x, y)
   for (let i = 0; i < leaderboard.top.length; i++)
   {
     let entry = leaderboard.top[i]
     let rank = i + 1
     y += spacing
-    text(rank, x, y)
-    text(entry.name + " " + entry.score, x + 15, y)
+    text(rank + '\t' + entry.name + '\t' + entry.score, x, y)
   }
   pop()
 }

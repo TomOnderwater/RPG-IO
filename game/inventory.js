@@ -1,3 +1,5 @@
+const createItem = require('./item.js')
+
 module.exports = class Inventory {
     constructor(slotcount)
     {
@@ -57,7 +59,14 @@ module.exports = class Inventory {
     }
     swap(swapping)
     {
-        //console.log('swapping:', swapping)
+        if (swapping.a === NONE)
+        {
+            let b = this.getSlotByID(swapping.b)
+            let b_data = b.getContent()
+            b.empty()
+            // drop to floor
+            return b_data
+        }
         let a = this.getSlotByID(swapping.a)
         let a_data = a.getContent()
         let b = this.getSlotByID(swapping.b)
@@ -65,7 +74,7 @@ module.exports = class Inventory {
         a.setContent(b_data)
         b.setContent(a_data)
         this.select(swapping.a)
-        this.updated = true
+        return false
     }
     select(id)
     {

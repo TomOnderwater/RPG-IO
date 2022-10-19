@@ -6,7 +6,7 @@ module.exports = class GroundItem{
         this.id = data.id
         this.body = {}
         this.body.pos = data.pos
-        this.body.rad = data.rad || 0.2 //pickup range
+        this.body.rad = data.item.rad || 0.2 //pickup range
         this.item = data.item
     }
     update(entities)

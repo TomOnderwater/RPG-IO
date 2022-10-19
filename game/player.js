@@ -140,19 +140,6 @@ module.exports = class Player
     getFeedback()
     {
         return this.hand.item.getFeedBack()
-
-        /*
-        if (this.hand.primed)
-        {
-            this.hand.primed = false
-            out.push({type: 'prime'})
-        }
-        if (this.hand.shotfired)
-        {
-            this.hand.shotfired = false
-            out.push({type: 'bowshot'})
-        }
-        */
     }
     data() 
         {
@@ -182,10 +169,17 @@ module.exports = class Player
             this.hand.item = createItem(type)
         }
         if (action.swapping !== undefined)
-            this.inventory.swap(action.swapping)
-
+        {
+            let item = this.inventory.swap(action.swapping)
+            if (item)
+            {
+                let body = new PhysicalBody({type: 'circle', rad: 0.5, pos: this.body.pos})
+                item.pos = this.level.getFreeSpot(this.body.pos, body)
+                this.level.placeItem(item)
+            }
+        }
+        // flag
         this.inventory.updated = true
-        //console.log(action)
     }
     updateInput(input)
     {
