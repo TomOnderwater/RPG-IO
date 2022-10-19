@@ -62,9 +62,9 @@ module.exports = class Inventory {
         if (swapping.a === NONE)
         {
             let b = this.getSlotByID(swapping.b)
+            if (b.item.type === NONE) return false
             let b_data = b.getContent()
             b.empty()
-            // drop to floor
             return b_data
         }
         let a = this.getSlotByID(swapping.a)
