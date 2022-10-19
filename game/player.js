@@ -139,8 +139,9 @@ module.exports = class Player
     }
     getFeedback()
     {
-        let out = []
+        return this.hand.item.getFeedBack()
 
+        /*
         if (this.hand.primed)
         {
             this.hand.primed = false
@@ -151,8 +152,7 @@ module.exports = class Player
             this.hand.shotfired = false
             out.push({type: 'bowshot'})
         }
-        if (out.length) return out
-        return false
+        */
     }
     data() 
         {

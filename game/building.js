@@ -7,15 +7,15 @@ module.exports = class BuildManager
         this.buildingevents = []
         this.level = level
     }
-    build(hand)
+    build(item)
     {
         let found = false
         // find the continued instance
         for (let buildingevent of this.buildingevents)
         {
             // same id and event
-            if (buildingevent.id === hand.owner.id &&
-                buildingevent.type === hand.item.type)
+            if (buildingevent.id === item.owner.id &&
+                buildingevent.type === item.type)
                 {
                     found = buildingevent
                     //console.log('continued building event')
@@ -26,33 +26,33 @@ module.exports = class BuildManager
         if (found !== false) 
         {
             //check if the pos is the same
-            if (this.level.isFreeTile(hand.body.pos))
+            if (this.level.isFreeTile(item.body.pos))
             {
-                let continued = found.update(hand)
+                let continued = found.update(item)
                 if (!continued)
                 {
                     this.endBuildingEvent(found)
-                    this.addBuildingEvent(hand)
+                    this.addBuildingEvent(item)
                     return
                 }
             }
             else this.endBuildingEvent(found)
         }
-        else this.addBuildingEvent(hand)
+        else this.addBuildingEvent(item)
     }
-    addBuildingEvent(hand)
+    addBuildingEvent(item)
     {
         // check if building is possible
-        let pos = hand.body.pos
+        let pos = item.body.pos
         // check if there's already a building
         //console.log('trying to add', pos)
         if (this.level.isFreeTile(pos))
         {
             //console.log('successful')
             this.buildingevents.push(new BuildingEvent({
-                id: hand.owner.id,
+                id: item.owner.id,
                 pos: Func.floorPos(pos),
-                type: hand.item.type
+                type: item.type
             }))
         }
     }
@@ -126,9 +126,9 @@ class BuildingEvent
         c
     }
     }
-    update(hand)
+    update(item)
     {
-        let pos = Func.floorPos(hand.body.pos)
+        let pos = Func.floorPos(item.body.pos)
         if (pos.x == this.pos.x && pos.y == this.pos.y)
         {
             this.touched = true

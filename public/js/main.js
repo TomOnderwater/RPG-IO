@@ -1,11 +1,13 @@
 p5.disableFriendlyErrors = true
 
 //GAME SPECIFIC
-let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', myitems = []
+let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf'
 
 let activeID = 'none' // if not none, means there's an existing player
 //DEVICE SPECIFIC
 let MOBILE, orientation, canvas
+
+let inventoryType = 'boxes'
 
 let key = ''
 

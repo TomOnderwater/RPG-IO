@@ -6,12 +6,13 @@ module.exports = class RangedAttack
     constructor(data)
     {
         this.owner = data.owner
-        this.item = data.item
-        this.type = data.type
         this.dir = data.dir
+        this.projectile = data.projectile
+        this.item = data.item
+        this.type = data.projectile.type
         this.owner = data.owner
         this.id = data.id
-        this.body = new PhysicalBody({type: 'circle', pos: data.pos, rad: data.rad, bounce: 0.8})
+        this.body = new PhysicalBody({type: 'circle', pos: data.pos, rad: this.projectile.rad, bounce: 0.8})
         this.body.setSpeed(this.dir)
     }
     update(level, colliders)

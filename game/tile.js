@@ -1,5 +1,6 @@
 const PhysicalBody = require('./hitboxes.js')
 const Func = require('./functions.js')
+const createItem = require('./item.js')
 
 module.exports = class Tile
 {
@@ -19,7 +20,7 @@ module.exports = class Tile
     {
         this.structure = new Structure({
             id: TREE, 
-            health: 100, 
+            health: 25, 
             type: 'circle',
             material: WOOD, 
             pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.2, 
@@ -119,7 +120,6 @@ class Structure
         if (data.droprate === undefined)
             this.droprate = 1 + Math.round(Math.random() * 2)
         else this.droprate = data.droprate
-        if (this.id === WOODWALL) console.log('droprate: ', this.droprate)
     }
     applyDamage(damage)
     {
@@ -133,11 +133,11 @@ class Structure
         let items = []
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(this.material)
-        console.log(this.droprate)
+        //console.log(this.droprate)
         drop.item.count = this.droprate
         if (drop.item.count)
             items.push(drop)
-        console.log('drop:', items)
+        //console.log('drop:', items)
         return items
     }
 }
