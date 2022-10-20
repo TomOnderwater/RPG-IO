@@ -45,6 +45,8 @@ function setupInput()
 
 function preload()
 {
+  sound = new SoundManager()
+  
   walltexture = loadImage('assets/textures/smallwalltexture.png')
   woodicon = loadImage('assets/textures/woodicon.png')
   stoneicon = loadImage('assets/textures/stoneicon.png')
@@ -62,8 +64,6 @@ function preload()
   chestIcon = loadImage('assets/textures/treasurechest.png')
   //
   gearicon = loadImage('assets/textures/gearicon.png')
-  
-  sound = new SoundManager()
 }
 
 function setup() {
