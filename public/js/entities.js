@@ -36,9 +36,10 @@ class Entity
             {
                 level.addWoosh(this.pos, this.ppos, 0.3)
                 // ADDITIONAL: SOUND
-                //if (this.speed > 0.2 && sound !== undefined)
-                    //sound.woosh(this.speed * 6) // play a woosh
+                if (sqspeed > 0.04 && sound !== undefined)
+                    sound.woosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
             }
+            else if (sqspeed < 0.0005 || !this.moving) sound.removeSound(this.id)
         }
         if (sqspeed > 0.00001) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
@@ -69,6 +70,10 @@ class Entity
         text(this.face, 0, 0)
         //circle(pos.x, pos.y, this.dia * cam.zoom)
         pop()
+    }
+    kill()
+    {
+        // normally nothing
     }
     touch()
     {
@@ -298,6 +303,11 @@ class FireBall extends Entity
     }
     draw()
     {
+        sound.playFire(this.id, this.pos)
         this.fire.draw(this.pos)
+    }
+    kill()
+    {
+        sound.stopFire(this.id)
     }
 }

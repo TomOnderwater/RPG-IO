@@ -57,7 +57,7 @@ class MobileInput {
         this.joystick.draw()
         this.handStick.draw()
         this.inventory.draw()
-        //this.settings.draw()
+        this.settings.draw()
     }
     isFree(t)
     {
@@ -603,38 +603,54 @@ class Settings
     {
         this.pos = createVector(30, 30)
         this.open = false
-
-        this.settings = []
-        this.settings.push({
-            description: 'select prefered inventory style',
-            options: [{type: 'weaponwheel'}, {type: 'boxes'}]
-        })
-
+        this.sound = true
+        this.volume = 50
     }
     click(pos)
     {
         let gearpressed = (onCircle(pos, this.pos, 30))
         if (gearpressed)
+        {
             this.open = !this.open
+            if (this.open) this.showDOM()
+            else this.hideDOM()
+        }
         //console.log(gearpressed)
     }
-    update()
+    hideDOM()
     {
-        if (this.open)
+        this.soundCheckbox.hide()
+        this.volumeSlider.hide()
+    }
+    showDOM()
+    {
+        // sound checkbox
+        this.soundCheckbox = createCheckbox('sound', this.sound)
+        this.soundCheckbox.position(this.pos.x, this.pos.y + 30)
+        this.soundCheckbox.changed(() => 
         {
-            for (let setting of this.settings)
-            {
-                console.log(setting)
-            }
-        }
+            this.sound = this.soundCheckbox.checked()
+            if (!this.sound) sound.globalVolume(0)
+            else sound.globalVolume(this.volume * 0.01)
+        })
+
+        // volume slider
+        this.volumeSlider = createSlider(0, 100, this.volume)
+        this.volumeSlider.position(this.pos.x, this.pos.y + 50)
+        this.volumeSlider.style('width', '100px')
+        this.volumeSlider.changed(() => {
+            this.volume = this.volumeSider.value()
+            sound.globalVolume(this.volume * 0.01)
+        })
     }
     draw()
     {
-        this.update()
         push()
         imageMode(CENTER)
         image(gearicon, this.pos.x, this.pos.y, 40, 40)
         pop()
+
+        if (this.open) console.log(this.volume)
     }
 }
 

@@ -165,7 +165,11 @@ class Level {
           break
         }
       }
-      if (!found) this.entities.splice(i, 1)
+      if (!found) 
+      {
+        this.entities[i].kill()
+        this.entities.splice(i, 1)
+      }
     }
     this.addEntities(entities)
   }

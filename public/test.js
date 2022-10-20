@@ -52,6 +52,13 @@ function setup()
   }
 }
 
+
+/*
+sound effects:
+
+𝙢𝙚𝙡𝙡𝙖𝙜𝙚 by Apoxode (c) copyright 2022 Licensed under a Creative Commons Attribution Noncommercial  (3.0) license. http://dig.ccmixter.org/files/Apoxode/65326 Ft: Javolenus, septahelix, Speck
+
+*/
 function randomVector(max)
 {
   //return createVector(random(-max, max), random(-max, max))

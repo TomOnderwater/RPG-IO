@@ -1,34 +1,83 @@
-class Sound {
+const soundfolder = 'assets/sound_effects/'
+
+class SoundManager {
     constructor()
     {
-        soundFormats('mp3', 'ogg', 'wav')
-        this.swordswoosh = loadSound('assets/sound_effects/swoosh1.mp3')
-        this.swordswoosh.onended(() => this.swooshplaying = false)
-        this.swooshplaying = false
-
-        this.bowsound = loadSound('assets/sound_effects/bow_shoot.mp3')
-        this.bowsound.onended(() => this.bowshooting = false)
-        this.bowshooting = false
-
-        this.fistswoosh = loadSound('assets/sound_effects/slash1.mp3')
-
-        //this.daggerswoosh = loadSound('assets/sound_effects/daggerwoosh.wav')
-        //this.footongrass = loadSound('assets/sound_effects/footgrass1.mp3')
+        this.volume = 1
+        this.fade =  1.5
+        this.activesounds = []
+        this.swordwoosh = new Howl({src: [soundfolder + 'swoosh1.mp3']})
+        this.bowsound = new Howl({src: [soundfolder + 'bow_shoot.mp3']})
+        this.fireballsound = new Howl({src: [soundfolder + 'fireballshot.mp3'], sprite: {firing: [200, 1200]}})
+        this.explosionsound = new Howl({src: [soundfolder + 'heavyimpact.mp3']})
+        this.fireburningsound = new Howl({src: [soundfolder + 'fireburning.wav'], 
+            sprite: {burning: [1000, 6000]},
+            looping: true})
     }
-    woosh(speed)
+    getStereoPos(pos)
     {
-        if (!this.swooshplaying)
+        let d = cam.getRelativePos(pos)
+        return multiply(d, this.fade)
+    }
+    globalVolume(volume)
+    {
+        Howler.volume(volume)
+    }
+    removeSound(id)
+    {
+        for (let i =  this.activesounds.length - 1; i >= 0; i--)
         {
-            this.swooshplaying = true
-            this.swordswoosh.play(0, speed)
+            if (this.activesounds[i].id === id) 
+            {
+                this.activesounds.splice(i, 1)
+                return
+            }
         }
     }
-    bowshot(speed)
+    woosh(id, speed, pos)
     {
-        if (!this.bowshooting)
+        //console.log('woosh')
+        let s = getFromList(id, this.activesounds)
+        let p = this.getStereoPos(pos)
+        if (!s) 
         {
-            this.bowshooting = true
-            this.bowsound.play(0, speed)
-        }
+            this.swordwoosh.pos(p.x, p.y)
+            this.swordwoosh.rate(speed)
+            let s_id = this.swordwoosh.play()
+            this.activesounds.push({id, s_id, touched: true})
+        } else this.swordwoosh.pos(p.x, p.y, 0, s.s_id)
     }
+    playFire(id, pos)
+    {
+        let s = getFromList(id, this.activesounds)
+        let p = this.getStereoPos(pos)
+        if (!s)
+        {
+            let s_id = this.fireburningsound.play('burning')
+            this.fireburningsound.pos(p.x, p.y, 0, s_id)
+            this.activesounds.push({id, s_id, touched: true})
+        }
+        else 
+            this.fireburningsound.pos(p.x, p.y, 0, s.s_id)
+    }
+    stopFire(id)
+    {
+        let s = getFromList(id, this.activesounds)
+        if (s) this.fireburningsound.stop(s.s_id)
+        this.removeSound(id)
+    }
+    bowshot()
+    {
+        this.bowsound.play()
+    }  
+    fireball()
+    {
+        this.fireballsound.play('firing')
+    }
+    explosion(pos)
+    {
+        let p = this.getStereoPos(pos)
+        this.explosionsound.pos(p.x, p.y)
+        this.explosionsound.play()
+    }   
 }

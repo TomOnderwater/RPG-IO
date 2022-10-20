@@ -31,8 +31,11 @@ function handleFeedback(feedback)
       case 'bowshot':
         rumble(15)
         //console.log(sound)
-        if (sound !== undefined)
-          sound.bowshot(1)
+        sound.bowshot()
+      break
+      case 'fireball':
+        rumble(20)
+        sound.fireball()
       break
       case 'damage':
           if (player.id === event.owner)
@@ -156,6 +159,11 @@ function multiply(a, factor) {
   }
 }
 
+function sqMag(v)
+{
+    return Math.pow(v.x, 2) + Math.pow(v.y, 2)
+}
+
 function divide(a, divisor)
 {
   let factor = 1 / divisor
@@ -182,6 +190,15 @@ function onField(p, area)
       {
           //print(item, entry)
           if (item === entry) return true
+      }
+      return false
+  }
+
+  function getFromList(item, list)
+  {
+      for (let entry of list)
+      {
+          if (item === entry.id) return entry
       }
       return false
   }
@@ -239,12 +256,6 @@ function touchStarted ()
   {
     console.log(err)
   }
-  //let area = 
-  // let area = {x1: 0, y1: 0, x2: width, y2: height}
-  // for (let t of touches)
-  // {
-  //   if (onField(t, area) && !fullscreen()) fullscreen(true)
-  // }
 }
 
 function writeColor(image, x, y, red, green, blue, alpha) {
@@ -286,6 +297,7 @@ function isSecure()
     if (location.protocol === 'https:') return true
     return false
 }
+
 function windowResized() {
     print('resize')
     canvas = resizeCanvas(windowWidth, windowHeight)

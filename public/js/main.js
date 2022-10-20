@@ -1,5 +1,6 @@
 p5.disableFriendlyErrors = true
 
+
 //GAME SPECIFIC
 let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf'
 
@@ -63,7 +64,7 @@ function preload()
   //
   gearicon = loadImage('assets/textures/gearicon.png')
   
-  //sound = new Sound()
+  sound = new SoundManager()
 }
 
 function setup() {
@@ -81,6 +82,8 @@ function setup() {
 
   MOBILE = isMobileDevice()
 
+  sound.globalVolume(1)
+
   // setFrameRate(30) //frame updates at 30 hz
   console.log('connection type:', type)
   //register player
@@ -97,7 +100,6 @@ function setup() {
 function draw() 
 {
   //blank grey
-
   switch(gamestate)
   {
     case 'lobby':

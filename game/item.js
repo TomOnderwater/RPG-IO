@@ -256,7 +256,7 @@ class Staff extends Item
             let pos = this.body.pos
             inventory.remove({type: this.type, count: projectile.cost})
             level.addRangedAttack({ owner, pos, dir, projectile, item: this })
-            this.addFeedBackEvent({type: 'bowshot'})
+            this.addFeedBackEvent({type: 'fireball'})
         }
     }
     doAction(hand)

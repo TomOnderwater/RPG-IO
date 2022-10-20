@@ -17,6 +17,11 @@ class Camera
     this.zoom += (zoom - this.zoom) * b
     //this.zoom = this.zoom, zoom, b
   }
+  getRelativePos(pos)
+  {
+    // where am i?
+    return subtract(pos, this.focus)
+  }
   onLevel(p)
   {
     let pos = subtract(p, halfScreen())
