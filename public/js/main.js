@@ -32,6 +32,8 @@ const host = location.host
 const httpPrefix = isSecure() ? 'https://' : 'http://'
 const wsPrefix = isSecure() ? 'wss://' : 'ws://'
 
+const soundfolder = 'assets/sound_effects/'
+
 // SHORTCUTS
 let SEXYGREY // = color(51, 51, 51)
 
@@ -45,8 +47,11 @@ function setupInput()
 
 function preload()
 {
+  console.log('loading assets...')
   sound = new SoundManager()
-  
+
+  console.log('loading textures...')
+
   walltexture = loadImage('assets/textures/smallwalltexture.png')
   woodicon = loadImage('assets/textures/woodicon.png')
   stoneicon = loadImage('assets/textures/stoneicon.png')
@@ -62,12 +67,11 @@ function preload()
   ammoicon = loadImage('assets/textures/ammobag.png')
   stafficon = loadImage('assets/textures/staff.png')
   chestIcon = loadImage('assets/textures/treasurechest.png')
-  //
   gearicon = loadImage('assets/textures/gearicon.png')
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight)
+  canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
   SEXYGREY = color(51, 51, 51)
 
   //sound.swoosh()

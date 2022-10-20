@@ -1,5 +1,3 @@
-const soundfolder = 'assets/sound_effects/'
-
 class SoundManager {
     constructor()
     {
