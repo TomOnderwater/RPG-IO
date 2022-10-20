@@ -39,12 +39,6 @@ let SEXYGREY // = color(51, 51, 51)
 
 let sound
 
-function setupInput()
-{
-  if (MOBILE) input = new MobileInput()
-  else input = new PCInput() // prototype, not yet fully supported
-}
-
 function preload()
 {
   console.log('loading assets...')
@@ -70,14 +64,19 @@ function preload()
   gearicon = loadImage('assets/textures/gearicon.png')
 }
 
+function setupInput()
+{
+  if (MOBILE) input = new MobileInput()
+  else input = new PCInput() // prototype, not yet fully supported
+}
+
+
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
   SEXYGREY = color(51, 51, 51)
 
   //sound.swoosh()
   cam = new Camera(createVector(0, 0), 20)
-
-  blendTextures()
 
   level = new Level()
 

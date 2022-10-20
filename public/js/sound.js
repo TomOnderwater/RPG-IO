@@ -22,6 +22,7 @@ class SoundManager {
     globalVolume(volume)
     {
         Howler.volume(volume)
+        console.log('setting volume')
     }
     removeSound(id)
     {
