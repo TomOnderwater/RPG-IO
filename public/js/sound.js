@@ -29,6 +29,7 @@ class SoundManager {
     }
     getStereoPos(pos)
     {
+        if (!player) return {x: 0, y: 0}
         let d = cam.getRelativePos(pos)
         return multiply(d, this.fade)
     }
