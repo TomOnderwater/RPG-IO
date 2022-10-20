@@ -445,8 +445,8 @@ class Inventory
         {
             if (slot.touched(touch)) return slot.id
         }
-        if (touch.y < height - (this.height * 1.5)) return DIRT
-        return NONE
+        if (touch.y < height - (this.height * 1.5)) return NONE
+        return false
     }
     getSwap()
     {
@@ -621,6 +621,8 @@ class Settings
         this.open = false
         this.sound = true
         this.volume = 50
+        this.music = false
+        if (this.music) sound.playMusic()
     }
     click(pos)
     {
@@ -637,6 +639,7 @@ class Settings
     {
         this.soundCheckbox.hide()
         this.volumeSlider.hide()
+        this.musicCheckbox.hide()
     }
     showDOM()
     {
@@ -647,7 +650,7 @@ class Settings
         {
             this.sound = this.soundCheckbox.checked()
             if (!this.sound) sound.globalVolume(0)
-            else sound.globalVolume(this.volume * 0.01)
+            else sound.globalVolume(1)
         })
 
         // volume slider
@@ -655,8 +658,18 @@ class Settings
         this.volumeSlider.position(this.pos.x, this.pos.y + 50)
         this.volumeSlider.style('width', '100px')
         this.volumeSlider.changed(() => {
-            this.volume = this.volumeSider.value()
+            this.volume = this.volumeSlider.value()
             sound.globalVolume(this.volume * 0.01)
+        })
+
+        // sound checkbox
+        this.musicCheckbox = createCheckbox('music', this.music)
+        this.musicCheckbox.position(this.pos.x, this.pos.y + 70)
+        this.musicCheckbox.changed(() => 
+        {
+            this.music = this.musicCheckbox.checked()
+            if (!this.music) sound.stopMusic()
+            else sound.playMusic()
         })
     }
     draw()
@@ -665,8 +678,6 @@ class Settings
         imageMode(CENTER)
         image(gearicon, this.pos.x, this.pos.y, 40, 40)
         pop()
-
-        if (this.open) console.log(this.volume)
     }
 }
 
@@ -813,6 +824,7 @@ class JoyStick
         this.boostdir = createVector(0, 0)
         this.boost = 0
         this.bg = color(100, 100)
+        this.chargebg = color(255, 0, 0, 150)
         this.maxboost = 10
         this.hintcompleted = false
         this.actions = []
@@ -823,8 +835,7 @@ class JoyStick
         if (!this.active) return
 
         push()
-        if (this.boosting) fill(255, 100, 100, 100 + this.boost * 2)
-        else fill(100, 100, 100, 100)
+        fill(lerpColor(this.bg, this.chargebg, this.boosting * 0.1))
         noStroke()
         circle(this.center.x, this.center.y, this.dia + (this.boost * 2))
         fill(200, 200, 200, 150)

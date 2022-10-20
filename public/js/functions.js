@@ -36,12 +36,13 @@ function handleFeedback(feedback)
         if (event.owner === game_id) rumble(15)
       break
       case 'damage':
-          if (event.target)
+          if (event.target.id === game_id)
           {
-           // console.log(event)
-            if (event.target.id === game_id)
+            //if (event.target.id === game_id)
               rumble(event.damage * 2)
           }
+          if (event.owner === game_id) 
+            rumble(event.damage)
       break
 
     }

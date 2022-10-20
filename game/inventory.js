@@ -71,8 +71,7 @@ module.exports = class Inventory {
     }
     swap(swapping)
     {
-        if (swapping.a === NONE) return false
-        if (swapping.a === DIRT)
+        if (swapping.a === NONE)
         {
             let b = this.getSlotByID(swapping.b)
             if (b.item.type === NONE) return false

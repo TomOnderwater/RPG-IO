@@ -184,6 +184,7 @@ module.exports = class Level
                 if (killer !== null)
                 {
                     killer.addXP(player.getXP()) //add XP to killer
+                    console.log(player.name + ' killed by ' + killer.name)
                     this.dungeon.addScore({score: player.getScore(), 
                                             id: player.id, 
                                             name: player.name,
@@ -209,7 +210,7 @@ module.exports = class Level
                 let killer = this.getEntity(mob.lastattacker)
                 if (killer !== null)
                 {
-                    console.log(mob.type, 'killed by', killer.name)
+                    //console.log(mob.name, 'killed by', killer.name)
                     killer.addXP(mob.getXP()) // add XP to killer
                 }
                 //mob.killer.addXP(mob.getXP()) // add XP to killer

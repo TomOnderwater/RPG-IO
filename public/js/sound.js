@@ -1,16 +1,31 @@
 class SoundManager {
     constructor()
     {
+        this.backgroundmusic = new Howl({src: [soundfolder + 'ukulele.mp3'], looping: true, volume: 0.1})
         this.volume = 1
         this.fade =  2
         this.activesounds = []
         this.swordwoosh = new Howl({src: [soundfolder + 'swoosh1.mp3']})
         this.bowsound = new Howl({src: [soundfolder + 'bow_shoot.mp3']})
         this.fireballsound = new Howl({src: [soundfolder + 'fireballshot.mp3'], sprite: {firing: [200, 1200]}})
-        this.explosionsound = new Howl({src: [soundfolder + 'heavyimpact.mp3']})
+        this.explosionsound = new Howl({src: [soundfolder + 'fire_explosion.wav'], 
+        sprite: {exploding: [0, 1200]}})
         this.fireburningsound = new Howl({src: [soundfolder + 'fireburning.wav'], 
             sprite: {burning: [1000, 6000]},
             looping: true})
+    }
+    musicVolume(volume)
+    {
+        this.backgroundmusic.volume(volume)
+    }
+    playMusic()
+    {
+        if (!this.backgroundmusic.playing())
+            this.backgroundmusic.play()
+    }
+    stopMusic()
+    {
+        this.backgroundmusic.stop()
     }
     getStereoPos(pos)
     {
@@ -81,6 +96,7 @@ class SoundManager {
     {
         let p = this.getStereoPos(pos)
         this.explosionsound.pos(p.x, p.y)
-        this.explosionsound.play()
+        let id = this.explosionsound.play('exploding')
+        this.explosionsound.fade(1, 0, 1000, id)
     }   
 }

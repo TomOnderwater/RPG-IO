@@ -151,15 +151,19 @@ function setGameState(state)
     keyinput.style('border-radius', '30px')
     keyinput.style('padding-left', '15px')
     gamestate = state
+
+    // trigger music
     break
     case 'game':
     gamestate = state
+    //sound.playMusic()
     break
     case 'loading':
     gamestate = state
     break
     case 'game over':
     gamestate = state
+    sound.stopMusic()
     break
     case 'spectator':
       gamestate = state
