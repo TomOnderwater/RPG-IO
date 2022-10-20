@@ -1,6 +1,5 @@
 p5.disableFriendlyErrors = true
 
-
 //GAME SPECIFIC
 let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf'
 
