@@ -1,17 +1,20 @@
 
+const soundfolder = 'assets/sound_effects/'
 
 let fireballs = []
+
+let sound
 
 function setup() 
 {
   canvas = createCanvas(windowWidth, windowHeight)
+  sound = new SoundMaster()
   //fire = new Fire(createVector(width /2, height / 2), 400)
   for (let i = 0; i < 5; i++)
   {
     fireballs.push(new FireBall(createVector(random(width), random(height))))
   }
 }
-
 
   function draw()
   {
@@ -30,6 +33,24 @@ function setup()
     text(round(getFrameRate()), width - 100, height - 100)
     pop()
   }
+
+  function mouseClicked()
+  {
+    sound.woosh()
+  }
+
+  class SoundMaster
+{
+  constructor()
+  {
+    this.basepath = 'assets/sound_effects'
+    this.swordwoosh = new Howl({src: [soundfolder + 'swoosh1.mp3']})
+  }
+  woosh()
+  {
+    this.swordwoosh.play()
+  }
+}
 
 function randomVector(max)
 {
