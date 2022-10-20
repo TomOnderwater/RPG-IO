@@ -13,6 +13,8 @@ class SoundManager {
         this.fireburningsound = new Howl({src: [soundfolder + 'fireburning.wav'], 
             sprite: {burning: [1000, 6000]},
             looping: true})
+
+        console.log('sound loaded')
     }
     getStereoPos(pos)
     {
