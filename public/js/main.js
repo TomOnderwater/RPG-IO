@@ -70,7 +70,6 @@ function setupInput()
   else input = new PCInput() // prototype, not yet fully supported
 }
 
-
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
   SEXYGREY = color(51, 51, 51)
