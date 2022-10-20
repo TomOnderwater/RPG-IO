@@ -58,7 +58,7 @@ function updateView(viewport)
   if (viewport.inventory)
   {
     inventory = viewport.inventory
-    //console.log(inventory)
+    //console.log('updating inventory')
     input.inventory.updateInventory()
   }
     

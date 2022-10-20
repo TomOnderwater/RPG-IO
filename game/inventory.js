@@ -19,7 +19,6 @@ module.exports = class Inventory {
     {
         if (this.updated)
         {
-            //console.log('inventory updated, selection:', this.getSelectedSlot())
             let inventory = {}
             inventory.items = []
             for (let slot of this.slots)
@@ -72,7 +71,8 @@ module.exports = class Inventory {
     }
     swap(swapping)
     {
-        if (swapping.a === NONE)
+        if (swapping.a === NONE) return false
+        if (swapping.a === DIRT)
         {
             let b = this.getSlotByID(swapping.b)
             if (b.item.type === NONE) return false

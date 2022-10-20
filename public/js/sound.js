@@ -2,7 +2,7 @@ class SoundManager {
     constructor()
     {
         this.volume = 1
-        this.fade =  1.5
+        this.fade =  2
         this.activesounds = []
         this.swordwoosh = new Howl({src: [soundfolder + 'swoosh1.mp3']})
         this.bowsound = new Howl({src: [soundfolder + 'bow_shoot.mp3']})
@@ -65,12 +65,16 @@ class SoundManager {
         if (s) this.fireburningsound.stop(s.s_id)
         this.removeSound(id)
     }
-    bowshot()
+    bowshot(pos)
     {
+        let p = this.getStereoPos(pos)
+        this.bowsound.pos(p.x, p.y)
         this.bowsound.play()
     }  
-    fireball()
+    fireball(pos)
     {
+        let p = this.getStereoPos(pos)
+        this.fireballsound.pos(p.x, p.y)
         this.fireballsound.play('firing')
     }
     explosion(pos)

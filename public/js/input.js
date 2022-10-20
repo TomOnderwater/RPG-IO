@@ -425,13 +425,19 @@ class Inventory
         this.swapping = false
         this.activetouch = touch.id
         let selected = this.getSelectedSlot(touch)
-        if (selected !== false) this.selected = selected
+        if (selected !== false) 
+        {
+            this.selected = selected
+            this.swapping = this.selected
+        }
+        //this.swapping = this.selected
     }
     giveSelect(id)
     {
         this.slots.forEach(slot => slot.selected = false) // deselect all
         this.slots[id].selected = true
         this.selected = id
+        this.swapping = id
     }
     getSelectedSlot(touch)
     {
@@ -439,35 +445,44 @@ class Inventory
         {
             if (slot.touched(touch)) return slot.id
         }
+        if (touch.y < height - (this.height * 1.5)) return DIRT
         return NONE
     }
-    getActions()
+    getSwap()
     {
         let output = []
         if (this.swapping !== false)
         {
             if (this.swapping !== this.selected)
             {
+                //console.log('swapping!')
                 let swapping = {a: this.swapping, b: this.selected}
                 output.push({type: 'inventory', swapping})
             }
             this.swapping = false
         }
+        this.actions = []
+        return output
+    }
+
+    getActions()
+    {
+        let output = []
         this.actions.forEach(action => output.push(action))
         this.actions = []
+        //console.log(output)
         if (!output.length) return null
         return output
     }
     updateInventory()
     {
         if (inventory === undefined) return
-        //console.log('inventory', inventory)
         if (inventory.items !== undefined) this.fill(inventory.items)
         if (inventory.selection !== undefined) this.giveSelect(inventory.selection)
     }
     update()
     {
-        if (inventory) this.updateInventory(inventory)
+        //if (inventory) this.updateInventory(inventory)
         
         for (let slot of this.slots)
         {
@@ -477,7 +492,7 @@ class Inventory
         for (let t of touches)
         {
             if (t.id === this.activetouch)
-            this.swapping = this.getSelectedSlot(t)
+                this.swapping = this.getSelectedSlot(t)
         }
 
         let ongoingtouch = inList(this.activetouch, input.usedTouches)
@@ -485,7 +500,8 @@ class Inventory
         if (!ongoingtouch)
             this.activetouch = false
 
-        if (this.actions.length || !ongoingtouch) return this.getActions() // action finished
+        if (!ongoingtouch && this.swapping !== this.selected) return this.getSwap()
+        if (this.actions.length) return this.getActions() // action finished
         return null
     }
     close()

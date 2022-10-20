@@ -16,7 +16,6 @@ class Item
         this.moving = false
         this.primesignal = false
         this.primed = false
-        this.events = []
         this.owner = false
     }
     update(hand, colliders)
@@ -39,19 +38,20 @@ class Item
         } else if (drawsq < limsq) this.primed = false
     }
     addFeedBackEvent(event)
-    {
-        this.events.push(event)
+    { // physical stuff, audible
+        event.pos = this.body.pos
+        event.owner = this.owner.id
+        this.owner.level.addEvent(event)
     }
     getFeedBack()
     {
-        if (this.events.length === 0 && !this.primesignal) return false
-        let out = this.events
+        if (!this.primesignal) return false
+        let out = []
         if (this.primesignal) 
         {
             out.push({type: 'prime'})
             this.primesignal = false
         }
-        this.events = []
         return out
     }
     resetBody(p)

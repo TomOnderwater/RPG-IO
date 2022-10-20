@@ -134,7 +134,15 @@ class Level {
           break
         case 'explosion':
           this.events.push(new Explosion(event.pos))
-        break
+          break
+        case 'bowshot':
+          handleFeedback([event])
+          sound.bowshot(event.pos)
+          break
+        case 'fireball':
+          handleFeedback([event])
+          sound.fireball(event.pos)
+          break
     }
   })
   if (player) handleFeedback(events)

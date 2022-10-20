@@ -20,6 +20,7 @@ function rumble(duration)
 
 function handleFeedback(feedback)
 {
+ if (type === 'spectator') return
   for (let event of feedback)
   {
     //console.log(event)
@@ -29,17 +30,18 @@ function handleFeedback(feedback)
         rumble(30)
       break
       case 'bowshot':
-        rumble(15)
-        //console.log(sound)
-        sound.bowshot()
+        if (event.owner === game_id) rumble(15)
       break
       case 'fireball':
-        rumble(20)
-        sound.fireball()
+        if (event.owner === game_id) rumble(15)
       break
       case 'damage':
-          if (player.id === event.owner)
-            rumble(event.damage)
+          if (event.target)
+          {
+           // console.log(event)
+            if (event.target.id === game_id)
+              rumble(event.damage * 2)
+          }
       break
 
     }
