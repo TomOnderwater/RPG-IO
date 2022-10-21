@@ -290,7 +290,12 @@ module.exports = class Level
     {
         let pos = p || this.getRandomLandPos()
         if (this.isFreeTile(pos))
-            this.getTile(pos).addTreasureChest()
+        {
+            let tile = this.getTile(pos)
+            tile.addTreasureChest()
+            this.updates.push(tile.getData())
+        }
+
     }
     getLeaderBoard()
     {

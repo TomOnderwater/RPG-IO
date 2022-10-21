@@ -10,11 +10,10 @@ class Survival
         this.floorcount = game.floorcount || 1
         this.leaderboard = []
         this.scores = []
-        this.treasurechestticks = 300 // about 100 seconds
+        this.treasurechestticks = 150 // about 100 seconds
         this.mobticks = 10
         this.maxtreasurechests = Math.round((game.size.width * game.size.height) * 0.002)
         this.ticks = 0
-        this.spawnlocations = []
     }
     initLevels()
     {
@@ -36,8 +35,10 @@ class Survival
         {
             if (level.mobs.length < level.maxMobs)
             {
-                let pos = Func.chooseOne(this.spawnlocations)
-                if (!pos || this.ticks % (this.mobticks * 2) === 0) pos = level.getRandomLandPos()
+                let chests = level.getAllStructures(TREASURECHEST)
+                let chest = Func.chooseOne(chests)
+                let pos = (!chest || this.ticks % (this.mobticks * 2) === 0) ?  
+                level.getRandomLandPos() : chest.body.getCenter()
                 level.spawnMob(SLIME, pos)
             } 
         }
@@ -125,11 +126,6 @@ class Survival
             for (let level of this.dungeon.levels)
             {
                 let chests = level.getAllStructures(TREASURECHEST)
-                this.spawnlocations = []
-                for (let chest of chests)
-                {
-                    this.spawnlocations.push(chest.body.getCenter())
-                }
                 if (chests.length < this.maxtreasurechests)
                     level.addTreasureChest()
             }

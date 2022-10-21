@@ -270,6 +270,11 @@ function normalize(vec)
     return {x: vec.x * ratio, y: vec.y * ratio }
 }
 
+function cloneObject(obj)
+{
+    return JSON.parse(JSON.stringify(obj))
+}
+
 function chooseOne(list)
 {
     if (!list.length) return false
@@ -284,5 +289,6 @@ module.exports = {
     TWOPI, sqMag, magnitude, bounce, rotatingBounce,
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, calcAttack, circleOnCircle, 
-    constrain, toBase64, floorPos, randomName, randomVector, normalize, chooseOne
+    constrain, toBase64, floorPos, randomName, randomVector, normalize, chooseOne,
+    cloneObject
 }

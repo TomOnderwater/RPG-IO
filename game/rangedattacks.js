@@ -27,10 +27,16 @@ module.exports = class RangedAttack
         for (let collision of collisions)
         {
             if (collision.entity.health !== undefined)
-                            level.addEvent(Func.calcAttack({
-                                collision, 
-                                item: this.item,
-                                attacker: this.owner.id}))
+            {
+                let power = 1
+                if (this.type === ARROW && this.cost > 1)
+                    power = 1 + (this.cost * 0.5)
+            level.addEvent(Func.calcAttack({
+                collision, 
+                item: this.item,
+                attacker: this.owner.id, 
+                power}))
+            }
             if (this.type === ARROW && this.cost > 1)
             {
                 level.addPhysicalEvent({

@@ -114,15 +114,17 @@ class Event
     this.pos = pos
     this.value = value
     this.ticks = 0
-    this.maxticks = 100
+    this.maxticks = 60
+    this.textpos = pos
   }
   drawValue()
   {
-    let pos = cam.onScreen(this.pos)
+    this.textpos = bounce(this.textpos, {x: this.pos.x, y: this.pos.y - 0.3}, 0.2)
+    let pos = cam.onScreen(this.textpos)
     push()
     textSize(20)
-    fill(255)
-    stroke(0)
+    fill(100 + (155 * (1 - (this.ticks / this.maxticks))))
+    noStroke()
     text(this.value, pos.x, pos.y)
     pop()
   }
@@ -190,6 +192,7 @@ class Impact extends Event
       let ended = this.splatters[i].draw()
       if (ended) this.splatters.slice(i, 1)
     }
+    this.drawValue()
   }
 }
 
@@ -197,17 +200,17 @@ class Splatter
 {
   constructor(pos, dir, maxticks, color)
   {
-    this.pos = createVector(pos.x, pos.y)
+    this.pos = pos
     this.dia = random(0.04, 0.12) * cam.zoom
     this.diaincrement = 0.004 * cam.zoom
-    this.mult = random(0.5, 0.9)
+    this.mult = random(0.3, 0.7)
     this.color = color
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
     this.ticks = Math.round(random(maxticks * 0.5, maxticks))
   }
   draw()
   {
-    this.pos.add(this.dir)
+    this.pos = add(this.pos, this.dir)
     this.dir.mult(this.mult)
     let pos = cam.onScreen(this.pos)
     this.dia += this.diaincrement

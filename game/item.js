@@ -209,9 +209,7 @@ class Bow extends Item
         let dir = Func.multiply(_d, this.power)
 
         // copy for anti-bug purposes
-        let projectile = {type: this.projectile.type, 
-            cost: this.projectile.cost, 
-            rad: this.projectile.rad}
+        let projectile = Func.cloneObject(this.projectile)
 
         if (this.primed)
             projectile.cost *= 2
