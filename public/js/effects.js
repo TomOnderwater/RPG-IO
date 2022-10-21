@@ -180,7 +180,7 @@ class Impact extends Event
     this.splatters = []
     for (let i = 0; i < splattercount; i++)
     {
-      this.splatters.push(new Splatter(pos, damage, dir, this.maxticks, this.color))
+      this.splatters.push(new Splatter(pos, dir, this.maxticks, this.color))
     }
   }
   draw()
@@ -195,10 +195,10 @@ class Impact extends Event
 
 class Splatter
 {
-  constructor(pos, damage, dir, maxticks, color)
+  constructor(pos, dir, maxticks, color)
   {
     this.pos = createVector(pos.x, pos.y)
-    this.dia = random(0.02, 0.08 + 0.01 * damage) * cam.zoom
+    this.dia = random(0.04, 0.12) * cam.zoom
     this.diaincrement = 0.004 * cam.zoom
     this.mult = random(0.5, 0.9)
     this.color = color
