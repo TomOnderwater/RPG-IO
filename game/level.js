@@ -51,6 +51,7 @@ module.exports = class Level
         //return {x: this.size / 2, y: this.size / 8}
         //let startpos = {x: this.width / 2, y: this.height / 8}
         let startpos = this.getRandomLandPos()
+        console.log('starting here:', startpos)
         return this.getFreeSpot(startpos, body)
     }
     takePlayer(id)

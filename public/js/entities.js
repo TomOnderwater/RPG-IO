@@ -39,7 +39,7 @@ class Entity
                 if (sqspeed > 0.04 && sound !== undefined)
                     sound.woosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
             }
-            else if (sqspeed < 0.0005 || !this.moving) sound.removeSound(this.id)
+            else if (sqspeed < 0.001 || !this.moving) sound.removeSound(this.id)
         }
         if (sqspeed > 0.00001) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}

@@ -11,9 +11,9 @@ class Survival
         this.leaderboard = []
         this.scores = []
     }
-    getSpawnPos()
+    getSpawnPos(player)
     {
-        return this.dungeon.levels[0].getRandomLandPos()
+        return this.dungeon.levels[0].getSpawnPos(player.body)
     }
     updateLeaderBoard()
     {

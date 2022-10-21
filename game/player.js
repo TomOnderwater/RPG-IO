@@ -19,6 +19,7 @@ module.exports = class Player
             actions: []
         }
 
+        this.invulnerableticks = 150 //about 5 seconds
         // UPDATE
         this.inventory = new Inventory(6)
         this.session = data.session
@@ -126,9 +127,14 @@ module.exports = class Player
         // move the hand
         this.hand.update(level, colliders)
 
+        if (this.invulnerableticks > 0)
+            this.invulnerableticks --
+
     }
     applyDamage(damage, attacker)
     {
+        if (!this.invulnerableticks) 
+            return
         this.health -= damage
         this.lastattacker = attacker
         //console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)

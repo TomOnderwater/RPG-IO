@@ -168,7 +168,7 @@ module.exports = class Dungeon {
         {
             if (this.queue[i].id === id) 
             {
-                this.levels[0].addPlayer(this.queue[i], this.game.getSpawnPos())
+                this.levels[0].addPlayer(this.queue[i], this.game.getSpawnPos(this.queue[i]))
                 // remove from queue
                 this.queue.splice(i, 1)
             }

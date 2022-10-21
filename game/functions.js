@@ -205,6 +205,7 @@ function calcAttack(attack)
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage: attack.damage,
+                owner: attack.attacker,
                 target: {color: {r:255, g: 0, b: 0}, id: attack.collision.entity.id}
             }
     }

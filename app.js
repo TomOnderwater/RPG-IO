@@ -90,15 +90,15 @@ app.post("/start", (req, res) => {
 
 app.post("/sess_id", (req, res) => {
   let connection = req.body
-  console.log('session: ', connection.session)
+  //console.log('session: ', connection.session)
   //check if the account is alive
   let player = gameMaster.getPlayerBySession(connection)
-  console.log('active player:', player)
+  //console.log('active player:', player)
   let id = 'none'
   if (player) id = player.id
   // get account details
   let account = accountmanager.getAccount(connection.session)
-  console.log('account: ', account)
+  //console.log('account: ', account)
   res.send({id, account})
 })
 
