@@ -196,14 +196,15 @@ function drawArrow(levelpos, dir, offset, size)
     translate(pos.x, pos.y)
     rotate(dir)
     stroke(0)
-    strokeWeight(2)
+    strokeWeight(0.02 * cam.zoom)
     line(off, 0, tip, 0)
-    stroke(255, 0, 0)
+    //stroke(255, 0, 0)
+    noStroke()
+    fill(255, 0, 0)
     triangle(tip + tipsize, 0, tip, -tipsize, tip, tipsize)
     //circle(60, 0, 10)
     pop()
 }
-
 
 class Bow extends HandItem
 {
@@ -238,8 +239,6 @@ class Bow extends HandItem
         push()
         translate(bowpos.x, bowpos.y)
         rotate(rot)
-        strokeWeight(0.1 * cam.zoom)
-        stroke(200, 150, 40)
         //line(0, -30, 0, 30)
         // front of the bow points
         let bend = 2 * this.size * cam.zoom
@@ -251,6 +250,14 @@ class Bow extends HandItem
         let p1 = p5.Vector.fromAngle(-draw - HALF_PI).mult(bend + abs(draw * bend * 0.25)).add(p2)
         let p4 = p5.Vector.fromAngle(draw + HALF_PI).mult(bend + abs(draw * bend * 0.25)).add(p3)
         noFill()
+        if (this.primed && this.moving)
+        {
+            strokeWeight(0.2 * cam.zoom)
+            stroke(255, 60, 60, 80)
+            bezier(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y)
+        }
+        strokeWeight(0.1 * cam.zoom)
+        stroke(200, 150, 40)
         bezier(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y)
         if (!this.moving)
         {

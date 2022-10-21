@@ -79,6 +79,7 @@ class Item
         level.addRangedAttack({ owner: this.owner, pos, dir, projectile, item: this })
         this.addFeedBackEvent({type: projectile.type})
         }
+        this.handbounce = {x: 0, y: 0}
     }
     setPos(pos)
     {
