@@ -18,6 +18,16 @@ function rumble(duration)
   navigator.vibrate(duration)
 }
 
+function resetTextures(zoom, blending)
+{
+  grassTexture = createTexture(grasstex_, zoom, blending)
+  dirtTexture = createTexture(dirttex_, zoom, blending)
+  stoneTexture = createTexture(stonetex_, zoom, blending)
+  waterTexture = createTexture(watertex_, zoom, blending)
+  gravelTexture = createTexture(graveltex_, zoom, blending)
+  sandTexture = createTexture(sandtex_, zoom, blending)
+}
+
 function handleFeedback(feedback)
 {
  if (type === 'spectator') return

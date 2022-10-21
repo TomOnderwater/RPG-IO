@@ -51,31 +51,36 @@ class Tile {
   }
   drawSurface(p)
   {
-    let pos = p || cam.onScreen(createVector(this.x, this.y))
+    let pos = p || cam.onScreen({x: this.x + 0.5, y: this.y + 0.5})
       push()
-      stroke(0)
+      //stroke(0)
+      let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))
+      imageMode(CENTER)
+      let img = stoneTexture
+      
       switch (this.surface) {
         case STONE:
-          image(stoneTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = stoneTexture
           break
           case GRAVEL:
-          image(gravelTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = gravelTexture
           break
         case DIRT:
-          image(dirtTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = dirtTexture
         break
         case GRASS:
-          image(grassTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = grassTexture
         break
         case WATER:
-          image(waterTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = waterTexture
         break
         case SAND:
-          image(sandTexture, pos.x, pos.y, cam.zoom, cam.zoom)
+          img = sandTexture
         break
         default:
           break
       }
+      image(img, pos.x, pos.y, scale, scale)
       pop()
   }
 }

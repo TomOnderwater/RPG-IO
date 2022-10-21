@@ -18,10 +18,10 @@ module.exports = class GameMaster
         this.dungeons = []
         this.connections = []
         this.ticks = 0
-        // base dungeon
+        // DEFAULT dungeon
         this.dungeons.push(new Dungeon({
             floorcount: 1, 
-            size: {width: 50, height: 50}, 
+            size: {width: 100, height: 100}, 
             mode: 'survival'}, 
             this.createKey(5)))
         // example {socket: bla bla, id: '1, 2, 3, spectator', key: 'adfei'}

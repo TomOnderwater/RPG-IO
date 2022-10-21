@@ -14,15 +14,18 @@ let key = ''
 let ticks = 0
 
 // VISUAL CONSTANTS
-const entityborder = 0.03
+const entityborder = 0.03, TEXTUREBLEND = 0.05
 
 // DATA SPECIFIC
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0
 
-// TEXTURES
-let walltexture, woodicon, stoneicon, rocktexture, 
-grassTexture, stoneTexture, waterTexture, sandTexture,
-dirtTexture, gravelTexture, stonewallTexture, woodenwallTexture,
+// RAW TEXTURES
+let grasstex_, stonetex_, watertex_, sandtex_, dirttex_, graveltex_
+
+// SCALED TEXTURES
+let grassTexture, stoneTexture, waterTexture, sandTexture, dirtTexture, gravelTexture
+
+let walltexture, woodicon, stoneicon, rocktexture, stonewallTexture, woodenwallTexture,
 ammoicon, stafficon, gearicon, chestIcon
 
 let textures = []
@@ -43,21 +46,25 @@ function preload()
 {
   console.log('loading assets...')
   sound = new SoundManager()
-
   console.log('loading textures...')
 
+  // SURFACE TEXTURES
+  grasstex_ = loadImage('assets/textures/seamless_grass1.jpg')
+  watertex_ = loadImage('assets/textures/watertexture1.jpg')
+  stonetex_ = loadImage('assets/textures/stonetexture.jpg')
+  dirttex_ = loadImage('assets/textures/dirt_texture1.jpg')
+  sandtex_ = loadImage('assets/textures/sandtexture1.jpg')
+  graveltex_ = loadImage('assets/textures/gravel_texture1.jpg')
+
+  // STRUCTURE TEXTURES
   walltexture = loadImage('assets/textures/smallwalltexture.png')
-  woodicon = loadImage('assets/textures/woodicon.png')
-  stoneicon = loadImage('assets/textures/stoneicon.png')
   rocktexture = loadImage('assets/textures/rocktexture.png')
-  grassTexture = loadImage('assets/textures/seamless_grass1.jpg')
-  waterTexture = loadImage('assets/textures/watertexture1.jpg')
-  stoneTexture = loadImage('assets/textures/stonetexture.jpg')
-  dirtTexture = loadImage('assets/textures/dirt_texture1.jpg')
-  sandTexture = loadImage('assets/textures/sandtexture1.jpg')
-  gravelTexture = loadImage('assets/textures/gravel_texture1.jpg')
   woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
   stonewallTexture = loadImage('assets/textures/rockwall.jpg')
+
+  // ICONS
+  woodicon = loadImage('assets/textures/woodicon.png')
+  stoneicon = loadImage('assets/textures/stoneicon.png')
   ammoicon = loadImage('assets/textures/ammobag.png')
   stafficon = loadImage('assets/textures/staff.png')
   chestIcon = loadImage('assets/textures/treasurechest.png')
@@ -74,6 +81,7 @@ function setup() {
   canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
   SEXYGREY = color(51, 51, 51)
 
+  resetTextures(120, TEXTUREBLEND)
   //sound.swoosh()
   cam = new Camera(createVector(0, 0), 20)
 
@@ -100,7 +108,8 @@ function setup() {
   // update loop
 function draw() 
 {
-  //blank grey
+  //background(SEXYGREY)
+
   switch(gamestate)
   {
     case 'lobby':
