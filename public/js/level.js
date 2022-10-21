@@ -150,13 +150,13 @@ class Level {
           this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.color))
           break
         case 'explosion':
-          this.events.push(new Explosion(event.pos))
+          this.events.push(new Explosion(event.pos, event.cost, event.dir))
           break
-        case 'bowshot':
+        case ARROW:
           handleFeedback([event])
           sound.bowshot(event.pos)
           break
-        case 'fireball':
+        case FIREBALL:
           handleFeedback([event])
           sound.fireball(event.pos)
           break

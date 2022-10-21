@@ -161,10 +161,11 @@ module.exports = class Player
                 out.I = '1'
             return out
         }
+    
     getHand()
     {
         return this.hand.data()
-    }
+    } 
     getInventoryUpdate()
     {
         return this.inventory.updates()

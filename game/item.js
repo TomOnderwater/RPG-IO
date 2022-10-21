@@ -17,6 +17,7 @@ class Item
         this.primesignal = false
         this.primed = false
         this.owner = false
+        this.primelimit = 127.8
     }
     update(hand, colliders)
     {
@@ -29,7 +30,7 @@ class Item
     updatePriming()
     {
         let owner = this.owner
-        let limsq = Math.pow(this.reach * 127, 2)
+        let limsq = Math.pow(this.reach * this.primelimit, 2)
         let drawsq = Func.sqMag(Func.subtract(owner.body.pos, this.body.pos))
         if (drawsq > limsq && !this.primed)
         {
@@ -59,6 +60,25 @@ class Item
         let pos = p || {x: 0, y: 0}
         this.body = new PhysicalBody({type: 'circle', mass: this.mass, pos, rad: this.rad, bounce: this.bounce})
         this.handbounce = {x: 0, y: 0}
+    }
+    fireProjectile(projectile, dir, inventory, level)
+    {
+    //if (!this.projectile || !this.owner) return
+    if (Func.magnitude(dir) > this.minimumdraw)
+    {
+        if (!inventory.canRemove({type: this.type, count: projectile.cost}))
+            {
+                projectile.cost = this.projectile.cost // CAN'T AFFORD THE SHOT
+                if (!inventory.canRemove({type: this.type, count: projectile.cost}))
+                return
+            }
+
+        //get start pos
+        let pos = this.body.pos
+        inventory.remove({type: this.type, count: projectile.cost})
+        level.addRangedAttack({ owner: this.owner, pos, dir, projectile, item: this })
+        this.addFeedBackEvent({type: projectile.type})
+        }
     }
     setPos(pos)
     {
@@ -110,7 +130,8 @@ class Item
         t: this.type, 
         p: Func.fixPos(this.body.pos, 2),
         m: this.moving ? 1: 0, 
-        o: this.owner.id}
+        o: this.owner.id,
+        P: this.primed ? 1 : 0}
     }
 }
 
@@ -165,7 +186,7 @@ class Bow extends Item
         super(data)
         this.physical = false
         this.attack = 40
-        this.minimumdraw = 0.4
+        this.minimumdraw = 0.5
         this.destruction = 2
         this.bounce = 0.2
         this.reach = 0.0025
@@ -185,19 +206,20 @@ class Bow extends Item
         let _d = Func.subtract(Func.subtract(owner.body.pos, owner.body.speed), this.body.pos)
 
         let dir = Func.multiply(_d, this.power)
-        // for debug purposes
-        let projectile = this.projectile
-        if (Func.magnitude(dir) > this.minimumdraw)
-        {
-            if (!inventory.canRemove({type: this.type, count: projectile.cost}))
-                return // CAN'T AFFORD THE SHOT
 
-            //get start pos
-            let pos = owner.body.pos
-            inventory.remove({type: this.type, count: projectile.cost})
-            level.addRangedAttack({ owner, pos, dir, projectile, item: this })
-            this.addFeedBackEvent({type: 'bowshot'})
-        }
+        // copy for anti-bug purposes
+        let projectile = {type: this.projectile.type, 
+            cost: this.projectile.cost, 
+            rad: this.projectile.rad}
+
+        if (this.primed)
+            projectile.cost *= 2
+
+        // boost power if possible
+        if (inventory.canRemove({type: this.type, count: projectile.cost}))
+            dir = Func.multiply(dir, 1 + (projectile.cost * 0.3))
+
+        this.fireProjectile(projectile, dir, inventory, level)
     }
     doAction(hand)
     {
@@ -244,20 +266,16 @@ class Staff extends Item
         let _d = Func.subtract(this.body.pos, Func.subtract(owner.body.pos, owner.body.speed))
 
         let dir = Func.multiply(_d, this.power)
-
         // for debug purposes
-        let projectile = this.projectile
-        if (Func.magnitude(dir) > this.minimumdraw)
-        {
-            if (!inventory.canRemove({type: this.type, count: projectile.cost}))
-                return // CAN'T AFFORD THE SHOT
+        let projectile = {type: this.projectile.type, 
+            cost: this.projectile.cost, 
+            rad: this.projectile.rad}
 
-            //get start pos
-            let pos = this.body.pos
-            inventory.remove({type: this.type, count: projectile.cost})
-            level.addRangedAttack({ owner, pos, dir, projectile, item: this })
-            this.addFeedBackEvent({type: 'fireball'})
-        }
+        if (this.primed)
+            projectile.cost *= 2
+
+        this.fireProjectile(projectile, dir, inventory, level)
+
     }
     doAction(hand)
     {

@@ -9,13 +9,15 @@ module.exports = class PhysicalEvent
         this.level = level
         this.owner = data.owner
         this.maxticks = data.maxticks || 3
+        this.cost = data.cost || 1
+        this.dir = data.dir || {x: 0, y: 0}
         switch(data.type)
         {
             case 'explosion':
                 let rad = data.rad || 0.5
                 //console.log('explosion rad:', rad)
                 level.addEvent({
-                    type: 'explosion', pos: data.pos
+                    type: 'explosion', pos: data.pos, cost: this.cost, dir: this.dir
                 })
                 this.event = new Explosion(this, data.pos, rad)
                 if (data.growth !== undefined) this.event.growth = data.growth
@@ -38,10 +40,10 @@ class Explosion
 {
     constructor(event, pos, rad)
     {
-        this.growth = 0.2
+        this.growth = 0.2 * this.cost
         this.body = new PhysicalBody({type: 'circle', rad, pos})
         this.event = event
-        this.damage = 5
+        this.damage = 5 * event.cost
         //console.log(this.body)
     }
     update(level, colliders)
@@ -77,10 +79,25 @@ class Explosion
                     type: 'damage', 
                     dir, pos: collision, 
                     damage: this.damage,
-                    target: {color: {r:255, g: 0, b: 0}}
+                    target: {color: {r:255, g: 0, b: 0}},
+                    owner: this.event.owner.id
                 })
             }
-
+        }
+        else
+        {
+            if (body.entity.health !== undefined)
+            {
+                body.entity.applyDamage(this.damage)
+                this.event.level.addEvent({
+                    type: 'damage', 
+                    dir: {x: 0, y: 0}, 
+                    pos: collision, 
+                    damage: this.damage,
+                    target: {color: {r:100, g: 100, b: 100}},
+                    owner: this.event.owner.id
+                })
+            }
         }
     }
 }

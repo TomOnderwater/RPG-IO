@@ -24,6 +24,7 @@ class Entity
         this.dia = 0.4
         this.bounce = 0.2
         this.face = randomAnimal(bton(this.id) * 1000)
+        this.cost = data.c || 1
     }
     update()
     {
@@ -58,6 +59,8 @@ class Entity
         if (data.I !== undefined)
             this.invulnerable = true
         else this.invulnerable = false
+        if (data.c) this.cost = data.c
+        if (data.P !== undefined) this.primed = data.P
     }
     draw()
     {
@@ -146,15 +149,29 @@ class Staff extends HandItem
         {
             let priming = sqDist(this.owner.pos, this.pos)
             //console.log(priming)
-            if (priming > 0.05)
+            if (priming > 0.1)
             {
                 priming = sqrt(priming)
                 let dst = this.size * 0.5
                 let x = this.owner.pos.x + Math.cos(rot + this.rot) * (priming + dst)
                 let y = this.owner.pos.y + Math.sin(rot + this.rot) * (priming + dst)
+                let offset = 1 + this.primed
+                this.fire.temp = offset
+                this.fire.pressure = 0.001 * offset
+                this.fire.pressurelimit = 0.01 * offset
                 this.fire.draw({x, y})
+                sound.playFire(this.id, this.pos)
             }
-        } else this.fire.kill()
+            else
+            {
+                this.fire.kill()
+                sound.stopFire(this.id)
+            }
+        } else
+        {
+            this.fire.kill()
+            sound.stopFire(this.id)
+        }
     }
 }
 
@@ -303,6 +320,11 @@ class FireBall extends Entity
     {
         super(status)
         this.fire = new Fire(this.pos)
+        this.fire.temp = this.cost
+        this.fire.pressure *= this.cost * 2
+        this.fire.pressurelimit *= this.cost * 2
+        this.fire.mindia += (this.cost * 0.02) 
+        //if (this.cost > 1) console.log('big move!')
     }
     draw()
     {

@@ -11,7 +11,7 @@ class SoundManager {
         this.explosionsound = new Howl({src: [soundfolder + 'fire_explosion.wav'], 
         sprite: {exploding: [0, 1200]}})
         this.fireburningsound = new Howl({src: [soundfolder + 'fireburning.wav'], 
-            sprite: {burning: [1000, 6000]},
+            sprite: {burning: [1200, 4200, true]},
             looping: true})
     }
     musicVolume(volume)
@@ -93,9 +93,9 @@ class SoundManager {
         this.fireballsound.pos(p.x, p.y)
         this.fireballsound.play('firing')
     }
-    explosion(pos)
+    explosion(pos, size)
     {
-        let p = this.getStereoPos(pos)
+        let p = divide(this.getStereoPos(pos), size)
         this.explosionsound.pos(p.x, p.y)
         let id = this.explosionsound.play('exploding')
         this.explosionsound.fade(1, 0, 1000, id)

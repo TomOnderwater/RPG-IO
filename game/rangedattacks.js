@@ -9,6 +9,9 @@ module.exports = class RangedAttack
         this.dir = data.dir
         this.projectile = data.projectile
         this.item = data.item
+        this.cost = data.projectile.cost
+
+        //console.log('projectile', this.cost)
         this.type = data.projectile.type
         this.owner = data.owner
         this.id = data.id
@@ -26,8 +29,20 @@ module.exports = class RangedAttack
             if (collision.entity.health !== undefined)
                             level.addEvent(Func.calcAttack({
                                 collision, 
-                                item: this.item, 
+                                item: this.item,
                                 attacker: this.owner.id}))
+            if (this.type === ARROW && this.cost > 1)
+            {
+                level.addPhysicalEvent({
+                    type: 'explosion',
+                    pos: collision.pos,
+                    owner: this.owner,
+                    growth: 0.1,
+                    maxticks: 3,
+                    cost: 0.5,
+                    dir: Func.multiply(this.dir, 0.04)
+                }, level)
+            }
             if (this.type === FIREBALL)
                 level.addPhysicalEvent({
                     type: 'explosion',
@@ -35,6 +50,8 @@ module.exports = class RangedAttack
                     owner: this.owner,
                     growth: 0.2,
                     maxticks: 3,
+                    cost: this.cost,
+                    dir: Func.multiply(this.dir, 0.05)
                 }, level)                       
             return true
         }
@@ -46,6 +63,7 @@ module.exports = class RangedAttack
         return {
             i: this.id, 
             t: this.type, 
-            p: pos}
+            p: pos,
+            c: this.cost}
     }
 }

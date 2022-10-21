@@ -38,6 +38,13 @@ class Fire
       this.fireparticles.push(new FireParticle(this))
     }
   }
+  addSpeed(dir)
+  {
+    for (let i = 0; i < this.fireparticles.length; i++)
+    {
+      this.fireparticles[i].speed = add(this.fireparticles[i].speed, dir)
+    }
+  }
   kill()
   {
     this.fireparticles = []
@@ -131,18 +138,22 @@ class Event
 
 class Explosion
 {
-  constructor(pos)
+  constructor(pos, cost, dir)
   {
     this.pos = pos
+    this.cost = cost
     this.ticks = 0
     this.maxticks = 30
     this.fire = new Fire(this.pos)
-    this.fire.pressure = 0.0005
-    this.fire.pressurelimit = 0.1
+    this.fire.pressure = 0.0005 * this.cost
+    this.fire.pressurelimit = 0.1 * this.cost
     this.fire.mindia = 0.3
     this.fire.temp = 0
-    this.fire.addParticles(30) //30
-    sound.explosion(this.pos)
+    this.dir = dir || {x: 0, y: 0}
+    //console.log(this.dir)
+    this.fire.addParticles(30 * this.cost) //30
+    this.fire.addSpeed(this.dir)
+    sound.explosion(this.pos, this.cost)
   }
   draw()
   {
