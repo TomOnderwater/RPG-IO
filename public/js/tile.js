@@ -221,12 +221,12 @@ class Tree {
     if (opacity == 255) fill(50, 150, 0)
     else fill(50, 150, 0, opacity)
     circle(pos.x, pos.y, cam.zoom * 0.5)
-    for (let branch of this.branches)
+    for (let i = 0; i < this.branches.length; i++)
     {
-      let pos = cam.onScreen(branch.pos)
-      if (opacity == 255) fill(50 + branch.leafcolor, 150 + branch.leafcolor, 30)
-      else fill(50 + branch.leafcolor, 150 + branch.leafcolor, 30, opacity)
-      circle(pos.x, pos.y, branch.dia * cam.zoom)
+      let pos = cam.onScreen(this.branches[i].pos)
+      if (opacity == 255) fill(50 + this.branches[i].leafcolor, 150 + this.branches[i].leafcolor, 30)
+      else fill(50 + this.branches[i].leafcolor, 150 + this.branches[i].leafcolor, 30, opacity)
+      circle(pos.x, pos.y, this.branches[i].dia * cam.zoom)
     }
     pop()
   }
