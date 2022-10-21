@@ -110,12 +110,12 @@ class Player extends Entity
     //console.log(this.rot)
     textAlign(CENTER, CENTER)
     translate(pos.x, pos.y)
-    fill(255)
-    stroke(0)
-
+    //fill(255)
+    //stroke(0)
     rotate(this.dir + HALF_PI)
     //draw perception
-    //fill(255, 0 ,0)
+    if (this.invulnerable) fill(100, 50)
+    else fill(255)
     //circle(0, 0, 40)
     textSize(this.dia * cam.zoom)
     text(this.getFace(), 0, 0)
@@ -129,6 +129,8 @@ class Player extends Entity
         if (data.h) this.health = data.h
         if (data.H) this.maxhealth = data.H
         if (data.a) this.ammo = data.a
+        if (data.I) this.invulnerable = true
+        else this.invulnerable = false
     }
   getHandPos(distance)
   {

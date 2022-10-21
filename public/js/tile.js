@@ -49,15 +49,16 @@ class Tile {
     if (this.top !== AIR)
       this.structure.draw()
   }
+
   drawSurface(p)
   {
     let pos = p || cam.onScreen({x: this.x + 0.5, y: this.y + 0.5})
       push()
       //stroke(0)
-      let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))
+      //let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))
       imageMode(CENTER)
       let img = stoneTexture
-      
+
       switch (this.surface) {
         case STONE:
           img = stoneTexture
@@ -80,7 +81,7 @@ class Tile {
         default:
           break
       }
-      image(img, pos.x, pos.y, scale, scale)
+      image(img, pos.x, pos.y)
       pop()
   }
 }

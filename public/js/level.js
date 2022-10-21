@@ -76,12 +76,29 @@ class Level {
 
     // DRAW ORDER 
     // surface -> structures -> entities -> events (blood etc.) -> roofing
-    visibletiles.forEach(tile => tile.drawSurface())
+ 
+    // then draw blended texture
+    for (let i = 0; i < visibletiles.length; i++)
+    {
+      visibletiles[i].drawSurface()
+    }
     this.drawBuildingEvents()
-    visibletiles.forEach(tile => tile.drawStructure())
-    this.entities.forEach(entity => entity.draw())
-    this.events.forEach(event => event.draw())
-    visibletiles.forEach(tile => tile.drawTop())
+    for (let i = 0; i < visibletiles.length; i++)
+    {
+      visibletiles[i].drawStructure()
+    }
+    for (let i = 0; i < this.entities.length; i++)
+    {
+      this.entities[i].draw()
+    }
+    for (let i = 0; i < this.events.length; i++)
+    {
+      this.events[i].draw()
+    }
+    for (let i = 0; i < visibletiles.length; i++)
+    {
+      visibletiles[i].drawTop()
+    }
   }
   drawBuildingEvents()
   {

@@ -55,6 +55,9 @@ class Entity
                     this.pos = level.getPlayer(data.o).pos
                 this.owner = level.getPlayer(data.o)
             }
+        if (data.I !== undefined)
+            this.invulnerable = true
+        else this.invulnerable = false
     }
     draw()
     {

@@ -133,7 +133,7 @@ module.exports = class Player
     }
     applyDamage(damage, attacker)
     {
-        if (!this.invulnerableticks) 
+        if (this.invulnerableticks > 0) 
             return
         this.health -= damage
         this.lastattacker = attacker
@@ -150,13 +150,16 @@ module.exports = class Player
     data() 
         {
             let pos = Func.fixPos(this.body.pos, 2)
-            return {i: this.id, 
+            let out = {i: this.id, 
                 t: this.type, 
                 p: pos, 
                 n: this.name, 
                 h: this.health, 
                 H: this.status.vitality,
                 a: this.inventory.getAmmo()}
+            if (this.invulnerableticks > 0)
+                out.I = '1'
+            return out
         }
     getHand()
     {
