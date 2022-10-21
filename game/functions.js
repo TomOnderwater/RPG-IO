@@ -272,6 +272,7 @@ function normalize(vec)
 
 function chooseOne(list)
 {
+    if (!list.length) return false
     let n = (Math.random() * list.length) - 0.5
     let i = Math.round(n)
     return list[i]

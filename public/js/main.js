@@ -15,6 +15,7 @@ let ticks = 0
 
 // VISUAL CONSTANTS
 const entityborder = 0.03, TEXTUREBLEND = 0.05
+const TXB2 = TEXTUREBLEND * 0.5
 
 // DATA SPECIFIC
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0

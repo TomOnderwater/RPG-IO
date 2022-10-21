@@ -27,11 +27,6 @@ module.exports = class Level
         this.rangedattacks = []
         this.physicalevents = [] // stuff like explosions and fires
         this.buildManager = new BuildingManager(this)
-
-        for (let i = 0; i < 10; i++)
-        {
-            this.addTreasureChest()
-        }
         //this.addRandomItems()
     }
     killAll()
@@ -159,7 +154,6 @@ module.exports = class Level
     update(ticks)
     {
         //spawn mobs
-        this.spawnMobs()
         let entities = [...this.players, ...this.entities, ...this.mobs] //collect everything
         for (let i = 0; i < entities.length; i++)
         {
@@ -307,20 +301,16 @@ module.exports = class Level
         }
         return out
     }
-    spawnMobs()
-    {
-        if (this.mobs.length < this.maxMobs) this.spawnMob(SLIME)
-    }
     randomPos()
     {
         let x = 1 + (Math.random() * (this.width - 2))
         let y = 1 + (Math.random() * (this.height - 2))
         return {x, y}
     }
-    spawnMob(type)
+    spawnMob(type, pos)
     {
         let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
-        let spawnpos = this.getFreeSpot(this.randomPos(), slime.body)
+        let spawnpos = this.getFreeSpot(pos, slime.body)
         slime.body.pos = spawnpos
         //console.log('slime spawned')
         this.mobs.push(slime)
@@ -487,6 +477,20 @@ module.exports = class Level
         }
         return structures
     }
+    getAllStructures(type)
+    {
+        let out = []
+        for (let x = 0; x < this.width; x++)
+        {
+            for (let y = 0; y < this.height; y++)
+            {
+                if (this.tiles[x][y].structure.id === type)
+                    out.push(this.tiles[x][y].structure)
+            }
+        }
+        return out
+    }
+
     getTile(pos)
     {
         let x = Func.constrain(Math.floor(pos.x), 0, this.width - 1)

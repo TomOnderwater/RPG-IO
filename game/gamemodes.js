@@ -1,5 +1,5 @@
 const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
-
+const Func = require('./functions')
 class Survival
 {
     constructor(game, dungeon)
@@ -10,10 +10,37 @@ class Survival
         this.floorcount = game.floorcount || 1
         this.leaderboard = []
         this.scores = []
+        this.treasurechestticks = 300 // about 100 seconds
+        this.mobticks = 10
+        this.maxtreasurechests = Math.round((game.size.width * game.size.height) * 0.002)
+        this.ticks = 0
+        this.spawnlocations = []
+    }
+    initLevels()
+    {
+    for (let level of this.dungeon.levels)
+        {
+            for (let i = 0; i < this.maxtreasurechests; i++)
+            {
+                level.addTreasureChest()
+            }
+        }
     }
     getSpawnPos(player)
     {
         return this.dungeon.levels[0].getSpawnPos(player.body)
+    }
+    spawnMobs()
+    {
+        for (let level of this.dungeon.levels)
+        {
+            if (level.mobs.length < level.maxMobs)
+            {
+                let pos = Func.chooseOne(this.spawnlocations)
+                if (!pos || this.ticks % (this.mobticks * 2) === 0) pos = level.getRandomLandPos()
+                level.spawnMob(SLIME, pos)
+            } 
+        }
     }
     updateLeaderBoard()
     {
@@ -57,15 +84,14 @@ class Survival
                 items.push(this.dungeon.createItem(STAFF, 20))
             break
             case 'Tom':
-                items.push(this.dungeon.createItem(BOW, 20))
+                items.push(this.dungeon.createItem(BOW, 100))
                 items.push(this.dungeon.createItem(SWORD))
                 items.push(this.dungeon.createItem(STAFF, 100))
             break
             case 'porno elf' || 'Porno elf':
-                items.push(this.dungeon.createItem(SWORD))
+                items.push(this.dungeon.createItem(SWORD), 69)
             break
             default:
-                items.push(this.dungeon.createItem(BOW, 20))
                 items.push(this.dungeon.createItem(SWORD))
             break
         }
@@ -94,7 +120,23 @@ class Survival
     }
     update()
     {
-
+        if (this.ticks % this.treasurechestticks === 0)
+        {
+            for (let level of this.dungeon.levels)
+            {
+                let chests = level.getAllStructures(TREASURECHEST)
+                this.spawnlocations = []
+                for (let chest of chests)
+                {
+                    this.spawnlocations.push(chest.body.getCenter())
+                }
+                if (chests.length < this.maxtreasurechests)
+                    level.addTreasureChest()
+            }
+        }
+        if (this.ticks % this.mobticks === 0) 
+            this.spawnMobs()
+        this.ticks ++
     }
 }
 

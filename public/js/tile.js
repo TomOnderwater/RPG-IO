@@ -52,7 +52,7 @@ class Tile {
 
   drawSurface(p)
   {
-    let pos = p || cam.onScreen({x: this.x + 0.5, y: this.y + 0.5})
+    let pos = p || cam.onScreen({x: this.x + 0.5 + TXB2, y: this.y + 0.5 + TXB2})
       push()
       //stroke(0)
       //let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))

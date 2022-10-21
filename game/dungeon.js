@@ -18,6 +18,7 @@ module.exports = class Dungeon {
         this.queue = []
 
         this.levels = this.generateLevel(this.game.getLevelSpecs(0))
+        this.game.initLevels()
     }
     generateLevel(specs)
     {
@@ -51,6 +52,8 @@ module.exports = class Dungeon {
         {
             this.levels[i].update(this.ticks)
         }
+        this.game.update()
+
         if (this.ticks % 30 === 0) 
             this.game.updateLeaderBoard()
         this.ticks ++
