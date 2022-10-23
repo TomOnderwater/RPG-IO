@@ -101,6 +101,6 @@ class SoundManager {
         this.explosionsound.pos(p.x, p.y)
         let id = this.explosionsound.play('exploding')
         this.explosionsound.fade(1, 0, 1000, id)
-        this.explosionsound.volume(size * 0.2)
+        this.explosionsound.volume(0.5 + (size * 0.1))
     }   
 }
