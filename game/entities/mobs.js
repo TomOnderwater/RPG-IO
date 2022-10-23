@@ -1,6 +1,6 @@
-const PhysicalBody = require('./hitboxes.js')
-const Func = require('./functions.js')
-const Perception = require('./perception.js')
+const PhysicalBody = require('../util/hitboxes.js')
+const Func = require('../util/functions.js')
+const Perception = require('../util/perception.js')
 
 function baseSlime()
 {

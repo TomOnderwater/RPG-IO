@@ -123,7 +123,7 @@ class Event
     let pos = cam.onScreen(this.textpos)
     push()
     textSize(20)
-    fill(100 + (155 * (1 - (this.ticks / this.maxticks))))
+    fill(255, 100 + (155 * (1 - (this.ticks / this.maxticks))))
     noStroke()
     text(this.value, pos.x, pos.y)
     pop()

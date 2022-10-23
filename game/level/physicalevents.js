@@ -1,5 +1,5 @@
-const Func = require('./functions.js')
-const PhysicalBody = require('./hitboxes.js')
+const Func = require('../util/functions.js')
+const PhysicalBody = require('../util/hitboxes.js')
 
 module.exports = class PhysicalEvent
 {

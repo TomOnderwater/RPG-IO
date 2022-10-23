@@ -70,6 +70,7 @@ class SoundManager {
         {
             let s_id = this.fireburningsound.play('burning')
             this.fireburningsound.pos(p.x, p.y, 0, s_id)
+            this.fireburningsound.volume(0.3)
             this.activesounds.push({id, s_id})
         }
         else 
@@ -91,13 +92,15 @@ class SoundManager {
     {
         let p = this.getStereoPos(pos)
         this.fireballsound.pos(p.x, p.y)
-        this.fireballsound.play('firing')
+        let id = this.fireballsound.play('firing')
+        this.fireballsound.volume(0.5, id)
     }
     explosion(pos, size)
     {
-        let p = divide(this.getStereoPos(pos), size)
+        let p = this.getStereoPos(pos)
         this.explosionsound.pos(p.x, p.y)
         let id = this.explosionsound.play('exploding')
         this.explosionsound.fade(1, 0, 1000, id)
+        this.explosionsound.volume(size * 0.2)
     }   
 }

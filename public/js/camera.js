@@ -15,6 +15,7 @@ class Camera
   {
     if (zoom !== this.zoom) resetTextures(zoom, TEXTUREBLEND)
     this.zoom = zoom
+    //let b = _bounce || 1
     //this.zoom += (zoom - this.zoom) * b
   }
   getRelativePos(pos)
@@ -92,7 +93,7 @@ function getPixel(img, p)
   }
   function createTexture(tex, zoom, b)
   {
-    console.log(tex, zoom)
+     console.log(tex, zoom)
     //console.log(tex.width ,tex.height)
     let border = Math.round(tex.width * b)
     //console.log(border)

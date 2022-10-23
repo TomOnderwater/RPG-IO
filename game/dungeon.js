@@ -3,11 +3,11 @@
 //structure threshhold 0.3651568282751072
 
 const protocol = require('./protocol.js')
-const Player = require('./player.js')
-const Level = require('./level.js')
-const Func = require('./functions.js')
-const createItem = require('./item.js')
-const Game = require('./gamemodes.js')
+const Player = require('./entities/player.js')
+const Level = require('./level/level.js')
+const Func = require('./util/functions.js')
+const createItem = require('./items/item.js')
+const Game = require('./gamemodes/gamemodes.js')
 
 module.exports = class Dungeon {
     constructor(settings, key) {

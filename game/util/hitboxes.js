@@ -292,6 +292,10 @@ module.exports = class PhysicalBody
     {
         this.speed = {x: spd.x, y: spd.y}
     }
+    targetSpeed(pos)
+    {
+        this.speed = add(this.speed, multiply(subtract(pos, this.pos), this.bounce))
+    }
     bounceSpeed(spd)
     {
         this.speed = vectorBounce(this.speed, spd, this.bounce)

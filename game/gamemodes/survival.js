@@ -1,6 +1,7 @@
+const Func = require('../util/functions.js')
 const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
-const Func = require('./functions')
-class Survival
+
+module.exports = class Survival
 {
     constructor(game, dungeon)
     {
@@ -133,17 +134,5 @@ class Survival
         if (this.ticks % this.mobticks === 0) 
             this.spawnMobs()
         this.ticks ++
-    }
-}
-
-
-module.exports = function Game(game, dungeon)
-{
-    switch(game.mode)
-    {
-        case 'arena':
-            return new Survival(game, dungeon)
-        default:
-            return new Survival(game, dungeon)
     }
 }

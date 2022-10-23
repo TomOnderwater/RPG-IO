@@ -1,4 +1,4 @@
-const Func = require('./functions.js')
+const Func = require('../util/functions.js')
 
 module.exports = class GroundItem{
     constructor(data)

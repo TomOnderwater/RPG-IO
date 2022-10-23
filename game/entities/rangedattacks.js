@@ -1,5 +1,5 @@
-const PhysicalBody = require('./hitboxes.js')
-const Func = require('./functions.js')
+const PhysicalBody = require('../util/hitboxes.js')
+const Func = require('../util/functions.js')
 
 module.exports = class RangedAttack
 {

@@ -1,5 +1,5 @@
-const Func = require('./functions.js')
-const createItem = require('./item.js')
+const Func = require('../util/functions.js')
+const createItem = require('../items/item.js')
 
 
 module.exports = class Hand

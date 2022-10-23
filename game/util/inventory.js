@@ -1,4 +1,4 @@
-const createItem = require('./item.js')
+//const createItem = require('../items/item.js')
 
 module.exports = class Inventory {
     constructor(slotcount)

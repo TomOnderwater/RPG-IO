@@ -1,6 +1,6 @@
-const PhysicalBody = require('./hitboxes.js')
-const Func = require('./functions.js')
-const createItem = require('./item.js')
+const PhysicalBody = require('../util/hitboxes.js')
+const Func = require('../util/functions.js')
+const createItem = require('../items/item.js')
 
 module.exports = class Tile
 {

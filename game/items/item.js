@@ -1,5 +1,5 @@
-const PhysicalBody = require('./hitboxes.js')
-const Func = require('./functions.js')
+const PhysicalBody = require('../util/hitboxes.js')
+const Func = require('../util/functions.js')
 // an item has an id, a pos,
 class Item
 {
@@ -17,7 +17,7 @@ class Item
         this.primesignal = false
         this.primed = false
         this.owner = false
-        this.primelimit = 127.8
+        this.primelimit = 127.7
     }
     update(hand, colliders)
     {

@@ -1,6 +1,6 @@
 const Noise = require("./noise.js")
-const Tile = require('./tile.js')
-const Func = require('./functions.js')
+const Tile = require('../tile.js')
+const Func = require('../../util/functions.js')
 
 module.exports = class LevelGenerator
 {
@@ -10,7 +10,6 @@ module.exports = class LevelGenerator
         this.noise.seed(Math.random())
         this.tiles = this.generateTiles(level)
         this.drawBorder(level)
-        //console.log(this.tiles)
     }
     getTiles()
     {

@@ -1,11 +1,11 @@
 const Tile = require('./tile.js')
-const LevelGenerator = require('./levelgeneration.js')
-const Func = require('./functions.js')
-const Mobs = require('./mobs.js')
-const RangedAttack = require('./rangedattacks.js')
+const LevelGenerator = require('./levelgeneration/levelgeneration.js')
+const Func = require('../util/functions.js')
+const Mobs = require('../entities/mobs.js')
+const RangedAttack = require('../entities/rangedattacks.js')
 const GroundItem = require('./grounditems.js')
 const BuildingManager = require('./building.js')
-const PhysicalBody = require('./hitboxes.js')
+const PhysicalBody = require('../util/hitboxes.js')
 const PhysicalEvent = require('./physicalevents.js')
 
 module.exports = class Level 
