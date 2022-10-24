@@ -231,6 +231,8 @@ function lobby()
   const margin = 100 // for drawing label
   const rounding = 10
   const boxspacing = 70
+  const maxwidth = 300
+  const buttonwidth = 100
   // draw the level
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
@@ -244,8 +246,14 @@ function lobby()
   }
 
   let box = {x: margin, y: 50, w: width - margin * 2, h: 40}
-  let s_area = {x1: width * 0.55, y1: box.y + boxspacing * 2, x2: width * 0.85, y2: box.y + boxspacing * 3}
-  let continueArea = {x1: width * 0.15, y1: box.y + boxspacing * 2, x2: width * 0.45, y2: box.y + boxspacing * 3}
+  if (box.w > maxwidth)
+  {
+    box.w = maxwidth
+    box.x = (width - maxwidth) * 0.5
+  }
+
+  let s_area = {x1: width * 0.55, y1: box.y + boxspacing * 2, x2: width * 0.55 + buttonwidth, y2: box.y + boxspacing * 2 + (buttonwidth * 0.8)}
+  let continueArea = {x1: width * 0.45 - buttonwidth, y1: box.y + boxspacing * 2, x2: width * 0.45, y2: box.y + boxspacing * 2 + (buttonwidth * 0.8)}
 
   nameinput.position(box.x, box.y)
   nameinput.size(box.w, box.h)
