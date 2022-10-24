@@ -230,6 +230,8 @@ class Level {
         case NONE:
           this.entities.push(new Fist(entity))
           break
+        case FLAIL:
+          this.entities.push(new Flail(entity))
         default: // items that can be held in the hand
           this.entities.push(new HandItem(entity))
         return 

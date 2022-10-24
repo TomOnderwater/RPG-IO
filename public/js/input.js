@@ -295,7 +295,7 @@ class Section
     select(section)
     {
         this.selected = true
-        navigator.vibrate(5)
+        rumble(5)
         //console.log(this.id, 'is selected', this.selected)
     }
     update(angle)

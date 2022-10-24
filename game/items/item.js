@@ -58,7 +58,11 @@ class Item
     resetBody(p)
     {
         let pos = p || {x: 0, y: 0}
-        this.body = new PhysicalBody({type: 'circle', mass: this.mass, pos, rad: this.rad, bounce: this.bounce})
+        this.body = new PhysicalBody({type: 'circle', 
+        mass: this.mass, 
+        pos, rad: this.rad, 
+        bounce: this.bounce,
+        drag: this.drag || 1})
         this.handbounce = {x: 0, y: 0}
     }
     fireProjectile(projectile, dir, inventory, level)
@@ -133,6 +137,44 @@ class Item
         m: this.moving ? 1: 0, 
         o: this.owner.id,
         P: this.primed ? 1 : 0}
+    }
+}
+
+class Flail extends Item
+{
+    constructor(data)
+    {
+        super(data)
+        this.physical = true
+        this.attack = 25
+        this.mass = 2
+        this.reach = 0.02
+        this.destruction = 15
+        this.bounce = 0.1
+        this.rad = 0.4
+        this.persisten = true
+        this.drag = 0.9
+        this.resetBody()
+    }
+    doAction(hand)
+    {
+        let owner = this.owner
+
+        if (Func.zeroVector(hand.input)) 
+        { 
+            // initiate release
+            //this.moving = false
+            //this.body.pos = owner.body.pos
+            return
+        }
+        // spawn new body if transitioning to moving
+        if (!this.moving)
+        {
+            this.resetBody(owner.body.pos)
+            this.moving = true
+        }
+        let target = Func.add(owner.body.pos, Func.multiply(hand.input, this.reach))
+        this.body.targetSpeed(target)
     }
 }
 
@@ -333,6 +375,8 @@ module.exports = function createItem(type)
             return new Bow({type})
         case STAFF:
             return new Staff({type})
+        case FLAIL:
+            return new Flail({type})
         default:
             return new BuildItem({type})
     }

@@ -110,6 +110,9 @@ function drawItem(type, pos, size, _rot)
     case STAFF:
       drawIcon(stafficon, pos, size, rot)
       return
+    default:
+      emoji = '✊'
+      break
     }
   push()
   translate(pos.x, pos.y)

@@ -89,12 +89,13 @@ module.exports = class Survival
                 items.push(this.dungeon.createItem(BOW, 100))
                 items.push(this.dungeon.createItem(SWORD))
                 items.push(this.dungeon.createItem(STAFF, 100))
+                items.push(this.dungeon.createItem(FLAIL))
             break
             case 'porno elf' || 'Porno elf':
                 items.push(this.dungeon.createItem(SWORD), 69)
             break
             default:
-                items.push(this.dungeon.createItem(SWORD))
+                //items.push(this.dungeon.createItem(SWORD))
             break
         }
         return items

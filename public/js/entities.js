@@ -175,6 +175,13 @@ class Staff extends HandItem
     }
 }
 
+class Flail extends HandItem
+{
+    constructor(status)
+    {
+        super(status)
+    }
+}
 class Fist extends HandItem
 {
     constructor(status)
@@ -218,13 +225,13 @@ class Bow extends HandItem
     }
     draw()
     {
-        let rot = 0, draw = 0, bowtarget = this.pos, basedraw = 0.1
+        let rot = 0, draw = 0, bowtarget = this.pos, basedraw = 0.05
         if (this.owner) 
             {
                 rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
                 if (this.moving) 
                 {
-                    draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y)
+                    draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y) + 0.1
                     bowtarget = add(p5.Vector.fromAngle(rot).mult(this.drawreach), this.owner.pos)
                 }
             }

@@ -78,7 +78,7 @@ module.exports = class Tile
             id: TREASURECHEST, 
             type: 'circle',
             material: WOOD, 
-            pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.5, 
+            pos: {x: this.x + 0.5, y: this.y + 0.5}, rad: 0.4, 
             static: true})
     }
     groundSpeed()
@@ -120,7 +120,7 @@ class TreasureChest
     {
         this.id = data.id
         this.material = data.material
-        this.health = 100
+        this.health = 40
         data.entity = this
         this.structure = true
         this.body = new PhysicalBody(data)
@@ -132,7 +132,7 @@ class TreasureChest
     getItems()
     {
         let items = []
-        const options = [SWORD, STAFF, BOW]
+        const options = [SWORD, STAFF, BOW, FLAIL]
         let option = Func.chooseOne(options)
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(option)

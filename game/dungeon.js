@@ -181,7 +181,6 @@ module.exports = class Dungeon {
     {
         let item = createItem(type)
         item.count = count || 0
-        //item.id = this.assignID()
         return item
     }
     assignID()

@@ -40,7 +40,7 @@ app.get("/controller", (req, res) => {
 
 // TESTING
 app.get("/testing", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/testing.html"))
+    res.sendFile(path.join(__dirname + "/public/testing2.html"))
 })
 
 app.post("/getLevel", (req, res) => {
@@ -58,7 +58,7 @@ app.post("/continue", (req, res) => {
 })
 
 
-// signature = 'whatgameisthisbad?'
+// add security to git hook
 app.post("/newcode", (req, res) =>
 {
   exec("git pull", (error, stdout, stderr) =>
