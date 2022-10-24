@@ -15,7 +15,8 @@ function bounce(p, t, bounce)
 
 function rumble(duration)
 {
-  navigator.vibrate(duration)
+  const canVibrate = window.navigator.vibrate
+  if (canVibrate) window.navigator.vibrate(duration)
 }
 
 function resetTextures(zoom, blending)
