@@ -97,9 +97,16 @@ constructor(entity){
     super(entity)
     this.bounce = 0.2
     this.size = 1
+    if (this.cost > 1) 
+    {
+        this.onFire = true
+        this.fire = new Fire(this.pos)
+        this.fire.mindia = this.cost * 0.07 
+    }
 }
     draw()
     {
+        if (this.onFire) this.fire.draw(this.pos)
         drawArrow(this.pos, this.dir + PI, 0.15, this.size)
     }
 }
