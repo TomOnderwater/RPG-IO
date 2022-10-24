@@ -149,7 +149,8 @@ function drawItem(type, pos, size, _rot)
 
 function mouseClicked()
 {
-  input.handleClick({x: mouseX, y: mouseY})
+  if (gamestate === 'game') input.handleClick({x: mouseX, y: mouseY}) // only with PC input
+  else if (gamestate === 'lobby') lobby.handleClick({x: mouseX, y: mouseY})
 }
 
 function drawLeaderBoard(pos, align)

@@ -98,7 +98,7 @@ async function loadLevelData(connection)
 {
   const url = httpPrefix + host + '/getLevel'
   let data = await(returnPost(url, connection))
-  console.log("got LEVEL: ", data)
+  //console.log("got LEVEL: ", data)
   if (data.level) level.initLevel(data.level)
   cam.focus = createVector(level.width * 0.5, level.height * 0.5)
   cam.updateZoom(30, 1)

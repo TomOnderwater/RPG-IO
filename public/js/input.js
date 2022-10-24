@@ -867,7 +867,7 @@ class JoyStick
             {
                 this.place(t)
                 input.addTouch(t)
-                return createVector(0, 0)
+                return {x: 0, y: 0}
             }
             //existing touch
             if (this.active && t.id === this.touch) return this.updateJoy(t)
@@ -881,7 +881,7 @@ class JoyStick
         this.active = false
         let boost = this.getBoost()
         if (boost) this.actions.push(boost)
-        return createVector(0, 0)
+        return {x: 0, y: 0}
     }
     getActions()
     {
@@ -893,7 +893,8 @@ class JoyStick
     {
         let out = false
         if (this.boosting)
-            out = {type: 'boost', boost: this.boost, dir: this.boostdir}
+            out = {type: 'boost', boost: this.boost, 
+            dir: {x: this.boostdir.x, y: this.boostdir.y}}
         this.zeroBoost()
         return out
     }
@@ -927,7 +928,7 @@ class JoyStick
             this.buildupBoost()
             this.boostdir = {x: diff.x, y: diff.y} 
         } else this.zeroBoost()
-        return diff
+        return {x: diff.x, y: diff.y}
     }
     place(t)
     {
@@ -950,9 +951,13 @@ class PCInput {
 
         this.handStick = new PCUtilityStick()
     }
+    handleClick(pos)
+    {
+
+    }
     update()
     {
-        this.updateTouches()
+        //this.updateTouches()
 
         //do the inventory first
         let actions = []
@@ -963,6 +968,11 @@ class PCInput {
         // get joysticks
         let dir = this.joystick.update()
         let hand = this.handStick.update()
+
+        let moveactions = this.joystick.getActions()
+        if (moveactions)
+            actions = [...actions, ...moveactions]
+
 
         //print(actions)
         //print(joyout)
@@ -981,14 +991,134 @@ class GameKeyboard
 {
     constructor()
     {
+        this.w_pressed = false
+        this.a_pressed = false
+        this.s_pressed = false
+        this.d_pressed = false
+        this.shift_pressed = false
+        this.space_pressed = false
 
+        this.maxboost = 10
+        this.actions = []
     }
     update()
     {
-        return {x: 100, y: 0}
+        //console.log(this.w_pressed)
+        let y = 0
+        let x = 0
+        if (this.w_pressed) y -= 128
+        if (this.s_pressed) y += 128
+        if (this.a_pressed) x -= 128
+        if (this.d_pressed) x += 128
+
+        let dir = createVector(x, y).limit(128)
+        this.handleBoost({x: dir.x, y: dir.y})
+        return dir
+    }
+    getActions()
+    {
+        if (this.actions.length) 
+            return this.actions
+        return false
+    }
+    handleBoost(dir)
+    {
+        if (this.space_pressed) 
+        {
+            if (!this.boosting)
+            {
+                this.boosting = true
+                this.boost = 0
+                this.boostdir = {x: 0, y: 0}
+            }
+            else this.buildupBoost()
+            this.boostdir = bounce(this.boostdir, dir, 0.2)
+        }
+        else 
+        {
+            this.actions = []
+            let boost = this.getBoost()
+            if (boost) this.actions.push(boost)
+        }
+    }
+    buildupBoost()
+    {
+        if (this.boost < this.maxboost) 
+            this.boost ++
+    }
+    zeroBoost()
+    {
+        this.boosting = false
+        this.boost = 0
+    }
+    getBoost()
+    {
+        let out = false
+        if (this.boosting)
+            out = {type: 'boost', boost: this.boost, dir: this.boostdir}
+        this.zeroBoost()
+        return out
     }
 }
 
+function keyReleased()
+{
+    if (!MOBILE)
+    {
+        switch(keyCode)
+        {
+            case 87:
+                input.joystick.w_pressed = false
+            break
+            case 65:
+                input.joystick.a_pressed = false
+            break
+            case 83:
+                input.joystick.s_pressed = false
+            break
+            case 68:
+                input.joystick.d_pressed = false
+            break
+            case 16:
+                input.joystick.shift_pressed = false
+            break
+            case 32:
+                input.joystick.space_pressed = false
+            break
+
+        }
+    }
+}
+
+function keyPressed()
+{
+    if (!MOBILE)
+    {
+        //console.log(keyCode)
+        switch(keyCode)
+        {
+            case 87:
+                input.joystick.w_pressed = true
+            break
+            case 65:
+                input.joystick.a_pressed = true
+            break
+            case 83:
+                input.joystick.s_pressed = true
+            break
+            case 68:
+                input.joystick.d_pressed = true
+            break
+            case 16:
+                input.joystick.shift_pressed = true
+            break
+            case 32:
+                input.joystick.space_pressed = true
+            break
+
+        }
+    }
+}
 class PCUtilityStick
 {
     constructor()
@@ -997,7 +1127,7 @@ class PCUtilityStick
     }
     update()
     {
-        return {x: 100, y: 0}
+        return {x: 0, y: 0}
     }
     draw()
     {
@@ -1013,7 +1143,7 @@ class PCInventory
     }
     update()
     {
-
+        return null
     }
     draw()
     {
