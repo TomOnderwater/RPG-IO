@@ -81,6 +81,7 @@ function setupInput()
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
   SEXYGREY = color(51, 51, 51)
+  rumbletimer = millis()
 
   resetTextures(120, TEXTUREBLEND)
   //sound.swoosh()
@@ -143,6 +144,7 @@ function draw()
 function updateInput()
 {
   sendInput(input.update())
+  handleRumble()
 }
 function setGameState(state)
 {

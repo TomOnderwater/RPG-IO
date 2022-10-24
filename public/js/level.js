@@ -150,6 +150,7 @@ class Level {
           this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.color))
           break
         case 'explosion':
+          handleFeedback([event])
           this.events.push(new Explosion(event.pos, event.cost, event.dir))
           break
         case ARROW:

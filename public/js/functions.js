@@ -1,4 +1,5 @@
 
+
 function isAbout(a, b, tolerance)
 {
     return (a > b - tolerance && a < b + tolerance)
@@ -13,10 +14,28 @@ function bounce(p, t, bounce)
   return {x: p.x + ((t.x - p.x) * bounce), y: p.y + ((t.y - p.y) * bounce)}
 }
 
+let vibration = 0, lastvibration = rumbletimer = 0
+
 function rumble(duration)
 {
-  const canVibrate = window.navigator.vibrate
-  if (canVibrate) window.navigator.vibrate(duration)
+  if (!window.navigator.vibrate) return
+  if (millis() > rumbletimer + lastvibration)
+  {
+    rumbletimer = millis()
+    vibration += duration
+  }
+}
+
+function handleRumble()
+{
+  if (!window.navigator.vibrate) return
+  if (vibration > 0) 
+  {
+    rumbletimer = millis()
+    lastvibration = vibration
+    window.navigator.vibrate(vibration)
+    vibration = 0
+  }
 }
 
 function resetTextures(zoom, blending)
@@ -47,6 +66,7 @@ function handleFeedback(feedback)
         if (event.owner === game_id) rumble(15)
       break
       case 'damage':
+        //console.log('damage')
           if (event.target.id === game_id)
           {
             //if (event.target.id === game_id)
@@ -54,6 +74,10 @@ function handleFeedback(feedback)
           }
           if (event.owner === game_id) 
             rumble(event.damage)
+      break
+      case 'explosion':
+        //console.log('explosion', event.cost)
+        if (event.owner === game_id) rumble(25 + event.cost * 25)
       break
 
     }

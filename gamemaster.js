@@ -24,7 +24,6 @@ module.exports = class GameMaster
             size: {width: 100, height: 100}, 
             mode: 'survival'}, 
             this.createKey(5)))
-        // example {socket: bla bla, id: '1, 2, 3, spectator', key: 'adfei'}
     }
 
     addDungeon()

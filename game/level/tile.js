@@ -132,7 +132,7 @@ class TreasureChest
     getItems()
     {
         let items = []
-        const options = [SWORD, STAFF, BOW, FLAIL]
+        const options = [SWORD, STAFF, BOW]
         let option = Func.chooseOne(options)
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(option)

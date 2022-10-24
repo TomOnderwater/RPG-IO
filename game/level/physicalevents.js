@@ -8,7 +8,7 @@ module.exports = class PhysicalEvent
         this.ticks = 0
         this.level = level
         this.owner = data.owner
-        this.maxticks = data.maxticks || 3
+        this.maxticks = data.maxticks || 2
         this.cost = data.cost || 1
         this.dir = data.dir || {x: 0, y: 0}
         switch(data.type)
@@ -17,7 +17,7 @@ module.exports = class PhysicalEvent
                 let rad = data.rad || 0.5
                 //console.log('explosion rad:', rad)
                 level.addEvent({
-                    type: 'explosion', pos: data.pos, cost: this.cost, dir: this.dir
+                    type: 'explosion', pos: data.pos, cost: this.cost, dir: this.dir, owner: this.owner.id
                 })
                 this.event = new Explosion(this, data.pos, rad)
                 if (data.growth !== undefined) this.event.growth = data.growth
