@@ -29,6 +29,9 @@ let grassTexture, stoneTexture, waterTexture, sandTexture, dirtTexture, gravelTe
 let walltexture, woodicon, stoneicon, rocktexture, stonewallTexture, woodenwallTexture,
 ammoicon, stafficon, gearicon, chestIcon
 
+// FONTS
+let titlefont
+
 let textures = []
 
 // SERVER SETTINGS
@@ -70,6 +73,10 @@ function preload()
   stafficon = loadImage('assets/textures/staff.png')
   chestIcon = loadImage('assets/textures/treasurechest.png')
   gearicon = loadImage('assets/textures/gearicon.png')
+
+  // LOAD FONTS
+  titlefont = loadFont('assets/fonts/GamePlayed-vYL7.ttf')
+
 }
 
 function setupInput()
@@ -245,6 +252,16 @@ function lobby()
 
   keyinput.position(box.x, box.y + boxspacing)
   keyinput.size(box.w, box.h)
+
+  push()
+  textFont(titlefont)
+  textAlign(CENTER, CENTER)
+  textSize(width * 0.15)
+  fill(51, 51, 51)
+  text('MobFight', width * 0.5, height * 0.5)
+  pop()
+
+
   push()
   noStroke()
   fill(255)
@@ -274,6 +291,9 @@ function lobby()
     fill(255)
     text('continue', (continueArea.x1 + continueArea.x2) * 0.5, (continueArea.y1 + continueArea.y2) * 0.5)
     pop()
+
+    // TITLE
+
     for (let t of touches)
     {
     if (onField(t, continueArea))
