@@ -40,7 +40,7 @@ app.get("/controller", (req, res) => {
 
 // TESTING
 app.get("/testing", (req, res) => {
-    res.sendFile(path.join(__dirname + "/public/testing2.html"))
+    res.sendFile(path.join(__dirname + "/public/testing.html"))
 })
 
 app.post("/getLevel", (req, res) => {

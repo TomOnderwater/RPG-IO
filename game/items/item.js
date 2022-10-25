@@ -1,5 +1,6 @@
 const PhysicalBody = require('../util/hitboxes.js')
 const Func = require('../util/functions.js')
+const Chain = require('../util/chain.js')
 // an item has an id, a pos,
 class Item
 {
@@ -147,14 +148,19 @@ class Flail extends Item
         super(data)
         this.physical = true
         this.attack = 25
-        this.mass = 2
-        this.reach = 0.02
-        this.destruction = 15
-        this.bounce = 0.1
-        this.rad = 0.4
-        this.persisten = true
-        this.drag = 0.9
+        this.mass = 0.3
+        this.reach = 0.006 // reach of the handle
+        this.destruction = 5
+        this.bounce = 0.4
+        this.rad = 0.3
+        this.persistent = true
         this.resetBody()
+        this.resetChain()
+    }
+    resetChain()
+    {
+        this.chain = new Chain(this.body.pos, 3, 0.2, this.mass)
+        console.log(this.chain)
     }
     doAction(hand)
     {
@@ -163,18 +169,62 @@ class Flail extends Item
         if (Func.zeroVector(hand.input)) 
         { 
             // initiate release
-            //this.moving = false
-            //this.body.pos = owner.body.pos
+            this.moving = false
+            this.body.pos = owner.body.pos
             return
         }
         // spawn new body if transitioning to moving
         if (!this.moving)
         {
             this.resetBody(owner.body.pos)
+            this.resetChain()
             this.moving = true
         }
-        let target = Func.add(owner.body.pos, Func.multiply(hand.input, this.reach))
-        this.body.targetSpeed(target)
+
+        let handtarget = Func.multiply(hand.input, this.reach)
+        this.handbounce = Func.squareBounce(this.handbounce, handtarget, this.bounce)
+
+        this.chain.move(Func.add(owner.body.pos, this.handbounce))
+        this.chain.update()
+        let target = this.chain.getEnd().pos
+        let speed = Func.subtract(target, this.body.pos)
+        //this.body.pos = target
+        this.body.setSpeed(speed)
+        //console.log(speed)
+    }
+    handleCollisions(colliders)
+    {
+        let level = this.owner.level
+        if (this.moving && this.physical)
+        {
+            let closebodies = level.closeBodies(this.body.pos, colliders, 1)
+            let collisions = this.body.update(closebodies, this.owner.body) // except owner body
+            if (collisions)
+            {
+                if (collisions.length)
+                {
+                    for (let collision of collisions)
+                    {
+                        if (collision.entity.health !== undefined)
+                            level.addEvent(Func.calcAttack({
+                                collision, 
+                                item: this, 
+                                attacker: this.owner.id, 
+                                power: 1}))
+                    }
+                }
+            }
+            this.chain.getEnd().pos = this.body.pos
+        }
+    }
+    data()
+    {
+    return { 
+        t: this.type, 
+        p: Func.fixPos(this.body.pos, 2),
+        m: this.moving ? 1: 0, 
+        o: this.owner.id,
+        links: this.chain.getPoints()}
     }
 }
 

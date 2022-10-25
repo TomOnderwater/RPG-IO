@@ -58,7 +58,7 @@ function preload()
   stonetex_ = loadImage('assets/textures/stonetexture.jpg')
   dirttex_ = loadImage('assets/textures/dirt_texture1.jpg')
   sandtex_ = loadImage('assets/textures/sandtexture1.jpg')
-  graveltex_ = loadImage('assets/textures/graveltexture.jpg')
+  graveltex_ = loadImage('assets/textures/graveltexture.png')
 
   // STRUCTURE TEXTURES
   walltexture = loadImage('assets/textures/smallwalltexture.png')
