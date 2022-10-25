@@ -193,7 +193,7 @@ class Flail extends Entity
         this.target = status.p
         this.moving = status.m
         this.links = status.links
-        this.bounce = 0.2
+        this.bounce = 0.3
         this.owner = false
         this.dist = 0.5
     }
