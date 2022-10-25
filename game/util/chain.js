@@ -80,7 +80,7 @@ constructor(pos, segments, seglength = 0.1, endmass = 1)
     this.addStick(i, i + 1, this.seglength)
     }
     this.dots[this.dots.length - 1].mass = endmass
-    this.stiffness = 10
+    this.stiffness = 5
     }
   move(p)
   {

@@ -61,7 +61,7 @@ class Entity
         else this.invulnerable = false
         if (data.c) this.cost = data.c
         if (data.P !== undefined) this.primed = data.P
-        if (data.links != undefined) this.links = data.links
+        if (data.links != undefined)  this.links = data.links
 
     }
     draw()
@@ -208,16 +208,26 @@ class Flail extends Entity
     }
     draw()
     {
+
        if (this.moving)
        {
         push()
         fill(80, 120)
         noStroke()
-        for (let p of this.links)
+        for (let i = 1; i < this.links.length - 1; i++)
         {
-            let pos = cam.onScreen(p)
+            let pos = cam.onScreen(this.links[i])
             circle(pos.x, pos.y, cam.zoom * 0.1)
         }
+        let pos = cam.onScreen(this.links[0])
+        let rot = 0
+        if (this.owner) rot = atan2(this.owner.pos.y - this.links[0].y, this.owner.pos.x - this.links[0].x)
+        stroke(200, 150, 40)
+        strokeWeight(cam.zoom * 0.1)
+        noFill()
+        translate(pos.x, pos.y)
+        rotate(rot)
+        line(0, 0, cam.zoom * 0.25, 0)
         pop()
     }
     push()

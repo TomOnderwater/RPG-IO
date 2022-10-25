@@ -210,7 +210,6 @@ class Level {
           this.entities.push(new Player(entity))
         break
         case SWORD:
-        //console.log('got a sword')
           this.entities.push(new Sword(entity))
         break
         case BOW:

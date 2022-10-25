@@ -147,8 +147,8 @@ class Flail extends Item
     {
         super(data)
         this.physical = true
-        this.attack = 25
-        this.mass = 0.3
+        this.attack = 50
+        this.mass = 2
         this.reach = 0.006 // reach of the handle
         this.destruction = 5
         this.bounce = 0.2
