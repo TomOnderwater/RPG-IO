@@ -61,11 +61,8 @@ class Entity
         else this.invulnerable = false
         if (data.c) this.cost = data.c
         if (data.P !== undefined) this.primed = data.P
-        if (data.links !== undefined) 
-        {
-            this.links = data.links
-            console.log(this.links)
-        }
+        if (data.links != undefined) this.links = data.links
+
     }
     draw()
     {
@@ -187,23 +184,27 @@ class Staff extends HandItem
     }
 }
 
-class Flail
+class Flail extends Entity
 {
     constructor(status)
     {
-        this.type = status.t
+        super(status)
         this.pos = status.p
         this.target = status.p
         this.moving = status.m
-        this.owner = false
         this.links = status.links
         this.bounce = 0.2
-        this.dist = 0.3
+        this.owner = false
+        this.dist = 0.5
     }
     update()
     {
-        if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
-        this.pos = bounce(this.pos, this.target, this.bounce)
+    if (this.owner && !this.moving) 
+    {
+        this.target = this.owner.getHandPos(this.dist)
+        console.log(this.target)
+    }
+    this.pos = bounce(this.pos, this.target, this.bounce)
     }
     draw()
     {
@@ -217,25 +218,14 @@ class Flail
             let pos = cam.onScreen(p)
             circle(pos.x, pos.y, cam.zoom * 0.1)
         }
-        let pos = cam.onScreen(this.pos)
-        fill(80)
-        circle(pos.x, pos.y, cam.zoom * 0.3)
         pop()
-       }
     }
-    newData(data)
-    {
-        this.id = data.i
-        this.type = data.t
-        this.target = data.p
-        this.moving = data.m
-        if (data.o !== undefined) 
-        {
-            if (!this.owner) // start sprite at owner (as if grabbing from inventory)
-                this.pos = level.getPlayer(data.o).pos
-            this.owner = level.getPlayer(data.o)
-        }
-        this.links = data.links
+    push()
+    let pos = cam.onScreen(this.pos)
+    fill(80)
+    noStroke()
+    circle(pos.x, pos.y, cam.zoom * 0.3)
+    pop()
     }
     kill()
     {

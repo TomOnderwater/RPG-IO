@@ -151,7 +151,7 @@ class Flail extends Item
         this.mass = 0.3
         this.reach = 0.006 // reach of the handle
         this.destruction = 5
-        this.bounce = 0.4
+        this.bounce = 0.2
         this.rad = 0.3
         this.persistent = true
         this.resetBody()

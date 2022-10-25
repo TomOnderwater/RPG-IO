@@ -233,7 +233,7 @@ class Level {
           break
         case FLAIL:
           this.entities.push(new Flail(entity))
-          break
+        break
         default: // items that can be held in the hand
           this.entities.push(new HandItem(entity))
         return 
