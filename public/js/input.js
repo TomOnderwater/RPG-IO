@@ -20,10 +20,6 @@ class MobileInput {
 
         this.usedTouches = []
     }
-    handleClick(pos)
-    {
-        this.settings.click(pos)
-    }
     update()
     {
         this.updateTouches()
@@ -42,8 +38,10 @@ class MobileInput {
         let moveactions = this.joystick.getActions()
         if (moveactions)
             actions = [...actions, ...moveactions]
-        //print(actions)
-        //print(joyout)
+        
+        let freetouch = this.getFreeTouch()
+        if (freetouch) this.settings.click(freetouch)
+
         return {
             dir, hand, 
             actions}

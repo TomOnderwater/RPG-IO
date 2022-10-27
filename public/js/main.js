@@ -210,7 +210,7 @@ function drawGameOver()
   rect(continueArea.x1, continueArea.y1, continueArea.x2, continueArea.y2, rounding)
   textSize(20)
   fill(255)
-  textAlign(CENTER, CENTERs)
+  textAlign(CENTER, CENTER)
   text('continue', width * 0.5, height * 0.6)
   pop()
   for (let t of touches)
@@ -249,12 +249,20 @@ class Lobby
   {
     this.lastclick = pos
   }
+  updateTouches()
+  {
+    for (let t of touches)
+    {
+      this.lastclick = t
+    }
+  }
   draw()
   {
   let focus = {x: level.width * 0.5, y: level.height * 0.5}
   cam.updateFocus(focus, 0.1)
   cam.updateZoom(30, 0.1)
   
+  if (MOBILE) this.updateTouches()
   if (ticks % 3 == 0) // don't always render background
   {
     background(SEXYGREY)

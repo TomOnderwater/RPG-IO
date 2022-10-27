@@ -181,8 +181,8 @@ class MessageBoard
 
 function mouseClicked()
 {
-  if (gamestate === 'game') input.handleClick({x: mouseX, y: mouseY}) // only with PC input
-  else if (gamestate === 'lobby') lobby.handleClick({x: mouseX, y: mouseY})
+  if (gamestate === 'game' && !MOBILE) input.handleClick({x: mouseX, y: mouseY}) // only with PC input
+  else if (gamestate === 'lobby' && !MOBILE) lobby.handleClick({x: mouseX, y: mouseY})
 }
 
 function drawLeaderBoard(pos, align)
