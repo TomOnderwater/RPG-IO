@@ -191,7 +191,7 @@ module.exports = class Arena
         {   
             for (let player of this.level.players)
             {
-                player.invulnerableticks = 2
+                player.invulnerableticks = 300
             }
         } //return false//not playing games
         if (this.level.players.length < 2)
