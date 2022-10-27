@@ -154,7 +154,7 @@ class Staff extends HandItem
         let pos = cam.onScreen(this.pos)
         let size = this.size * cam.zoom
         drawItem(this.type, pos, size, rot)
-        if (this.moving)
+        if (this.moving && this.owner)
         {
             let priming = sqDist(this.owner.pos, this.pos)
             //console.log(priming)
