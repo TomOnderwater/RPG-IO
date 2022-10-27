@@ -121,6 +121,7 @@ module.exports = class Arena
         if (killer.type === PLAYER)
         {
             let killerEntry = this.getEntry(killer.id)
+            if (!killerEntry) return
             if (victim.type === PLAYER)
             {
                 this.spectators.push(victim)
