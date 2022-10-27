@@ -135,6 +135,8 @@ module.exports = class Arena
         let killerid = this.getVictimCam(id)
         if (!killerid)
             return this.getBestAlive()
+        else
+            return killerid
     }
     addKill(killer, victim)
     {

@@ -1,5 +1,6 @@
 const Func = require('../util/functions.js')
 const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
+const startitems = [BOW, SWORD, FLAIL, STAFF]
 
 module.exports = class Survival
 {
@@ -132,7 +133,7 @@ module.exports = class Survival
                 items.push(this.dungeon.createItem(FLAIL), 69)
             break
             default:
-                //items.push(this.dungeon.createItem(SWORD))
+                items.push(this.dungeon.createItem(Func.chooseOne([startitems])))
             break
         }
         return items
