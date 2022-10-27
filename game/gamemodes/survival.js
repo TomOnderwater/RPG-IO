@@ -47,20 +47,23 @@ module.exports = class Survival
     }
     addKill(killer, victim)
     {
-        let killerEntry = this.getEntry(killer.id)
-        if (victim.type === PLAYER)
+        if (killer.type === PLAYER)
+        {
+            let killerEntry = this.getEntry(killer.id)
+            if (victim.type === PLAYER)
         {
             let victimEntry = this.getEntry(victim.id)
             killerEntry.score += Math.round(victimEntry.score * 0.5)
             killerEntry.victims = [...killerEntry.victims, victim.id]
             this.removeEntry(victim.id)
         }
-        else
-        {
-            // do something based on victim type
-            killerEntry.score += 10
-        }
+        else killerEntry.score += 10
+
         this.leaderboard.sort((a, b) => b.score - a.score)
+        return
+        }
+        if (victim.type === PLAYER)
+            this.removeEntry(victim.id)
     }
     addToLeaderBoard(entry)
     {
@@ -74,10 +77,12 @@ module.exports = class Survival
         {
             if (entry.id === id)
                     return entry
-        } 
+        }
+        return false 
     }
     removeEntry(id)
     {
+        console.log('removing:', id)
         for (let i = this.leaderboard.length - 1; i >= 0; i--)
         {
             if (this.leaderboard[i].id === id)
@@ -104,7 +109,7 @@ module.exports = class Survival
     getScore(id)
     {
         let entry = this.getEntry(id)
-        if (!id) return {} // send an empty object
+        if (!entry) return {} // send an empty object
         return {name: entry.name, score: entry.score}
     }
     getLoadout(player)

@@ -179,6 +179,7 @@ module.exports = class Level
                 let killer = this.getEntity(player.lastattacker)
                 if (killer !== null)
                     this.game.addKill(killer, player)
+                else this.game.addKill({type: 'nature'}, player)
                 this.players.splice(i, 1)
             }
             else if (recoverytick)
@@ -193,7 +194,6 @@ module.exports = class Level
                 let killer = this.getEntity(mob.lastattacker)
                 if (killer !== null)
                     this.game.addKill(killer, mob)
-                    
                 this.mobs.splice(i, 1)
             }
             else if (recoverytick) 
