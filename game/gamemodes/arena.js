@@ -1,9 +1,9 @@
 const Func = require('../util/functions.js')
-const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
-const stoneLands = {water: 0.00, stone: 1.2, structure: 0.36}
-const meadows = {water: 0, stone: -1, structure: 0.36}
+const riverPlains = {water: 0.45, stone: 0.36, structure: 0.36}
+const stoneLands = {water: 0.00, stone: 0.5, structure: 0.36}
+const meadows = {water: 0, stone: 0, structure: 0.2}
 
-const seeds = [riverPlains, stoneLands, meadows]
+const seeds = [meadows, stoneLands, riverPlains]
 
 const createItem = require('../items/item.js')
 
@@ -28,16 +28,17 @@ module.exports = class Arena
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
         this.weaponcount = 4
         this.roundLimit = 120
+        this.mobticks = 60
         // player specific stuff
         this.naturalhealing = false
         this.maxhealth = 100
         this.timelimit = 300 // 5 minutes
     }
-    initLevels()
+    initLevels(weaponcount = this.weaponcount)
     {
         this.level = this.dungeon.levels[0]
         // do stuff to make the level somewhat interesting (like dropping weapons?)
-        for (let i = 0; i < this.weaponcount; i++)
+        for (let i = 0; i < weaponcount; i++)
         { //optional, fix the pos and type
             this.dropWeapon()
         }
@@ -55,8 +56,11 @@ module.exports = class Arena
         // create the level (dungeon)
         this.dungeon.newLevel(this.getLevelSpecs())
         
+        let weaponcount = (players.length > this.weaponcount) ? players.length : this.weaponcount
+        //console.log(weaponcount)
+        weaponcount *= 2
         // init the level with the game
-        this.initLevels()
+        this.initLevels(weaponcount)
 
         //this.level.players = [] // empty level
         for (let player of players)

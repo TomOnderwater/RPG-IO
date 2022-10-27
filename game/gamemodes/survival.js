@@ -82,7 +82,7 @@ module.exports = class Survival
     }
     removeEntry(id)
     {
-        console.log('removing:', id)
+        //console.log('removing:', id)
         for (let i = this.leaderboard.length - 1; i >= 0; i--)
         {
             if (this.leaderboard[i].id === id)
