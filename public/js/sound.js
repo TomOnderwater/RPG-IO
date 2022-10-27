@@ -14,6 +14,10 @@ class SoundManager {
             sprite: {burning: [1200, 4200, true]},
             looping: true})
     }
+    stop()
+    {
+        this.fireburningsound.stop()
+    }
     musicVolume(volume)
     {
         this.backgroundmusic.volume(volume)

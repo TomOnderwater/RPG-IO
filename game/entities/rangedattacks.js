@@ -1,5 +1,6 @@
 const PhysicalBody = require('../util/hitboxes.js')
 const Func = require('../util/functions.js')
+const calcAttack = require('../util/damage.js')
 
 module.exports = class RangedAttack
 {
@@ -31,7 +32,7 @@ module.exports = class RangedAttack
                 let power = 1
                 if (this.type === ARROW && this.cost > 1)
                     power = 1 + (this.cost * 0.5)
-            level.addEvent(Func.calcAttack({
+            level.addEvent(calcAttack({
                 collision, 
                 item: this.item,
                 attacker: this.owner.id, 

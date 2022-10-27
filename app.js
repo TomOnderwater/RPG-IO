@@ -115,15 +115,10 @@ function runGames()
 {
   gameMaster.update()
   //console.log('update')
-  setTimeout(runGames, 34) /// UPDATE FREQUENCY OF THE GAME
+  setTimeout(runGames, TICKRATE) /// UPDATE FREQUENCY OF THE GAME
 }
 // identification is done via game id
 app.ws('/gamestream', (ws, req) => {
-  //console.log('new client connected', ws)
-  // get player
-  //console.log('data: ', req.body)
-  //let player = dungeon.getPlayer()
-  //clients.push(new Connection(ws, ))
   ws.onmessage = (body) => 
   {
     let msg = JSON.parse(body.data)

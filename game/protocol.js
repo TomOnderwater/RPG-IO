@@ -1,3 +1,5 @@
+global.TICKRATE = 34
+global.TICKSECONDS = 1 / TICKRATE
 
 // GROUND TILE DEFINITIONS
 global.STONE = 's'

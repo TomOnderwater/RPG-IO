@@ -55,7 +55,7 @@ class Tile {
     let pos = p || cam.onScreen({x: this.x + 0.5 + TXB2, y: this.y + 0.5 + TXB2})
       push()
       //stroke(0)
-      //let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))
+      let scale = cam.zoom * (1 + (TEXTUREBLEND * 2))
       imageMode(CENTER)
       let img = stoneTexture
 
@@ -81,7 +81,7 @@ class Tile {
         default:
           break
       }
-      image(img, pos.x, pos.y)
+      image(img, pos.x, pos.y, scale, scale)
       pop()
   }
 }

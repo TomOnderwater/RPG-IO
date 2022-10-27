@@ -1,7 +1,8 @@
 p5.disableFriendlyErrors = true
 
 //GAME SPECIFIC
-let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', lobby
+let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', lobby,
+  messageboard
 
 let activeID = 'none' // if not none, means there's an existing player
 //DEVICE SPECIFIC
@@ -91,7 +92,9 @@ function setup() {
   SEXYGREY = color(51, 51, 51)
   rumbletimer = millis()
 
-  resetTextures(120, TEXTUREBLEND)
+  messageboard = new MessageBoard()
+
+  resetTextures(100, TEXTUREBLEND)
   //sound.swoosh()
   cam = new Camera(createVector(0, 0), 20)
 
@@ -193,19 +196,21 @@ function drawGameOver()
   fill(255)
   textSize(30)
   textAlign(CENTER, CENTER)
-  text(message.type, width * 0.5, height * 0.2)
+  textFont(titlefont)
+  text('GAME OVER', width * 0.5, height * 0.2)
   //console.log(message)
-  let info = message.name + ' scored ' + message.score.score + ' points'
-  let cause = 'before dying'
-  if (message.killer == 'natural causes') cause += ' of natural causes'
-  else cause += (' by ' + message.killer)
+  let info = message.name + ' scored ' + message.score + ' points'
+  let cause = 'before dying tragically'
   text(info, width * 0.5, height * 0.3)
   text(cause, width * 0.5, height * 0.4)
+  pop()
+  push()
   rectMode(CORNERS)
   fill(0, 255, 0, 100)
   rect(continueArea.x1, continueArea.y1, continueArea.x2, continueArea.y2, rounding)
   textSize(20)
   fill(255)
+  textAlign(CENTER, CENTERs)
   text('continue', width * 0.5, height * 0.6)
   pop()
   for (let t of touches)
@@ -354,6 +359,7 @@ function drawSpectator()
   textAlign(TOP, LEFT)
   text("go to: " + httpPrefix + host + " and connect with key: " + key, 10, 30)
   drawLeaderBoard({x: width - 20, y: 20}, RIGHT)
+  messageboard.draw()
   drawFrameRate({x: width -70, y: height - 20})
   pop()
 }
@@ -365,7 +371,6 @@ function drawGame()
        // draw order -> tiles, entities
       if (player != null) // check if there's something to draw
         {
-        let jump = height / (cam.zoom * 8)
         if (player)
         {
           let focus = player.pos // player.pos.y}
@@ -380,7 +385,7 @@ function drawGame()
     //player.draw()
       }
     }
-
+  messageboard.draw()
   drawLeaderBoard({x: width - 15, y: 15}, RIGHT)
   input.draw()
   drawFrameRate({x: width -70, y: height - 20})

@@ -67,6 +67,7 @@ module.exports = class Inventory {
                 slot.empty()
             }
         }
+        this.updated = true
         return out
     }
     swap(swapping)

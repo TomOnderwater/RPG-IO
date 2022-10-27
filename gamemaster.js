@@ -18,21 +18,27 @@ module.exports = class GameMaster
         this.dungeons = []
         this.connections = []
         this.ticks = 0
-        // DEFAULT dungeon
+        // DEFAULT SURVIVAL dungeon
         this.dungeons.push(new Dungeon({
             floorcount: 1, 
             size: {width: 100, height: 100}, 
             mode: 'survival'}, 
             this.createKey(5)))
-    }
 
+        // DEFAULT ARENA DUNGEON
+        this.dungeons.push(new Dungeon({
+            floorcount: 1, 
+            size: {width: 32, height: 18}, 
+            mode: 'arena'}, 
+            'arena')) // key is arena
+    }
     addDungeon()
     {
 
         let dungeon = new Dungeon({
             floorcount: 1, 
             size: {width: 32, height: 18}, 
-            mode: 'survival'}, 
+            mode: 'arena'}, 
             this.createKey(5))
 
         this.dungeons.push(dungeon)
@@ -74,14 +80,24 @@ module.exports = class GameMaster
             let connection = this.connections[i]
             let socket = connection.socket
             if (socket.readyState === socket.CLOSED) {
-                // remove the socket 
+                // get the active dungeon
+                let dungeon = this.getDungeon(connection.key)
                 if (connection.type === 'spectator')
                     {
-                        console.log('dead spectator', connection.id, connection.key)
-                        let dungeon = this.getDungeon(connection.key)
-                        dungeon.end()
+                        //console.log('dead spectator', connection.id, connection.key)
+                        dungeon.end() // end the dungeon
                         this.connections.splice(i, 1)
                     }
+                else 
+                {
+                    let player = this.getPlayer(connection)
+                    //console.log('connection:', connection)
+                    if (!player || player.dead()) {
+                        //console.log('player is dead', player, connection.id)
+                        dungeon.handlePlayerDisconnection(connection.id)
+                        this.connections.splice(i, 1)
+                    }
+                }
             }
           }
     }
@@ -196,19 +212,16 @@ module.exports = class GameMaster
                 score: 'no points at all',
                 name: 'some curious guy'}
         //console.log('dungeon: ', dungeon)
-        return dungeon.getViewPort(connection)
+        let viewport = dungeon.getViewPort(connection)
+        if (dungeon.fullnew) 
+            viewport.data.level = dungeon.getLevelData(connection.id)
+        return viewport
     }
     update()
     {
-        // console.log(this.dungeons)
-        // for (let dungeon of this.dungeons)
-        // {
-        //     console.log(dungeon)
-        //     dungeon.update()
-        // }
         try 
         {
-        this.dungeons.forEach(dungeon => dungeon.update())
+        this.dungeons.forEach(dungeon => dungeon.update(this.connections))
         this.updateView()
         }
         catch (e)

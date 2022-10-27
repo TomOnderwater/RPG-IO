@@ -42,7 +42,6 @@ class Level {
           if (event.ended()) this.events.splice(i, 1)
         }
   }
-
   initLevel(leveldata)
   {
     this.tiles = []

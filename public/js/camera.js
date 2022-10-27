@@ -13,10 +13,10 @@ class Camera
   }
   updateZoom(zoom, _bounce)
   {
-    if (zoom !== this.zoom) resetTextures(zoom, TEXTUREBLEND)
-    this.zoom = zoom
-    //let b = _bounce || 1
-    //this.zoom += (zoom - this.zoom) * b
+    //if (zoom !== this.zoom) resetTextures(zoom, TEXTUREBLEND)
+    //this.zoom = zoom
+    let b = _bounce || 1
+    this.zoom += (zoom - this.zoom) * b
   }
   getRelativePos(pos)
   {

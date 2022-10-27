@@ -16,9 +16,15 @@ module.exports = class Dungeon {
         this.key = key
         this.ticks = 0
         this.queue = []
-
         this.levels = this.generateLevel(this.game.getLevelSpecs(0))
         this.game.initLevels()
+        this.fullnew = false
+    }
+    newLevel(seed)
+    {
+        console.log(seed)
+        this.levels = this.generateLevel(seed)
+        this.fullnew = true
     }
     generateLevel(specs)
     {
@@ -34,10 +40,6 @@ module.exports = class Dungeon {
         }
         return levels
     }
-    addScore(score)
-    {
-        this.game.addScore(score)
-    }
     end()
     {
         console.log('killing all the players')
@@ -46,16 +48,24 @@ module.exports = class Dungeon {
         console.log('scheduling for removal')
         this.ended = true
     }
-    update() 
+    handlePlayerDisconnection(id)
+    {
+        this.game.removeEntry(id)
+    }
+    playerIsDead(id)
+    {
+        let player = this.getPlayer(id)
+        console.log(player)
+        if (!player) return true
+        return player.dead()
+    }
+    update(connections) 
     {
         for (let i = 0; i < this.levels.length; i++)
         {
             this.levels[i].update(this.ticks)
         }
-        this.game.update()
-
-        if (this.ticks % 30 === 0) 
-            this.game.updateLeaderBoard()
+        this.game.update(connections)
         this.ticks ++
     }
     reset()
@@ -65,6 +75,7 @@ module.exports = class Dungeon {
             this.levels[i].resetEvents()
             this.levels[i].clearUpdates()
         }
+        this.fullnew = false
     }
     getViewPort(connection) 
     {
@@ -77,15 +88,33 @@ module.exports = class Dungeon {
             viewport.events = level.getAllEvents()
             viewport.updates = level.getUpdates()
             viewport.builds = level.getBuildingEvents()
+            let countdown = this.game.getCountDown()
+            if (countdown)
+                viewport.countdown = countdown
             if (this.ticks % 10 === 0)
                 viewport.leaderboard = this.game.getLeaderBoard()
             return {type: 'update', data: viewport}
         }
+        //let active = this.game.getPlayerAndLevel(id)
         let active = this.getPlayerAndLevel(id)
-        if (!active) 
-            return this.game.getScore(id)
-
+        if (this.game.respawning) //you can respawn manually (with a continue button, like survival)
+        {
+            if (!active)
+            {
+                let score = this.game.getScore(id)
+                score.type = 'game over'
+                return score
+            } 
+        }
         let viewport = {}
+        if (!active)
+            {
+                // get the id of the killer
+                let killerid = this.game.trackID(id)
+                active = this.getPlayerAndLevel(killerid)
+                if (!active) return // Some error handling here
+                viewport.tracking = killerid
+            }
         if (connection.type === 'player')
         {
             viewport.entities = active.level.getEntities(active.player)
@@ -100,10 +129,12 @@ module.exports = class Dungeon {
             if (controllerFeedback) viewport.feedback = controllerFeedback
         // set update frequency for misc
         if (this.ticks % 10 === 0) 
-        {
-            viewport.status = active.player.getStatusData()
             viewport.leaderboard = this.game.getLeaderBoard()
-        }
+
+        let countdown = this.game.getCountDown()
+        if (countdown)
+            viewport.countdown = countdown
+
         return {type: 'update', data: viewport}
     }
     getLevelData(id)
@@ -171,7 +202,10 @@ module.exports = class Dungeon {
         {
             if (this.queue[i].id === id) 
             {
-                this.levels[0].addPlayer(this.queue[i], this.game.getSpawnPos(this.queue[i]))
+                let player = this.queue[i]
+                this.levels[0].addPlayer(player, this.game.getSpawnPos(player))
+                this.game.addToLeaderBoard({id: player.id,
+                                            name: player.name})
                 // remove from queue
                 this.queue.splice(i, 1)
             }

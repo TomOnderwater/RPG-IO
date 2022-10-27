@@ -1,6 +1,7 @@
 const PhysicalBody = require('../util/hitboxes.js')
 const Func = require('../util/functions.js')
 const Chain = require('../util/chain.js')
+const calcAttack = require('../util/damage.js')
 // an item has an id, a pos,
 class Item
 {
@@ -112,7 +113,7 @@ class Item
                     for (let collision of collisions)
                     {
                         if (collision.entity.health !== undefined)
-                            level.addEvent(Func.calcAttack({
+                            level.addEvent(calcAttack({
                                 collision, 
                                 item: this, 
                                 attacker: this.owner.id, 
@@ -160,7 +161,6 @@ class Flail extends Item
     resetChain()
     {
         this.chain = new Chain(this.body.pos, 3, 0.2, this.mass)
-        console.log(this.chain)
     }
     doAction(hand)
     {
@@ -206,7 +206,7 @@ class Flail extends Item
                     for (let collision of collisions)
                     {
                         if (collision.entity.health !== undefined)
-                            level.addEvent(Func.calcAttack({
+                            level.addEvent(calcAttack({
                                 collision, 
                                 item: this, 
                                 attacker: this.owner.id, 

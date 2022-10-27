@@ -16,6 +16,7 @@ module.exports = class Level
         this.width = level.width
         this.height = level.height
         this.dungeon = dungeon
+        this.game = dungeon.game
         this.tiles = new LevelGenerator(level).getTiles()
         this.players = []
         this.entities = [] // list of items in motion with a rotation, collisionstyle: box
@@ -41,12 +42,11 @@ module.exports = class Level
             return this.getRandomLandPos()
         return pos
     }
-    getSpawnPos(body)
+    getSpawnPos(body = new PhysicalBody())
     {
         //return {x: this.size / 2, y: this.size / 8}
         //let startpos = {x: this.width / 2, y: this.height / 8}
         let startpos = this.getRandomLandPos()
-        console.log('starting here:', startpos)
         return this.getFreeSpot(startpos, body)
     }
     takePlayer(id)
@@ -93,8 +93,10 @@ module.exports = class Level
     }
     getPlayerBySession(session)
     {
+        //console.log('checking: ', session, this.players)
         for (let player of this.players)
         {
+            //console.log('checking:', session, player.session, player)
             if (session === player.session) return player
         }
         return null
@@ -159,15 +161,14 @@ module.exports = class Level
         {
             entities[i].update(this, entities)
         }
-
-        // update buildings being built
         this.updateBuildManager()
         this.updateRangedAttacks(entities)
         this.updatePhysicalEvents(entities)
         this.updateGroundItems(this.players)
-        let recoverytick = ((ticks % 30) === 0)
+        let recoverytick = ((ticks % 30) === 0 && this.game.naturalhealing)
         if (recoverytick) 
             this.killOutOfBounds()
+        
         for (let i = this.players.length - 1; i >= 0; i--)
         {
             let player = this.players[i]
@@ -177,21 +178,8 @@ module.exports = class Level
                 this.addDrops(player.getDrop())
                 let killer = this.getEntity(player.lastattacker)
                 if (killer !== null)
-                {
-                    killer.addXP(player.getXP()) //add XP to killer
-                    console.log(player.name + ' killed by ' + killer.name)
-                    this.dungeon.addScore({score: player.getScore(), 
-                                            id: player.id, 
-                                            name: player.name,
-                                            killer: killer.name})
-                }
-                else 
-                this.dungeon.addScore({score: player.getScore(), 
-                                            id: player.id, 
-                                            name: player.name,
-                                            killer: 'natural causes'})
+                    this.game.addKill(killer, player)
                 this.players.splice(i, 1)
-                //console.log('player died', this.players)
             }
             else if (recoverytick)
                 player.recover()
@@ -204,11 +192,8 @@ module.exports = class Level
                 this.addDrops(mob.getDrop())
                 let killer = this.getEntity(mob.lastattacker)
                 if (killer !== null)
-                {
-                    //console.log(mob.name, 'killed by', killer.name)
-                    killer.addXP(mob.getXP()) // add XP to killer
-                }
-                //mob.killer.addXP(mob.getXP()) // add XP to killer
+                    this.game.addKill(killer, mob)
+                    
                 this.mobs.splice(i, 1)
             }
             else if (recoverytick) 
@@ -502,7 +487,7 @@ module.exports = class Level
         let y = Func.constrain(Math.floor(pos.y), 0, this.height - 1)
         return this.tiles[x][y]
     }
-    getTiles(pos, range)
+    getTiles(pos, range = this.level.width)
     {
         let x1 = Func.constrain(Math.round(pos.x - range), 0, this.width)
         let x2 = Func.constrain(Math.round(pos.x + range), 0, this.width)

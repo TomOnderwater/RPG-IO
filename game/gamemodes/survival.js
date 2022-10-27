@@ -10,9 +10,10 @@ module.exports = class Survival
         this.levelsize = game.size || {width: 100, height: 100}
         this.floorcount = game.floorcount || 1
         this.leaderboard = []
-        this.scores = []
         this.treasurechestticks = 150 // about 100 seconds
         this.mobticks = 10
+        this.naturalhealing = true
+        this.respawning = true
         this.maxtreasurechests = Math.round((game.size.width * game.size.height) * 0.002)
         this.ticks = 0
     }
@@ -44,6 +45,49 @@ module.exports = class Survival
             } 
         }
     }
+    addKill(killer, victim)
+    {
+        let killerEntry = this.getEntry(killer.id)
+        if (victim.type === PLAYER)
+        {
+            let victimEntry = this.getEntry(victim.id)
+            killerEntry.score += Math.round(victimEntry.score * 0.5)
+            killerEntry.victims = [...killerEntry.victims, victim.id]
+            this.removeEntry(victim.id)
+        }
+        else
+        {
+            // do something based on victim type
+            killerEntry.score += 10
+        }
+        this.leaderboard.sort((a, b) => b.score - a.score)
+    }
+    addToLeaderBoard(entry)
+    {
+        entry.victims = []
+        entry.score = 0
+        this.leaderboard.push(entry)
+    }
+    getEntry(id)
+    {
+        for (let entry of this.leaderboard)
+        {
+            if (entry.id === id)
+                    return entry
+        } 
+    }
+    removeEntry(id)
+    {
+        for (let i = this.leaderboard.length - 1; i >= 0; i--)
+        {
+            if (this.leaderboard[i].id === id)
+            {
+                this.leaderboard.splice(i, 1)
+            }
+        }
+        this.leaderboard.sort((a, b) => b.score - a.score)
+    }
+
     updateLeaderBoard()
     {
         this.leaderboard = []
@@ -59,21 +103,9 @@ module.exports = class Survival
     }
     getScore(id)
     {
-        let out = false
-            for (let i = this.scores.length - 1; i >= 0; i--)
-            {
-                if (this.scores[i].id === id)
-                    {
-                        out = this.scores[i]
-                        this.scores.splice(i, 1)
-                        break
-                    } 
-            }
-        if (out)
-        {
-            out.type = 'game over'
-            return out
-        }
+        let entry = this.getEntry(id)
+        if (!id) return {} // send an empty object
+        return {name: entry.name, score: entry.score}
     }
     getLoadout(player)
     {
@@ -82,7 +114,7 @@ module.exports = class Survival
         {
             case 'Art':
                 items.push(this.dungeon.createItem(BOW, 999))
-                items.push(this.dungeon.createItem(SWORD))
+                items.push(this.dungeon.createItem(FLAIL))
                 items.push(this.dungeon.createItem(STAFF, 20))
             break
             case 'Tom':
@@ -92,7 +124,7 @@ module.exports = class Survival
                 items.push(this.dungeon.createItem(FLAIL))
             break
             case 'porno elf' || 'Porno elf':
-                items.push(this.dungeon.createItem(SWORD), 69)
+                items.push(this.dungeon.createItem(FLAIL), 69)
             break
             default:
                 //items.push(this.dungeon.createItem(SWORD))
@@ -100,19 +132,19 @@ module.exports = class Survival
         }
         return items
     }
+    getCountDown()
+    {
+        return false
+    }
     getLeaderBoard(visible)
     {
         let out = {}
         out.top = []
-        for (let i = 0; i < visible || 5 && i < this.leaderboard.length; i++)
+        for (let i = 0; i < this.leaderboard.length; i++)
         {
             out.top.push(this.leaderboard[i])
         }
         return out
-    }
-    addScore(score)
-    {
-        this.scores.push(score)
     }
     getLevelSpecs()
     {

@@ -25,66 +25,34 @@ module.exports = class Player
         this.session = data.session
         this.name = data.name
         this.hand = new Hand(this, createItem(NONE), this.body.pos)
-        
-        // alt method this.hand = new Hand(this)
-        // STATS
+
         this.speedstat = 0.0006
         this.perceptionstat = 8
-        this.heading = 0
 
-        // STATUS
-        this.status = {}
-        this.status.xp = 0
-        this.status.level = 1
-        this.status.points = 1
-        //ATTRIBUTES
-        this.status.strength = 1
-        this.status.speed = 1
-        this.status.vitality = data.health || 100
-
-        this.health = this.status.vitality
+        this.maxhealth = data.health || 100
+        this.health = this.maxhealth
         this.boostSpeed = this.speedstat * 5
 
         // UTILITIES
         this.feedback = [] // keeps track of things you're doing
 
-        //pos, angle, fov, resolution, range
-        //this.perception = new Perception(Math.PI / 2, 10, 6)
-    }
-    getStatusData()
-    {
-        let xpnext = 100 //this.calcXPForLevel()
-        let xp = this.status.xp
-        return { 
-            xp, xpnext,
-            points: this.status.points,
-            level: this.status.level,
-            strength: this.status.strength,
-            vitality: this.status.vitality,
-            speed: this.status.speed
-        }
-    }
-    getXP()
-    {
-        return 50
     }
     recover()
     {
-        //if (this.xp >= this.calcXPForLevel()) this.levelUP()
-        if (this.health < this.status.vitality) this.health += 1
+        if (this.health < this.maxhealth) this.health += 1
     }
     handleBoost(action)
     {
         this.boost = action
     }
-    addXP(xp)
-    {
-        this.status.xp += xp
-    }
     initHand(id)
     {
         this.hand.id = id
         this.hand.item = createItem(this.inventory.getSelectedType())
+    }
+    emptyInventory()
+    {
+        this.inventory.getAll() //also empties
     }
     dead()
     {
@@ -139,10 +107,6 @@ module.exports = class Player
         this.lastattacker = attacker
         //console.log('ouch, said', this.name, 'as he got hit for ', damage, 'damage, health: ', this.health)
     }
-    getScore()
-    {
-        return {id : this.id, name: this.name, score: this.status.xp}
-    }
     getFeedback()
     {
         return this.hand.item.getFeedBack()
@@ -155,7 +119,7 @@ module.exports = class Player
                 p: pos, 
                 n: this.name, 
                 h: this.health, 
-                H: this.status.vitality,
+                H: this.maxhealth,
                 a: this.inventory.getAmmo()}
             if (this.invulnerableticks > 0)
                 out.I = '1'

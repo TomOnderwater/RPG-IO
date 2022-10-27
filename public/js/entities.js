@@ -200,10 +200,7 @@ class Flail extends Entity
     update()
     {
     if (this.owner && !this.moving) 
-    {
         this.target = this.owner.getHandPos(this.dist)
-        console.log(this.target)
-    }
     this.pos = bounce(this.pos, this.target, this.bounce)
     }
     draw()

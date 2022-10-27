@@ -1,5 +1,4 @@
 
-
 function isAbout(a, b, tolerance)
 {
     return (a > b - tolerance && a < b + tolerance)
@@ -148,6 +147,36 @@ function drawItem(type, pos, size, _rot)
   textSize(size)
   text(emoji, 0, 0)
   pop()
+}
+
+class MessageBoard
+{
+  constructor()
+  {
+      this.count = 0
+      this.counting = false
+  }
+  countdown(count)
+  {
+      this.count = count
+      this.counting = true
+  }
+  stopCountdown()
+  {
+    this.counting = false
+  }
+  draw()
+  {
+    if (!this.counting) return
+    push()
+    textFont(titlefont)
+    textAlign(CENTER, CENTER)
+    textSize(width * 0.05)
+    fill(255)
+    noStroke()
+    text(this.count, width * 0.5, height * 0.05)
+    pop()
+  }
 }
 
 function mouseClicked()

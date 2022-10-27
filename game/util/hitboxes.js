@@ -146,7 +146,7 @@ function collideCircle(circle, body)
 
 module.exports = class PhysicalBody
 {
-    constructor(data)
+    constructor(data = {pos: {x: 0, y: 0}, type: 'circle', rad: 0.2})
     {
         this.pos = data.pos
         this.ppos = {x: this.pos.x, y: this.pos.y}

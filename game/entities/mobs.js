@@ -1,5 +1,6 @@
 const PhysicalBody = require('../util/hitboxes.js')
 const Func = require('../util/functions.js')
+const calcAttack = require('../util/damage.js')
 const Perception = require('../util/perception.js')
 
 function baseSlime()
@@ -90,7 +91,7 @@ class Slime
             {
                 let damage = this.stats.attack
 
-                let attack = Func.calcAttack({
+                let attack = calcAttack({
                     collision, 
                     attacker: this.id, 
                     damage})
@@ -174,16 +175,6 @@ class Slime
     {
         this.health -= damage
         this.lastattacker = attacker
-    }
-    addXP(xp)
-    {
-        this.xp += xp
-        this.maxhealth = this.stats.health + Math.round((this.xp * 0.1))
-        this.attack = this.stats.attack + (Math.round(this.xp * 0.01))
-    }
-    getXP()
-    {
-        return Math.round((this.xp * 0.5) + 10)
     }
     data() 
         {

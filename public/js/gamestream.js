@@ -29,7 +29,7 @@ function openStream() {
             updateView(msg.data)
           break
           case 'game over':
-            console.log('GAME OVER')
+            //console.log('GAME OVER')
             setGameState('game over')
             message = msg
           break
@@ -44,13 +44,28 @@ function openStream() {
 function updateView(viewport)
 {
   //print(leveldata)
+  if (viewport.level !== undefined)
+  {
+    console.log('switching levels')
+    level.initLevel(viewport.level)
+    sound.stop()
+    //sound = new SoundManager()
+  }
+
+  if (viewport.countdown)
+    messageboard.countdown(viewport.countdown)
+  else messageboard.stopCountdown()
+  
   level.newData(viewport)
+
+  if (viewport.tracking)
+    player = level.getPlayer(viewport.tracking)
+  else player = level.getPlayer(game_id)
 
   if (viewport.leaderboard)
   leaderboard = viewport.leaderboard
 
   if (type == 'spectator') return
-  player = level.getPlayer(game_id)
   
   if (viewport.feedback)
       handleFeedback(viewport.feedback)
