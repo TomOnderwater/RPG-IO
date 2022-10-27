@@ -7,7 +7,7 @@ function baseSlime()
 {
     let stats = {}
     stats.rad = 0.2 //body diameter
-    stats.health = 50
+    stats.health = 30
     stats.type = SLIME
     stats.fov = 2 * Math.PI
     stats.resolution = 10

@@ -23,6 +23,7 @@ module.exports = class Arena
         this.spectators = [] //keeps watching players
 
         this.game_ended = false
+        this.inLobby = false
 
         // CONFIGURABLE SETTINGS //
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
@@ -69,11 +70,17 @@ module.exports = class Arena
             player.emptyInventory()
             this.level.addPlayer(player)
         }
+        for (let entry of this.leaderboard)
+        {
+            entry.victims = []
+            entry.alive = true
+        }
         // begin timer for next round
         this.timeLeft = this.roundLimit * TICKRATE
         this.countDownStarted = true
         this.spectators = []
         this.game_ended = false
+        this.inLobby = false
     }
     getScore(id)
     {
@@ -102,7 +109,7 @@ module.exports = class Arena
         if (this.level.mobs.length < this.level.maxMobs)
             this.level.spawnMob(SLIME, this.level.getRandomLandPos())
     }
-    trackID(id)
+    getVictimCam(id)
     {
         for (let i = 0; i < this.leaderboard.length; i++)
         {
@@ -115,17 +122,33 @@ module.exports = class Arena
         }
         return false
     }
+    getBestAlive()
+    {
+        for (let i = 0; i < this.leaderboard.length; i++)
+        {
+            if (this.leaderboard[i].alive) return this.leaderboard[i].id
+        }
+        return false
+    }
+    trackID(id)
+    {
+        let killerid = this.getVictimCam(id)
+        if (!killerid)
+            return this.getBestAlive()
+    }
     addKill(killer, victim)
     {
-        //console.log('killer, victim: ,', killer, victim)
-        if (killer.type !== PLAYER) return
-        let killerEntry = this.getEntry(killer.id)
-        if (!killerEntry) return
         if (victim.type === PLAYER)
         {
             this.spectators.push(victim)
-            killerEntry.kills ++
             let victimEntry = this.getEntry(victim.id)
+            victimEntry.alive = false
+
+            if (killer.type !== PLAYER) return
+            let killerEntry = this.getEntry(killer.id)
+            if (!killerEntry) return
+            
+            killerEntry.kills ++
             killerEntry.victims = [...killerEntry.victims, victim.id, ...victimEntry.victims]
         }
         this.leaderboard.sort((a, b) => b.wins - a.wins)
@@ -135,12 +158,14 @@ module.exports = class Arena
         entry.victims = []
         entry.wins = 0
         entry.kills = 0
+        entry.alive = true
         this.leaderboard.push(entry)
 
         if (this.leaderboard.length > 1 && !this.countDownStarted)
         { 
             this.countDownStarted = true
             this.timeLeft = TICKRATE * 30
+            this.inLobby = true
         }
     }
     removeEntry(id)
@@ -187,11 +212,11 @@ module.exports = class Arena
     }
     handleGame()
     {
-        if (!this.countDownStarted) 
-        {   
+        if (this.inLobby) 
+        {   // keep players alive till the start
             for (let player of this.level.players)
             {
-                player.invulnerableticks = 300
+                player.invulnerableticks = 2
             }
         } //return false//not playing games
         if (this.level.players.length < 2)

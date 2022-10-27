@@ -278,7 +278,7 @@ class Bow extends Item
     {
         super(data)
         this.physical = false
-        this.attack = 40
+        this.attack = 30
         this.minimumdraw = 0.5
         this.destruction = 2
         this.bounce = 0.2

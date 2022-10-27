@@ -171,7 +171,9 @@ class MessageBoard
     push()
     textFont(titlefont)
     textAlign(CENTER, CENTER)
-    textSize(width * 0.05)
+    let size = width * 0.05
+    if (size > 40) size = 40
+    textSize(size)
     fill(255)
     noStroke()
     text(this.count, width * 0.5, height * 0.05)
