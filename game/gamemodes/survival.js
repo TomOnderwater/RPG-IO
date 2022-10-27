@@ -133,7 +133,9 @@ module.exports = class Survival
                 items.push(this.dungeon.createItem(FLAIL), 69)
             break
             default:
-                items.push(this.dungeon.createItem(Func.chooseOne([startitems])))
+                let startitem = this.dungeon.createItem(Func.chooseOne(startitems))
+                if (startitem.ammo) startitem.count = 20
+                items.push(startitem)
             break
         }
         return items
