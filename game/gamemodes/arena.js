@@ -118,15 +118,18 @@ module.exports = class Arena
     addKill(killer, victim)
     {
         //console.log('killer, victim: ,', killer, victim)
-        let killerEntry = this.getEntry(killer.id)
-        if (victim.type === PLAYER)
+        if (killer.type === PLAYER)
         {
-            this.spectators.push(victim)
-            killerEntry.kills ++
-            let victimEntry = this.getEntry(victim.id)
-            killerEntry.victims = [...killerEntry.victims, victim.id, ...victimEntry.victims]
+            let killerEntry = this.getEntry(killer.id)
+            if (victim.type === PLAYER)
+            {
+                this.spectators.push(victim)
+                killerEntry.kills ++
+                let victimEntry = this.getEntry(victim.id)
+                killerEntry.victims = [...killerEntry.victims, victim.id, ...victimEntry.victims]
+            }
+            this.leaderboard.sort((a, b) => b.wins - a.wins)
         }
-        this.leaderboard.sort((a, b) => b.wins - a.wins)
     }
     addToLeaderBoard(entry)
     {
@@ -185,7 +188,13 @@ module.exports = class Arena
     }
     handleGame()
     {
-        if (!this.countDownStarted) return false//not playing games
+        if (!this.countDownStarted) 
+        {   
+            for (let player of this.level.players)
+            {
+                player.invulnerableticks = 2
+            }
+        } //return false//not playing games
         if (this.level.players.length < 2)
         {
             if (!this.game_ended)
