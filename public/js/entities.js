@@ -74,7 +74,17 @@ class Entity
         if (data.c) this.cost = data.c
         if (data.P !== undefined) this.primed = data.P
         if (data.links != undefined)  this.links = data.links
-
+        if (data.g) this.grounditem = true
+        //console.log(data.g)
+    }
+    drawOutline()
+    {
+        push()
+        noStroke()
+        let pos = cam.onScreen(this.pos)
+        fill(255, 255, 0, 100)
+        circle(pos.x, pos.y, 0.5 * cam.zoom)
+        pop()
     }
     draw()
     {
@@ -154,6 +164,7 @@ class HandItem extends Entity
     }
     draw()
     {
+        if (this.grounditem) this.drawOutline()
         let rot = 0
         if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         rot += this.rot
@@ -177,6 +188,7 @@ class Staff extends HandItem
     }
     draw()
     {
+        if (this.grounditem) this.drawOutline()
         let rot = 0
         if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         if (!this.moving) rot += HALF_PI
@@ -244,7 +256,7 @@ class Flail extends Entity
     }
     draw()
     {
-
+    if (this.grounditem) this.drawOutline()
        if (this.moving)
        {
         push()
@@ -337,6 +349,7 @@ class Bow extends HandItem
         this.bowpos = bounce(this.bowpos, bowtarget, 1)
         //console.log(bp, this.bowpos)
         let bowpos = cam.onScreen(this.bowpos)
+        if (this.grounditem) this.drawOutline()
         //console.log(bowpos)
         //if (this.moving && this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         // draw the bow
@@ -400,27 +413,33 @@ class Sword extends HandItem
         let pos = cam.onScreen(this.pos)
         let rot = 0
         if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        let extraoffset = 0
+        if (this.grounditem) 
+        {
+            this.drawOutline()
+            extraoffset = -0.2
+        }
         push()
         translate(pos.x, pos.y)
         rotate(rot)
-        translate(this.offset * cam.zoom, 0)
+        translate((this.offset + extraoffset) * cam.zoom, 0)
         let hilt = this.size * 0.3 * cam.zoom
         let len = -this.size * cam.zoom
         //rotate(this.dir)
         //triangle
         fill(255)
         stroke(0, 150)
-        strokeWeight(0.02 * cam.zoom)
+        strokeWeight(0.01 * cam.zoom)
         triangle(hilt + len, 0, 0, hilt * 0.2, 0, -hilt * 0.2)
         //length line
         line(hilt, 0, hilt + len, 0)
-        //hilt guard
-        stroke(150)
-        strokeWeight(0.05 * cam.zoom)
-        line(0, hilt * 0.5, 0, -hilt * 0.5)
         //grip
+        strokeWeight(0.05 * cam.zoom)
         stroke(200, 100, 50)
         line(0,0,hilt, 0)
+        //hilt guard
+        stroke(150)
+        line(0, hilt * 0.5, 0, -hilt * 0.5)
         pop()
     }
 }
