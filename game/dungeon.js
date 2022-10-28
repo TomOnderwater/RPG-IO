@@ -214,7 +214,9 @@ module.exports = class Dungeon {
     createItem(type, count)
     {
         let item = createItem(type)
-        item.count = count || 0
+        if (count !== undefined)
+            item.count = count
+        else if (item.ammo) item.count = 20
         return item
     }
     assignID()

@@ -23,7 +23,7 @@ module.exports = class Arena
         this.spectators = [] //keeps watching players
 
         this.game_ended = false
-        this.inLobby = false
+        this.inLobby = true
 
         // CONFIGURABLE SETTINGS //
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
@@ -76,7 +76,7 @@ module.exports = class Arena
             entry.alive = true
         }
         // begin timer for next round
-        this.timeLeft = this.roundLimit * TICKRATE
+        this.timeLeft = this.roundLimit * UPDATERATE
         this.countDownStarted = true
         this.spectators = []
         this.game_ended = false
@@ -166,7 +166,7 @@ module.exports = class Arena
         if (this.leaderboard.length > 1 && !this.countDownStarted)
         { 
             this.countDownStarted = true
-            this.timeLeft = TICKRATE * 30
+            this.timeLeft = UPDATERATE * 30
             this.inLobby = true
         }
     }
@@ -181,7 +181,10 @@ module.exports = class Arena
         }
         this.leaderboard.sort((a, b) => b.wins - a.wins)
         if (this.leaderboard.length < 2)
+        {
             this.countDownStarted = false
+            this.inLobby = true
+        }
     }
     getEntry(id)
     {

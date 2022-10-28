@@ -1,6 +1,6 @@
 const Func = require('../util/functions.js')
 const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
-const startitems = [BOW, SWORD, FLAIL, STAFF]
+const startitems = [BOW, SWORD]
 
 module.exports = class Survival
 {
@@ -11,8 +11,8 @@ module.exports = class Survival
         this.levelsize = game.size || {width: 100, height: 100}
         this.floorcount = game.floorcount || 1
         this.leaderboard = []
-        this.treasurechestticks = 150 // about 100 seconds
-        this.mobticks = 10
+        this.treasurechestticks = 3000 // about 100 seconds
+        this.mobticks = 60
         this.naturalhealing = true
         this.respawning = true
         this.maxtreasurechests = Math.round((game.size.width * game.size.height) * 0.002)
@@ -129,13 +129,11 @@ module.exports = class Survival
                 items.push(this.dungeon.createItem(STAFF, 100))
                 items.push(this.dungeon.createItem(FLAIL))
             break
-            case 'porno elf' || 'Porno elf':
+            case 'Porno elf':
                 items.push(this.dungeon.createItem(FLAIL), 69)
             break
             default:
-                let startitem = this.dungeon.createItem(Func.chooseOne(startitems))
-                if (startitem.ammo) startitem.count = 20
-                items.push(startitem)
+                items.push(this.dungeon.createItem(Func.chooseOne(startitems)))
             break
         }
         return items
