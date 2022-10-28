@@ -49,7 +49,7 @@ class Fire
   {
     this.fireparticles = []
   }
-  draw(pos)
+  draw(pos = this.pos)
   {
     this.pos = pos
     for (let i = 0; i < this.temp; i++)
@@ -127,6 +127,29 @@ class Event
     noStroke()
     text(this.value, pos.x, pos.y)
     pop()
+  }
+  update()
+  {
+    this.ticks ++
+  }
+  ended()
+  {
+    return this.ticks > this.maxticks
+  }
+}
+
+class ContinuedFire
+{
+  constructor(fire)
+  {
+    this.fire = fire
+    this.fire.temp = 0
+    this.ticks = 0
+    this.maxticks = 30
+  }
+  draw()
+  {
+    this.fire.draw()
   }
   update()
   {

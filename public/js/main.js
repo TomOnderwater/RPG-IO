@@ -88,7 +88,7 @@ function setupInput()
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight, WebGL2RenderingContext)
+  canvas = createCanvas(windowWidth, windowHeight)
   SEXYGREY = color(51, 51, 51)
   rumbletimer = millis()
 
@@ -105,6 +105,7 @@ function setup() {
   MOBILE = isMobileDevice()
 
   sound.globalVolume(1)
+  frameRate(60)
 
   // setFrameRate(30) //frame updates at 30 hz
   console.log('connection type:', type)

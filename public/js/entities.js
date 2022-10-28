@@ -136,6 +136,11 @@ constructor(entity){
         if (this.onFire) this.fire.draw(this.pos)
         drawArrow(this.pos, this.dir + PI, 0.15, this.size)
     }
+    kill()
+    {
+        if (this.fire) // pass the effect to the effect handler
+            level.events.push(new ContinuedFire(this.fire))
+    }
 }
 
 class HandItem extends Entity
@@ -440,5 +445,7 @@ class FireBall extends Entity
     kill()
     {
         sound.stopFire(this.id)
+        if (this.fire) // pass the effect to the effect handler
+            level.events.push(new ContinuedFire(this.fire))
     }
 }
