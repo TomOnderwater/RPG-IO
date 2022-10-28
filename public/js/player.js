@@ -66,7 +66,7 @@ class Player extends Entity
   }
   drawAmmo(offset)
   {
-    if (this.ammo.c == 0) return
+    if (!this.ammo.c) return
     let pos = cam.onScreen({
       x: this.pos.x + offset.x, 
       y: this.pos.y + offset.y})
