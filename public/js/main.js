@@ -88,7 +88,7 @@ function setupInput()
 }
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight, /*{willReadFrequently: true} */)
+  canvas = createCanvas(windowWidth, windowHeight, WebGL2RenderingContext)
   SEXYGREY = color(51, 51, 51)
   rumbletimer = millis()
 

@@ -54,7 +54,7 @@ class Entity
                 break
             }
         }
-        if (sqspeed > 0.00001) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
+        if (sqspeed > 0.00001) this.dir = Math.atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
     }
     newData(data)
@@ -150,7 +150,7 @@ class HandItem extends Entity
     draw()
     {
         let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         rot += this.rot
         let pos = cam.onScreen(this.pos)
         let size = this.size * cam.zoom
@@ -173,7 +173,7 @@ class Staff extends HandItem
     draw()
     {
         let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         if (!this.moving) rot += HALF_PI
         rot += this.rot
         let pos = cam.onScreen(this.pos)
@@ -252,7 +252,7 @@ class Flail extends Entity
         }
         let pos = cam.onScreen(this.links[0])
         let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.links[0].y, this.owner.pos.x - this.links[0].x)
+        if (this.owner) rot = Math.atan2(this.owner.pos.y - this.links[0].y, this.owner.pos.x - this.links[0].x)
         stroke(200, 150, 40)
         strokeWeight(cam.zoom * 0.1)
         noFill()
@@ -320,7 +320,7 @@ class Bow extends HandItem
         let rot = 0, draw = 0, bowtarget = this.pos, basedraw = 0.05
         if (this.owner) 
             {
-                rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+                rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
                 if (this.moving) 
                 {
                     draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y) + 0.1
@@ -394,7 +394,7 @@ class Sword extends HandItem
     {
         let pos = cam.onScreen(this.pos)
         let rot = 0
-        if (this.owner) rot = atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
+        if (this.owner) rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
         push()
         translate(pos.x, pos.y)
         rotate(rot)

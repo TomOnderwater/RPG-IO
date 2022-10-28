@@ -94,10 +94,12 @@ class Level {
     {
       this.events[i].draw()
     }
+    
     for (let i = 0; i < visibletiles.length; i++)
     {
       visibletiles[i].drawTop()
     }
+    
   }
   drawBuildingEvents()
   {
