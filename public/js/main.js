@@ -369,7 +369,7 @@ function drawSpectator()
   text("go to: " + httpPrefix + host + " and connect with key: " + key, 10, 30)
   drawLeaderBoard({x: width - 20, y: 20}, RIGHT)
   messageboard.draw()
-  drawFrameRate({x: width -70, y: height - 20})
+  //drawFrameRate({x: width -70, y: height - 20})
   pop()
 }
 function drawGame()
@@ -397,7 +397,7 @@ function drawGame()
   messageboard.draw()
   drawLeaderBoard({x: width - 15, y: 15}, RIGHT)
   input.draw()
-  drawFrameRate({x: width -70, y: height - 20})
+  //drawFrameRate({x: width -70, y: height - 20})
 }
 
 
