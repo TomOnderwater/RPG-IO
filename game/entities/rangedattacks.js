@@ -45,7 +45,7 @@ module.exports = class RangedAttack
                     pos: collision.pos,
                     owner: this.owner,
                     growth: 0.1,
-                    maxticks: 3,
+                    maxticks: 1,
                     cost: 0.5,
                     dir: Func.multiply(this.dir, 0.04)
                 }, level)
@@ -56,7 +56,7 @@ module.exports = class RangedAttack
                     pos: collision.pos,
                     owner: this.owner,
                     growth: 0.2,
-                    maxticks: 3,
+                    maxticks: 1,
                     cost: this.cost,
                     dir: Func.multiply(this.dir, 0.05)
                 }, level)                       

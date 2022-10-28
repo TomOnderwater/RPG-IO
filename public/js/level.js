@@ -192,7 +192,8 @@ class Level {
       }
       if (!found) 
       {
-        this.entities[i].kill()
+        if (this.entities[i].kill)
+          this.entities[i].kill()
         this.entities.splice(i, 1)
       }
     }
@@ -224,7 +225,7 @@ class Level {
           this.entities.push(new Arrow(entity))
         break
         case SLIME:
-          this.entities.push(new Entity(entity)) // CHANGE TO CRITTER
+          this.entities.push(new Critter(entity)) // CHANGE TO CRITTER
         break
         case NONE:
           this.entities.push(new Fist(entity))

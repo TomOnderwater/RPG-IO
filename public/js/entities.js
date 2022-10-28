@@ -1,5 +1,5 @@
 const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢', '🐸', '🦋', '🐞']
-const monsters = ['🕷️', '🦇', '🐗', '🐞', '🦂', '🐙', '🦀', '🐲', '⛄', '🧟‍♀️', '🧟‍♂️']
+const monsters = ['🦇', '🐗', '🦂', '🐙', '🧟‍♀️', '🧟‍♂️', '🐸']
 
 function randomAnimal(seed)
 {
@@ -23,7 +23,6 @@ class Entity
         this.owner = false
         this.dia = 0.4
         this.bounce = 0.2
-        this.face = randomAnimal(bton(this.id) * 1000)
         this.cost = data.c || 1
     }
     update()
@@ -31,16 +30,29 @@ class Entity
         if (this.owner && !this.moving) this.target = this.owner.getHandPos(this.dist)
         this.pos = bounce(this.pos, this.target, this.bounce)
         let sqspeed = sqDist(this.pos, this.ppos)
-        if (this.type === SWORD)
+        if (this.type === SWORD || this.type === NONE)
         {
-            if (sqspeed > 0.01 && this.moving)
+            switch(this.type)
             {
-                level.addWoosh(this.pos, this.ppos, 0.3)
-                // ADDITIONAL: SOUND
-                if (sqspeed > 0.04 && sound !== undefined)
-                    sound.woosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
+                case SWORD:
+                    if (sqspeed > 0.01 && this.moving)
+                    {
+                        level.addWoosh(this.pos, this.ppos, 0.3)
+                        // ADDITIONAL: SOUND
+                        if (sqspeed > 0.04)
+                            sound.woosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
+                    }
+                    else if (sqspeed < 0.001 || !this.moving) sound.removeSound(this.id)
+                break
+                case NONE:
+                    if (sqspeed > 0.01 && this.moving)
+                    {
+                        if (sqspeed > 0.04)
+                            sound.fistwoosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
+                    }
+                    else if (sqspeed < 0.001 || !this.moving) sound.removeSound(this.id)
+                break
             }
-            else if (sqspeed < 0.001 || !this.moving) sound.removeSound(this.id)
         }
         if (sqspeed > 0.00001) this.dir = atan2(this.ppos.y - this.pos.y, this.ppos.x - this.pos.x)
         this.ppos = {x: this.pos.x, y: this.pos.y}
@@ -69,6 +81,33 @@ class Entity
         // unknown item draw function
         push()
         fill(255, 255, 0)
+        noStroke()
+        let pos = cam.onScreen(this.pos)
+        circle(pos.x, pos.y, this.dia * cam.zoom)
+        pop()
+    }
+    touch()
+    {
+        let pos = cam.onScreen(this.pos)
+        for (let t of touches)
+        {
+            if (sqDist(t, pos) < Math.pow(this.dia, 2)) return t
+        }
+        return null
+    }
+}
+
+class Critter extends Entity
+{
+    constructor(entity)
+    {
+        super(entity)
+        this.face = randomAnimal(bton(this.id) * 1000)
+    }
+    draw()
+    {
+        push()
+        fill(255, 255, 0)
         stroke(255, 125, 0)
         let pos = cam.onScreen(this.pos)
         textAlign(CENTER, CENTER)
@@ -76,21 +115,7 @@ class Entity
         rotate(this.dir + HALF_PI)
         textSize(this.dia * cam.zoom)
         text(this.face, 0, 0)
-        //circle(pos.x, pos.y, this.dia * cam.zoom)
         pop()
-    }
-    kill()
-    {
-        // normally nothing
-    }
-    touch()
-    {
-        let pos = cam.onScreen(this.pos)
-        for (let t of touches)
-        {
-            if (dist(t.x, t.y, pos.x, pos.y) < this.dia) return t
-        }
-        return null
     }
 }
 
@@ -189,19 +214,28 @@ class Flail extends Entity
     constructor(status)
     {
         super(status)
-        this.pos = status.p
-        this.target = status.p
-        this.moving = status.m
         this.links = status.links
         this.bounce = 0.3
         this.owner = false
         this.dist = 0.5
+        this.soundtrigger = 0.0005
     }
     update()
     {
     if (this.owner && !this.moving) 
         this.target = this.owner.getHandPos(this.dist)
     this.pos = bounce(this.pos, this.target, this.bounce)
+    //console.log(this.pos, this.target, this.ppos)
+    let sqspeed = sqDist(this.pos, this.ppos)
+    //console.log(sqspeed)
+    if (sqspeed > this.soundtrigger && this.moving)
+    {
+        level.addWoosh(this.pos, this.ppos, 0.3)
+        // ADDITIONAL: SOUND
+        sound.lowwoosh(this.id, Math.sqrt(sqspeed) * 4, this.pos) // play a woosh
+    }
+    else if (sqspeed < this.soundtrigger || !this.moving) sound.removeSound(this.id)
+    this.ppos = this.pos
     }
     draw()
     {

@@ -180,6 +180,11 @@ class Impact extends Event
     this.color = color
     let splattercount = Math.round(random(1, (damage + 1) * 0.5))
     this.splatters = []
+    // FIX THIS TO A MORE LOGICAL SETUP
+    if (color.r == 255)
+      sound.splashimpact(pos, damage)
+    if (color.r == 100)
+      sound.basicimpact(pos, damage)
     for (let i = 0; i < splattercount; i++)
     {
       this.splatters.push(new Splatter(pos, dir, this.maxticks, this.color))

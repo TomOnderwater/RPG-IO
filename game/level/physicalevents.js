@@ -43,7 +43,7 @@ class Explosion
         this.growth = 0.2 * this.cost
         this.body = new PhysicalBody({type: 'circle', rad, pos})
         this.event = event
-        this.damage = Math.round(5 * event.cost)
+        this.damage = Math.round(10 * event.cost)
         //console.log(this.body)
     }
     update(level, colliders)

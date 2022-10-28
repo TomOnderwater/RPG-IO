@@ -5,7 +5,11 @@ class SoundManager {
         this.volume = 1
         this.fade =  2
         this.activesounds = []
+
         this.swordwoosh = new Howl({src: [soundfolder + 'swoosh1.mp3'], sprite: {wooshing: [200, 1000]}})
+        this.fistwooshsound = new Howl({src: [soundfolder + 'fistwoosh.mp3']})
+        this.lowwooshsound = new Howl({src: [soundfolder + 'low_woosh.mp3']})
+
         this.bowsound = new Howl({src: [soundfolder + 'bow_shoot.mp3']})
         this.fireballsound = new Howl({src: [soundfolder + 'fireballshot.mp3'], sprite: {firing: [200, 1200]}})
         this.explosionsound = new Howl({src: [soundfolder + 'fire_explosion.wav'], 
@@ -13,6 +17,8 @@ class SoundManager {
         this.fireburningsound = new Howl({src: [soundfolder + 'fireburning.wav'], 
             sprite: {burning: [1200, 4200, true]},
             looping: true})
+        this.splashimpactsound = new Howl({src: [soundfolder + 'splashimpact.mp3']})
+        this.basicimpactsound = new Howl({src: [soundfolder + 'basicimpact.mp3']})
     }
     stop()
     {
@@ -40,7 +46,6 @@ class SoundManager {
     globalVolume(volume)
     {
         Howler.volume(volume)
-        console.log('setting volume')
     }
     removeSound(id)
     {
@@ -52,6 +57,41 @@ class SoundManager {
                 return
             }
         }
+    }
+    fistwoosh(id, speed, pos)
+    {
+        //console.log('woosh')
+        let s = getFromList(id, this.activesounds)
+        let p = this.getStereoPos(pos)
+        if (!s) 
+        {
+            let s_id = this.fistwooshsound.play()
+            this.fistwooshsound.pos(p.x, p.y, s_id)
+            this.fistwooshsound.rate(speed, s_id)
+            this.activesounds.push({id, s_id})
+        } else this.fistwooshsound.pos(p.x, p.y, 0, s.s_id)
+    }
+    lowwoosh(id, speed, pos)
+    {
+        //console.log('woosh')
+        let s = getFromList(id, this.activesounds)
+        let p = this.getStereoPos(pos)
+        let playsound = false
+        if (s)
+        {
+            if (!this.lowwooshsound.playing())
+            {
+                this.removeSound(id)
+                this.playsound = true
+            }
+        }
+        if (!s || playsound) 
+        {
+            let s_id = this.lowwooshsound.play()
+            this.lowwooshsound.pos(p.x, p.y, s_id)
+            this.lowwooshsound.rate(speed * 2, s_id)
+            this.activesounds.push({id, s_id})
+        } else this.lowwooshsound.pos(p.x, p.y, 0, s.s_id)
     }
     woosh(id, speed, pos)
     {
@@ -92,6 +132,20 @@ class SoundManager {
         this.bowsound.pos(p.x, p.y)
         this.bowsound.play()
     }  
+    splashimpact(pos, damage)
+    {
+        let p = this.getStereoPos(pos)
+        this.splashimpactsound.pos(p.x, p.y)
+        let id = this.splashimpactsound.play()
+        this.splashimpactsound.volume(constrain(damage * 0.05, 0, 1), id)
+    }
+    basicimpact(pos, damage)
+    {
+        let p = this.getStereoPos(pos)
+        this.basicimpactsound.pos(p.x, p.y)
+        let id = this.basicimpactsound.play()
+        this.basicimpactsound.volume(constrain(damage * 0.05, 0, 1), id)
+    }
     fireball(pos)
     {
         let p = this.getStereoPos(pos)
@@ -104,7 +158,7 @@ class SoundManager {
         let p = this.getStereoPos(pos)
         this.explosionsound.pos(p.x, p.y)
         let id = this.explosionsound.play('exploding')
-        this.explosionsound.fade(1, 0, 1000, id)
+        this.explosionsound.fade(1, 0, 500 + (size * 100), id)
         this.explosionsound.volume(0.5 + (size * 0.1))
     }   
 }
