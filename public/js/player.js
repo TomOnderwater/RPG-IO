@@ -49,18 +49,15 @@ class Player extends Entity
     let pos = cam.onScreen({
       x: this.pos.x + offset.x, 
       y: this.pos.y + offset.y})
-    let W = 1.2 * cam.zoom
+    let W = 1 * cam.zoom
     let H = 0.15 * cam.zoom
     //console.log(W, H)
     translate(pos.x, pos.y)
-    stroke(0, 100)
-    strokeWeight(cam.zoom * entityborder)
-    rect(-W * 0.5, 0, W, H)
     noStroke()
     let w = pct * W
-    fill(0, 255, 0)
+    fill(0, 255, 0, 100)
     rect(-W * 0.5, 0, w, H)
-    fill(255, 0, 0)
+    fill(255, 0, 0, 100)
     rect(w - W * 0.5, 0, W - w, H)
     pop()
   }
@@ -94,24 +91,17 @@ class Player extends Entity
   }
   draw()
   {
-    // if (this.distance > this.stridelength) 
-    // {
-    //   sound.footstep()
-    //   this.distance = 0
-    // }
     let pos = cam.onScreen(this.pos)
     if (this.animationframe) this.drawLevelUP(pos)
-    this.drawHealthBar({x: 0, y: -0.7})
+    this.drawHealthBar({x: 0, y: -0.6})
     if (type === 'spectator' || player === this)
-      this.drawAmmo({x: 0.8, y: -0.6})
+      this.drawAmmo({x: 0.0, y: 0.6})
   
-    this.drawName({x: 0, y: -0.9})
+    this.drawName({x: 0, y: -0.75})
     push()
     //console.log(this.rot)
     textAlign(CENTER, CENTER)
     translate(pos.x, pos.y)
-    //fill(255)
-    //stroke(0)
     rotate(this.dir + HALF_PI)
     //draw perception
     if (this.invulnerable) fill(100, 50)
