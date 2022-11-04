@@ -47,6 +47,16 @@ let SEXYGREY // = color(51, 51, 51)
 
 let sound
 
+
+// QUERY STRING
+const params = new Proxy(new URLSearchParams(window.location.search), {
+  get: (searchParams, prop) => searchParams.get(prop),
+})
+
+if (params.key) key = params.key
+
+console.log('spectate key: ', spectate_key)
+
 function preload()
 {
   console.log('loading assets...')

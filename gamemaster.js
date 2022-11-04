@@ -84,8 +84,17 @@ module.exports = class GameMaster
                 let dungeon = this.getDungeon(connection.key)
                 if (connection.type === 'spectator')
                     {
-                        //console.log('dead spectator', connection.id, connection.key)
-                        dungeon.end() // end the dungeon
+                        // check if there's multiple spectators on the dungeon
+                        let last = true
+                        for (let j = 0; j < this.connections.length; j++)
+                        {
+                            if (j !== i && this.connections[j].key === dungeon.key)
+                            {
+                                last = false
+                                break
+                            }
+                        }
+                        if (last) dungeon.end() // end the dungeon if last spectator
                         this.connections.splice(i, 1)
                     }
                 else 
@@ -100,6 +109,11 @@ module.exports = class GameMaster
                 }
             }
           }
+    }
+    cleanup()
+    {
+        // close connections
+
     }
     getLevelData(connection)
     {
@@ -197,7 +211,7 @@ module.exports = class GameMaster
     }
     updateInput(input)
     {
-        //console.log(input)
+        // TODO SPEED UP FUNCTION BY ASSIGNING PLAYER TO CONNECTION
         let dungeon = this.getDungeon(input.key)
         dungeon.updateInput(input)
     }
@@ -227,6 +241,8 @@ module.exports = class GameMaster
         catch (e)
         {
             console.error('ERROR: ', e)
+            // remove the problem, or reset the game master if persistent error
+
         }
         this.ticks ++
     }
@@ -235,7 +251,6 @@ module.exports = class GameMaster
         let key = generateKey(len)
         for (let dungeon of this.dungeons)
         {
-            // try again
             if (dungeon.key === key) return this.createKey(len)
         }
         return key

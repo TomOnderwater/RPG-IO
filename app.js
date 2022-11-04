@@ -1,12 +1,16 @@
 const express = require("express")
 const app = express()
 let path = require("path")
-const port = 3000
+
+const config = require('./config.js')
+const settings = config.testing
+
+const port = settings.port
 
 const expressWS = require('express-ws')(app)
 const bodyParser = require("body-parser")
 
-const { exec } = require("child_process")
+const { exec } = require("child_process") // REMOVE FROM FLAWK BUILD
 
 var dogsArr = []
 app.use(bodyParser.json())
@@ -16,7 +20,7 @@ const AccountManager = require("./accounts.js")
 
 const gameMaster = new GameMaster()
 
-//const dungeon = new Dungeon(1) // floor count
+if (settings.reset) resetGames()
 
 runGames()
 checkConnections()
@@ -111,6 +115,15 @@ function checkConnections()
   gameMaster.checkConnections()
   setTimeout(checkConnections, 1000)
 }
+
+function resetGames()
+{
+  gameMaster.cleanup()
+  // reset gamemaster
+  // gameMaster = new GameMaster()
+  setTimeout(resetGames, settings.reset)
+}
+
 function runGames()
 {
   gameMaster.update()
@@ -134,17 +147,21 @@ app.ws('/gamestream', (ws, req) => {
     {
       case 'input':
         gameMaster.updateInput(msg)
-        // console.log(viewport)
-        //ws.send(viewport)
       break
       case 'ready':
         if (type === 'spectator')
           {
-            let game = gameMaster.addDungeon()
+            // check if the key is an existing dungeon
+            let game = gameMaster.getDungeon(msg.key)
+            if (game.key !== gameMaster.dungeons[0].key)
+            {
+              
+            }
+            else game = gameMaster.addDungeon()
             connection.key = game.key
             connection.id = 'spectator'
             if (gameMaster.manageConnections(connection))
-            {
+            { // socket is assigned to a dungeon / player
               //console.log('connection:', connection)
               //console.log(gameMaster.getLevelData(connection).width)
               ws.send(JSON.stringify({type: 'spectator',
