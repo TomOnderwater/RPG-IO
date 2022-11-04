@@ -34,7 +34,6 @@ module.exports = class GameMaster
     }
     addDungeon()
     {
-
         let dungeon = new Dungeon({
             floorcount: 1, 
             size: {width: 32, height: 18}, 
@@ -112,8 +111,10 @@ module.exports = class GameMaster
     }
     cleanup()
     {
-        // close connections
-
+        for (let connection of this.connections)
+        {
+            connection.socket.close("cleanup")
+        }
     }
     getLevelData(connection)
     {

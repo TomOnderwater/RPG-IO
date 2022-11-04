@@ -55,7 +55,6 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 
 if (params.key) key = params.key
 
-console.log('spectate key: ', spectate_key)
 
 function preload()
 {
@@ -88,7 +87,6 @@ function preload()
 
   // LOAD FONTS
   titlefont = loadFont('assets/fonts/GamePlayed-vYL7.ttf')
-
 }
 
 function setupInput()
@@ -141,7 +139,7 @@ function draw()
     break
     case 'game':
     // time output:
-    if (millis() > timer + 34)
+    if (millis() > timer + 33)
     {
       timer = millis()
       updateInput()
@@ -168,6 +166,8 @@ function updateInput()
   sendInput(input.update())
   handleRumble()
 }
+
+
 function setGameState(state)
 {
   console.log("switching to", state)
@@ -176,7 +176,6 @@ function setGameState(state)
     case 'lobby':
       lobby = new Lobby()
       gamestate = state
-
     // trigger music
     break
     case 'game':
@@ -235,7 +234,8 @@ function drawGameOver()
 }
 
 class Lobby
-{ constructor()
+{ 
+  constructor()
   {
     this.margin = 100 // for drawing label
     this.rounding = 10

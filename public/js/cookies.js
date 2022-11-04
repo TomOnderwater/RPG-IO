@@ -16,7 +16,7 @@
   function getCookie(cname) {
     let name = cname + "="
     let ca = document.cookie.split(';')
-    console.log(document.cookie)
+    //console.log(document.cookie)
     for(var i = 0; i < ca.length; i++) {
       let c = ca[i]
       while (c.charAt(0) == ' ') {

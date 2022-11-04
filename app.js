@@ -20,7 +20,7 @@ const AccountManager = require("./accounts.js")
 
 const gameMaster = new GameMaster()
 
-if (settings.reset) resetGames()
+//if (settings.reset) resetGames()
 
 runGames()
 checkConnections()
@@ -118,9 +118,12 @@ function checkConnections()
 
 function resetGames()
 {
-  gameMaster.cleanup()
+  console.log("CLOSING SOCKET CONNECTIONS")
+  //gameMaster.cleanup()
   // reset gamemaster
-  // gameMaster = new GameMaster()
+  console.log("RESETTING GAME HANDLER")
+  //gameMaster = new GameMaster()
+  console.log("next cleanup scheduled", settings.reset * 0.001, 'seconds from now')
   setTimeout(resetGames, settings.reset)
 }
 
@@ -155,7 +158,7 @@ app.ws('/gamestream', (ws, req) => {
             let game = gameMaster.getDungeon(msg.key)
             if (game.key !== gameMaster.dungeons[0].key)
             {
-              
+
             }
             else game = gameMaster.addDungeon()
             connection.key = game.key
