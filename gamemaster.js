@@ -22,14 +22,16 @@ module.exports = class GameMaster
         this.dungeons.push(new Dungeon({
             floorcount: 1, 
             size: {width: 100, height: 100}, 
-            mode: 'survival'}, 
-            this.createKey(5)))
+            mode: 'survival',
+            persistent: true}, 
+            'world'))
 
         // DEFAULT ARENA DUNGEON
         this.dungeons.push(new Dungeon({
             floorcount: 1, 
             size: {width: 32, height: 18}, 
-            mode: 'arena'}, 
+            mode: 'arena',
+            persistent: true}, 
             'arena')) // key is arena
     }
     addDungeon()
@@ -93,7 +95,7 @@ module.exports = class GameMaster
                                 break
                             }
                         }
-                        if (last) dungeon.end() // end the dungeon if last spectator
+                        if (last && !dungeon.persistent) dungeon.end() // end the dungeon if last spectator
                         this.connections.splice(i, 1)
                     }
                 else 

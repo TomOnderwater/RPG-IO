@@ -13,6 +13,7 @@ module.exports = class Dungeon {
     constructor(settings, key) {
         this.game = new Game(settings, this)
         this.entitycount = 1
+        this.persistent = settings.persistent || false
         this.key = key
         this.ticks = 0
         this.queue = []

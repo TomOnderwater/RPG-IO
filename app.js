@@ -18,9 +18,9 @@ app.use(bodyParser.json())
 const GameMaster = require("./gamemaster.js")
 const AccountManager = require("./accounts.js")
 
-const gameMaster = new GameMaster()
+let gameMaster = new GameMaster()
 
-//if (settings.reset) resetGames()
+if (settings.reset) resetGames()
 
 runGames()
 checkConnections()
@@ -119,10 +119,10 @@ function checkConnections()
 function resetGames()
 {
   console.log("CLOSING SOCKET CONNECTIONS")
-  //gameMaster.cleanup()
+  gameMaster.cleanup()
   // reset gamemaster
   console.log("RESETTING GAME HANDLER")
-  //gameMaster = new GameMaster()
+  gameMaster = new GameMaster()
   console.log("next cleanup scheduled", settings.reset * 0.001, 'seconds from now')
   setTimeout(resetGames, settings.reset)
 }
