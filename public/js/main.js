@@ -58,7 +58,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 
 // EXAMPLE QUERY FOR AUTOSTART in McDonalds
 // ?key=McDonalds&name=Bob&autostart=yes
-if (params.key) fkey = params.key
+if (params.key) fkey = params.key.toLowerCase()
 if (params.name) flawkname = params.name
 if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
