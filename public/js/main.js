@@ -60,13 +60,13 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 // ?key=McDonalds&name=Bob&autostart=yes
 if (params.key) fkey = params.key
 if (params.name) flawkname = params.name
-if (params.autostart) autostart = true
+if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
 function preload()
 {
-  console.log('loading assets...')
+  //console.log('loading assets...')
   sound = new SoundManager()
-  console.log('loading textures...')
+  //console.log('loading textures...')
 
   // SURFACE TEXTURES
   grasstex_ = loadImage('assets/textures/seamless_grass1.jpg')

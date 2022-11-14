@@ -114,7 +114,7 @@ class Event
     this.pos = pos
     this.value = value
     this.ticks = 0
-    this.maxticks = 60
+    this.maxticks = 30
     this.textpos = pos
   }
   drawValue()
@@ -123,7 +123,7 @@ class Event
     let pos = cam.onScreen(this.textpos)
     push()
     textSize(20)
-    fill(255, 100 + (155 * (1 - (this.ticks / this.maxticks))))
+    fill(255, 50 + (205 * (1 - (this.ticks / this.maxticks))))
     noStroke()
     text(this.value, pos.x, pos.y)
     pop()
@@ -199,9 +199,10 @@ class Impact extends Event
   constructor(pos, damage, dir, color)
   {
     super (pos, damage)
-    this.maxticks = 50 + damage
+    this.maxticks = 30
     this.color = color
     let splattercount = Math.round(random(1, (damage + 1) * 0.5))
+    if (splattercount > 10) splattercount = 10
     this.splatters = []
     // FIX THIS TO A MORE LOGICAL SETUP
     if (color.r == 255)
