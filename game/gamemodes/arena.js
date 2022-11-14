@@ -3,7 +3,7 @@ const riverPlains = {water: 0.45, stone: 0.36, structure: 0.36}
 const stoneLands = {water: 0.00, stone: 0.5, structure: 0.36}
 const meadows = {water: 0, stone: 0, structure: 0.2}
 
-const seeds = [meadows, stoneLands, riverPlains]
+const seeds = [meadows, stoneLands]
 
 const createItem = require('../items/item.js')
 

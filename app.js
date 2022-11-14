@@ -144,8 +144,6 @@ app.ws('/gamestream', (ws, req) => {
     let id = msg.id
     let type = msg.type
 
-    //console.log(msg)
-    let connection = {socket: ws, key, id, type}
     switch(msg.code) 
     {
       case 'input':
@@ -155,36 +153,29 @@ app.ws('/gamestream', (ws, req) => {
         if (type === 'spectator')
           {
             // check if the key is an existing dungeon
-            let game = gameMaster.getDungeon(msg.key)
-            if (game.key !== gameMaster.dungeons[0].key)
-            {
-
-            }
-            else game = gameMaster.addDungeon()
-            connection.key = game.key
-            connection.id = 'spectator'
-            if (gameMaster.manageConnections(connection))
+            //console.log(key)
+            let game = gameMaster.getDungeon(key)
+            if (game.key !== key) game = gameMaster.addDungeon(key)
+            key = game.key
+            id = 'spectator'
+            if (gameMaster.manageConnections({socket: ws, key, id, type}))
             { // socket is assigned to a dungeon / player
-              //console.log('connection:', connection)
-              //console.log(gameMaster.getLevelData(connection).width)
-              ws.send(JSON.stringify({type: 'spectator',
-                key: connection.key, 
-                level: gameMaster.getLevelData(connection)}))
+              ws.send(JSON.stringify({type: 'spectator', key, 
+                level: gameMaster.getLevelData({key, id, type})}))
             }
               break
           }
-        gameMaster.startPlayer(connection)
+        gameMaster.startPlayer({key, id, type})
         // check if the player is still alive
-        if (gameMaster.manageConnections(connection)) 
+        if (gameMaster.manageConnections({socket: ws, key, id, type})) 
           ws.send(JSON.stringify({
-            type: 'start', 
-            id: connection.id, key: connection.key, 
-            level: gameMaster.getLevelData(connection)
+            type: 'start', id, key, 
+            level: gameMaster.getLevelData({key, id, type})
             }))
         break
         case 'level':
           ws.send(JSON.stringify({type: 'view', 
-          level: gameMaster.getLevelData(connection)}))
+          level: gameMaster.getLevelData({key, id, type})}))
       default:
       //do nothing
       break

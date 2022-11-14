@@ -1,8 +1,11 @@
 p5.disableFriendlyErrors = true
 
 //GAME SPECIFIC
-let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'gandalf', lobby,
+let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'guest', lobby,
   messageboard
+
+// FLAWK SPECIFIC
+let autostart = false, flawkname = false, fkey = false
 
 let activeID = 'none' // if not none, means there's an existing player
 //DEVICE SPECIFIC
@@ -53,8 +56,11 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 })
 
-if (params.key) key = params.key
-
+// EXAMPLE QUERY FOR AUTOSTART in McDonalds
+// ?key=McDonalds&name=Bob&autostart=yes
+if (params.key) fkey = params.key
+if (params.name) flawkname = params.name
+if (params.autostart) autostart = true
 
 function preload()
 {
@@ -170,17 +176,19 @@ function updateInput()
 
 function setGameState(state)
 {
-  console.log("switching to", state)
+  //console.log("switching to", state)
   switch(state)
   {
     case 'lobby':
-      lobby = new Lobby()
-      gamestate = state
-    // trigger music
+      if (autostart) startGame(inputname)
+      else 
+      {
+        lobby = new Lobby()
+        gamestate = state
+      }
     break
     case 'game':
     gamestate = state
-    //sound.playMusic()
     break
     case 'loading':
     gamestate = state

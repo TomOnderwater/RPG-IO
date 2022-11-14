@@ -34,13 +34,15 @@ module.exports = class GameMaster
             persistent: true}, 
             'arena')) // key is arena
     }
-    addDungeon()
+    addDungeon(key)
     {
+        if (key === "" || this.duplicateKey(key)) key = this.createKey(5)
+        console.log('key = ', key)
         let dungeon = new Dungeon({
             floorcount: 1, 
             size: {width: 32, height: 18}, 
             mode: 'arena'}, 
-            this.createKey(5))
+            key)
 
         this.dungeons.push(dungeon)
         console.log('dungeons: ', this.dungeons)
@@ -249,13 +251,18 @@ module.exports = class GameMaster
         }
         this.ticks ++
     }
+    duplicateKey(key)
+    {
+        for (let dungeon of this.dungeons)
+        {
+            if (key === dungeon.key) return true
+        }
+        return false
+    }
     createKey(len)
     {
         let key = generateKey(len)
-        for (let dungeon of this.dungeons)
-        {
-            if (dungeon.key === key) return this.createKey(len)
-        }
+        if (this.duplicateKey(key)) return this.createKey(len)
         return key
     }
 }

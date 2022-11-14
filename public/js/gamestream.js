@@ -106,6 +106,7 @@ async function continueGame()
 
 async function startSpectator()
 {
+  if (fkey) key = fkey
   openStream()
 }
 
@@ -159,15 +160,15 @@ async function registerPlayer() {
     console.log('server response:', gamedetails)
     let account = gamedetails.account
     activeID = gamedetails.id
-    key = gamedetails.account.key
+    key = fkey ? fkey : account.key
+    inputname = flawkname ? flawkname : account.name
     console.log('key: ', key)
-    if (account.session) 
+
+  if (account.session) 
     {
       setCookie('rpg-io', account.session, 7)
       sess_id = gamedetails.session
     }
-    //)
-    if (gamedetails.account) inputname = gamedetails.account.name
     setGameState('lobby')
   }
 }
