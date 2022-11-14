@@ -20,5 +20,6 @@ const AMMO = '*'
 const FIREBALL = '$'
 const FLAIL = 'O'
 const SPEAR = '|'
+const POTION = '-'
 
 let inventorySpecs = {rowcount: 6, visible: 1}

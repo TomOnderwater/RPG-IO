@@ -136,6 +136,9 @@ function drawItem(type, pos, size, _rot)
     case FLAIL:
       drawIcon(flailIcon, pos, size, rot)
       return
+    case POTION:
+      drawIcon(potionicon, pos, size, rot)
+      return
     default:
       emoji = '✊'
       break

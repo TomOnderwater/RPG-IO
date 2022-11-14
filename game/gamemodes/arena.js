@@ -86,7 +86,7 @@ module.exports = class Arena
     {
         let entry = this.getEntry(id)
         if (!id) return {} // send an empty object
-        return {name: entry.name, kills: entry.kills, wins: entry.wins}
+        return {name: entry.name, kills: entry.kills, wins: entry.wins, score: entry.wins}
     }
     getCountDown()
     {

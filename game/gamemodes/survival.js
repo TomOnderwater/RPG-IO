@@ -11,6 +11,7 @@ module.exports = class Survival
         this.levelsize = game.size || {width: 100, height: 100}
         this.floorcount = game.floorcount || 1
         this.leaderboard = []
+        this.finalscores = []
         this.treasurechestticks = 3000 // about 100 seconds
         this.mobticks = 60
         this.naturalhealing = true
@@ -72,6 +73,20 @@ module.exports = class Survival
         entry.score = 0
         this.leaderboard.push(entry)
     }
+    getFinalScore(id)
+    {
+        let out = false
+        for (let i = this.finalscores.length - 1; i >= 0; i--)
+        {
+            if (this.finalscores[i].id === id)
+            {
+                out = this.finalscores[i]
+                this.finalscores.splice(i, 1)
+                break
+            }
+        }
+        return out
+    }
     getEntry(id)
     {
         for (let entry of this.leaderboard)
@@ -88,6 +103,7 @@ module.exports = class Survival
         {
             if (this.leaderboard[i].id === id)
             {
+                this.finalscores.push(this.leaderboard[i])
                 this.leaderboard.splice(i, 1)
             }
         }
@@ -110,6 +126,7 @@ module.exports = class Survival
     getScore(id)
     {
         let entry = this.getEntry(id)
+        if (!entry) entry = this.getFinalScore(id)
         if (!entry) return {} // send an empty object
         return {name: entry.name, score: entry.score}
     }

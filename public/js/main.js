@@ -31,7 +31,7 @@ let grasstex_, stonetex_, watertex_, sandtex_, dirttex_, graveltex_
 let grassTexture, stoneTexture, waterTexture, sandTexture, dirtTexture, gravelTexture
 
 let walltexture, woodicon, stoneicon, rocktexture, stonewallTexture, woodenwallTexture,
-ammoicon, stafficon, gearicon, chestIcon, flailIcon
+ammoicon, stafficon, gearicon, chestIcon, flailIcon, potionicon
 
 // FONTS
 let titlefont
@@ -90,6 +90,7 @@ function preload()
   chestIcon = loadImage('assets/textures/treasurechest.png')
   gearicon = loadImage('assets/textures/gearicon.png')
   flailIcon = loadImage('assets/textures/flailicon.png')
+  potionicon = loadImage('assets/textures/potion.png')
 
   // LOAD FONTS
   titlefont = loadFont('assets/fonts/GamePlayed-vYL7.ttf')
