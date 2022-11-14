@@ -122,7 +122,7 @@ class Event
     this.textpos = bounce(this.textpos, {x: this.pos.x, y: this.pos.y - 0.3}, 0.2)
     let pos = cam.onScreen(this.textpos)
     push()
-    textSize(20)
+    textSize(cam.zoom * 0.3)
     fill(255, 50 + (205 * (1 - (this.ticks / this.maxticks))))
     noStroke()
     text(this.value, pos.x, pos.y)
