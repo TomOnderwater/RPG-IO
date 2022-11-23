@@ -54,8 +54,8 @@ module.exports = class Survival
             let killerEntry = this.getEntry(killer.id)
             if (victim.type === PLAYER)
         {
-            let victimEntry = this.getEntry(victim.id)
-            killerEntry.score += Math.round(victimEntry.score * 0.5)
+            //let victimEntry = this.getEntry(victim.id)
+            //killerEntry.score += Math.round(victimEntry.score * 0.5)
             killerEntry.victims = [...killerEntry.victims, victim.id]
             this.removeEntry(victim.id)
         }

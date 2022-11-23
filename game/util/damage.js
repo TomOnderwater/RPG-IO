@@ -34,7 +34,7 @@ module.exports = function calcAttack(attack)
                 owner: attack.attacker
             } // add a color to targets
         }
-        else 
+        else
         {
             // living bodies
             let damage = Math.round(attack.item.attack * speed * attack.power)

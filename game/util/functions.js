@@ -230,7 +230,6 @@ function chooseOne(list)
     return list[i]
 }
 
-
 module.exports = {
     getTarget, convergeAngle, dist, getAngleTo, onField, getAngle,
     add, subtract, multiply, divide, sqDist,

@@ -5,7 +5,9 @@ class Level {
     this.entities = []
     this.events = []
     this.buildingevents = []
+    this.grounditems = []
   }
+  /*
   checkTouches()
   {
    let t = input.getFreeTouch()
@@ -24,6 +26,7 @@ class Level {
       }
     }
   }
+  */
   getPlayer(id)
   {
     for (let entity of this.entities)
@@ -57,6 +60,7 @@ class Level {
         }
         this.tiles.push(col) 
       }
+      if (leveldata.items) this.updateItems(leveldata.items)
   }
   newData(viewport)
   {
@@ -64,6 +68,7 @@ class Level {
     if (viewport.entities) this.updateEntities(viewport.entities)
     if (viewport.events) this.updateEvents(viewport.events)
     if (viewport.updates) this.updateStructures(viewport.updates)
+    if (viewport.itemupdates) this.updateItems(viewport.itemupdates)
     if (viewport.builds) this.updateBuildingEvents(viewport.builds)
   }
   draw()
@@ -86,6 +91,13 @@ class Level {
     {
       visibletiles[i].drawStructure()
     }
+
+    for (let i = 0; i < this.grounditems.length; i ++)
+    {
+      if (onField(this.grounditems[i].pos, range))
+        this.grounditems[i].draw()
+    }
+    
     for (let i = 0; i < this.entities.length; i++)
     {
       this.entities[i].draw()
@@ -94,7 +106,6 @@ class Level {
     {
       this.events[i].draw()
     }
-    
     for (let i = 0; i < visibletiles.length; i++)
     {
       visibletiles[i].drawTop()
@@ -166,6 +177,36 @@ class Level {
   })
   if (player) handleFeedback(events)
 }
+updateItems(items)
+{
+  for (let item of items)
+  {
+    if (!item.n) // remove item
+    {
+      for (let i = this.grounditems.length - 1; i >= 0; i --)
+      {
+        if (item.i === this.grounditems[i].id)
+          {
+            this.grounditems.splice(i, 1)
+            break
+          }
+      }
+    }
+    else 
+    {
+      let duplicate = false
+      for (let i = 0; i < this.grounditems.length; i++)
+      {
+        if (item.i === this.grounditems[i].id) 
+        {
+          duplicate = true
+          break
+        }
+      }
+      if (!duplicate) this.addGroundItem(item)
+    }
+  }
+}
   updateStructures(newtiles)
   {
     // {x: y: s:, t: }
@@ -177,7 +218,6 @@ class Level {
   }
   updateEntities(entities)
   {
-    //console.log(entities)
     for (let i = this.entities.length - 1; i >= 0; i--)
     {
       let found = false
@@ -199,46 +239,45 @@ class Level {
         this.entities.splice(i, 1)
       }
     }
-    this.addEntities(entities)
-  }
-  addEntities(entities)
-  {
     for (let entity of entities)
     {
-      //console.log(entity.t)
-      switch (entity.t)
+      this.addEntity(entity)
+    }
+  }
+  addGroundItem(item)
+  {
+    item.g = 1
+    let entity = this.createEntity(item)
+    this.grounditems.push(entity)
+  }
+  createEntity(data)
+  {
+    switch (data.t)
       {
         case PLAYER:
-          this.entities.push(new Player(entity))
-        break
+          return new Player(data)
         case SWORD:
-          this.entities.push(new Sword(entity))
-        break
+          return new Sword(data)
         case BOW:
-          this.entities.push(new Bow(entity))
-          break
+          return new Bow(data)
         case STAFF:
-          this.entities.push(new Staff(entity))
-          break
+          return new Staff(data)
         case FIREBALL:
-          this.entities.push(new FireBall(entity))
-          break
+          return new FireBall(data)
         case ARROW:
-          this.entities.push(new Arrow(entity))
-        break
+          return new Arrow(data)
         case SLIME:
-          this.entities.push(new Critter(entity)) // CHANGE TO CRITTER
-        break
+          return new Critter(data)
         case NONE:
-          this.entities.push(new Fist(entity))
-          break
+          return new Fist(data)
         case FLAIL:
-          this.entities.push(new Flail(entity))
-        break
+          return new Flail(data)
         default: // items that can be held in the hand
-          this.entities.push(new HandItem(entity))
-        return 
+          return new HandItem(data)
       }
-    }
+  }
+  addEntity(entity)
+  {
+    this.entities.push(this.createEntity(entity))
   }
 }

@@ -29,7 +29,6 @@ module.exports = class GroundItem{
         return {
             i: this.id, 
             t: this.item.type, 
-            p: pos,
-            g: 1}
-    }
+            p: pos}
+    }  
 }

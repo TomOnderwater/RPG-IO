@@ -1,12 +1,13 @@
 const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢', '🐸', '🦋', '🐞']
 const monsters = ['🦇', '🐗', '🦂', '🐙', '🧟‍♀️', '🧟‍♂️', '🐸']
+const icecream = ['🍩' ,'🍦', '🧁', '🍧', '🍨']
 
-function randomAnimal(seed)
+function randomAnimal(seed, list)
 {
     //console.log(seed)
     randomSeed(seed)
-    let index = round(random(monsters.length - 1))
-    return monsters[index]
+    let index = round(random(list.length - 1))
+    return list[index]
 }
 
 class Entity
@@ -112,7 +113,7 @@ class Critter extends Entity
     constructor(entity)
     {
         super(entity)
-        this.face = randomAnimal(bton(this.id) * 1000)
+        this.face = randomAnimal(bton(this.id) * 1000, icecream)
     }
     draw()
     {

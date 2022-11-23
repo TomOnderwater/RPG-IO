@@ -85,8 +85,14 @@ module.exports = class Dungeon {
         {
             let viewport = {}
             let level = this.levels[0]
-            viewport.entities = level.getAllEntities()
+            if (this.ticks % 2 === 0) 
+                viewport.entities = level.getAllEntities()
             viewport.events = level.getAllEvents()
+            if (level.itemupdates.length)
+            {
+                viewport.itemupdates = level.getItemUpdates()
+                //console.log('item update: ', viewport.itemupdates)
+            }
             viewport.updates = level.getUpdates()
             viewport.builds = level.getBuildingEvents()
             let countdown = this.game.getCountDown()
@@ -118,8 +124,11 @@ module.exports = class Dungeon {
             }
         if (connection.type === 'player')
         {
-            viewport.entities = active.level.getEntities(active.player)
+            if (this.ticks % 2 === 0) 
+                viewport.entities = active.level.getEntities(active.player)
             viewport.events = active.level.getEvents(active.player)
+            if (active.level.itemupdates.length)
+                viewport.itemupdates = active.level.getItemUpdates()
             viewport.updates = active.level.getUpdates()
             viewport.builds = active.level.getBuildingEvents(active.player)
         }

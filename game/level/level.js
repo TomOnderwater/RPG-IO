@@ -27,6 +27,7 @@ module.exports = class Level
         this.updates = []
         this.rangedattacks = []
         this.physicalevents = [] // stuff like explosions and fires
+        this.itemupdates = []
         this.buildManager = new BuildingManager(this)
         //this.addRandomItems()
     }
@@ -44,8 +45,6 @@ module.exports = class Level
     }
     getSpawnPos(body = new PhysicalBody())
     {
-        //return {x: this.size / 2, y: this.size / 8}
-        //let startpos = {x: this.width / 2, y: this.height / 8}
         let startpos = this.getRandomLandPos()
         return this.getFreeSpot(startpos, body)
     }
@@ -110,14 +109,22 @@ module.exports = class Level
             this.placeItem(item)
         }
     }
+    getItemUpdates()
+    {
+        return this.itemupdates
+    }
     addDrops(drops)
     {
         drops.forEach(drop => this.placeItem(drop))
     }
     placeItem(data)
     {
-        data.id = this.dungeon.assignID() //is handled like an entity
-        this.items.push(new GroundItem(data))
+        data.id = this.dungeon.assignID() // assign ID
+        let item = new GroundItem(data)
+        this.items.push(item)
+        let d = item.data()
+        d.n = 1 // flag as incoming
+        this.itemupdates.push(d)
     }
     updateGroundItems(entities)
     {
@@ -125,7 +132,12 @@ module.exports = class Level
         {
             let pickup = this.items[i].update(entities)
             if (pickup)
+            {
+                let data = this.items[i].data()
+                data.n = 0 // flag as outgoing
+                this.itemupdates.push(data)
                 this.items.splice(i, 1)
+            }
         }
     }
     addRangedAttack(data)
@@ -208,6 +220,7 @@ module.exports = class Level
     clearUpdates()
     {
         this.updates = []
+        this.itemupdates = []
     }
     updateStructures()
     {
@@ -223,7 +236,6 @@ module.exports = class Level
                     {
                         let items = tile.destroyStructure()
                         this.addDrops(items)
-                        //items.forEach(item => this.placeItem(item))
                         this.updates.push(tile.getData())
                     }
                 }
@@ -249,10 +261,10 @@ module.exports = class Level
             switch(building.type)
             {
                 case WOOD:
-                    tile.addWoodWall()
+                    tile.addStructure(WOODWALL)
                 break
                 case ROCK:
-                    tile.addStoneWall()
+                    tile.addStructure(STONEWALL)
                 break
                 default:
                     console.log('building type not recognized')
@@ -277,10 +289,9 @@ module.exports = class Level
         if (this.isFreeTile(pos))
         {
             let tile = this.getTile(pos)
-            tile.addTreasureChest()
+            tile.addStructure(TREASURECHEST)
             this.updates.push(tile.getData())
         }
-
     }
     getLeaderBoard()
     {
@@ -333,8 +344,6 @@ module.exports = class Level
             if (Func.sqDist(player.body.pos, event.pos) < sqrange)
                 events.push(event)
         })
-
-        //console.log('output events:', events)
         return events
     }
     resetEvents()
@@ -347,13 +356,11 @@ module.exports = class Level
     }
     closeBodies(pos, colliders, range)
     {
-        //let colliders = [...this.players, ...this.entities]
         let close = this.getStructures(pos, range)
         for (let collider of colliders)
         {
             if (Func.inRange(pos, collider.body.pos, range)) close.push(collider.body) 
         }
-        //console.log('bodies in range:', close.length)
         return close
     }
     isFreeTile(_pos) //check if there's something on the tile
@@ -412,14 +419,19 @@ module.exports = class Level
     getAllEntities()
     {
         let entities = [] //everything else
-        for (let player of this.players)
+        for (let i = 0; i < this.players.length; i++)
         {
-            entities.push(player.data())
-            entities.push(player.getHand())
+            entities.push(this.players[i].data())
+            entities.push(this.players[i].getHand())
         }
-        this.mobs.forEach(mob => entities.push(mob.data()))
-        this.rangedattacks.forEach(rangedattack => entities.push(rangedattack.data()))
-        this.items.forEach(item => entities.push(item.data()))
+        for (let i = 0; i < this.mobs.length; i++)
+        {
+            entities.push(this.mobs[i].data())
+        }
+        for (let i = 0; i < this.rangedattacks.length; i++)
+        {
+            entities.push(this.rangedattacks[i].data())
+        }
         return entities 
     }
     getGroundSpeed(pos)
@@ -450,11 +462,13 @@ module.exports = class Level
                 if(Func.inRange(player.body.pos, rangedattack.body.pos, player.perceptionstat))
                     entities.push(rangedattack.data())
             }
+        /*
         for (let item of this.items)
         {
             if(Func.inRange(player.body.pos, item.body.pos, player.perceptionstat))
                     entities.push(item.data())
         }
+        */
         return entities
     }
     getStructures(pos, range)
@@ -504,6 +518,17 @@ module.exports = class Level
         }
         return tiles
     }
+    getItems()
+    {
+        let out = []
+        for (let item of this.items)
+        {
+            let data = item.data()
+            data.n = 1
+            out.push(data)
+        }
+        return out
+    }
     getLevelData()
     {
         let cols = []
@@ -516,7 +541,7 @@ module.exports = class Level
             }
             cols.push(col)
         }
-        return {width: this.width, height: this.height, cols}
+        return {width: this.width, height: this.height, cols, items: this.getItems()}
     }
     getTileData(player)
     {

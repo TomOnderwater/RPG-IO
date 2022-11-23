@@ -61,9 +61,9 @@ module.exports = class LevelGenerator
                         if (structval < level.structurerate && Math.random() < 0.7) // random check
                         {
                             if (surface == GRASS) 
-                                tiles[x][y].addTree()
+                                tiles[x][y].addStructure(TREE)
                             if (surface == STONE)
-                                tiles[x][y].addRock()
+                                tiles[x][y].addStructure(ROCK)
                         }
                     }
                 }
@@ -137,22 +137,22 @@ module.exports = class LevelGenerator
         {
             for (let y = 0; y < padding; y++)
             {
-                this.tiles[x][y].addWall()
+                this.tiles[x][y].addStructure(WALL)
             }
             for (let y = level.height - 1; y > level.height - (1 + padding); y--)
             {  //bottom row
-                this.tiles[x][y].addWall()
+                this.tiles[x][y].addStructure(WALL)
             }
         }
         for (let y = 0; y < level.height; y++)     // left, right
         {
             for (let x = 0; x < padding; x++)
             {  //top row
-                this.tiles[x][y].addWall()
+                this.tiles[x][y].addStructure(WALL)
             }
             for (let x = level.width - 1; x > level.width - (1 + padding); x--)
             {  //bottom row
-                this.tiles[x][y].addWall()
+                this.tiles[x][y].addStructure(WALL)
             }
         }
     }

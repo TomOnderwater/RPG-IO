@@ -58,7 +58,7 @@ module.exports = class RangedAttack
                     growth: 0.2,
                     maxticks: 1,
                     cost: this.cost,
-                    dir: Func.multiply(this.dir, 0.05)
+                    dir: Func.multiply(this.dir, 0.02)
                 }, level)                       
             return true
         }

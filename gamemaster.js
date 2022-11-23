@@ -150,7 +150,7 @@ module.exports = class GameMaster
                 if (data.type === 'game over' && connection.player !== null)
                 {
                     connection.player = null //dead, set for removal
-                    console.log('sending end message', data)
+                    //console.log('sending end message', data)
                     connection.socket.send(JSON.stringify(data))
                 }
                 //if (connection.type !== 'spectator' && connection.player !== null)
@@ -158,7 +158,9 @@ module.exports = class GameMaster
                 {
                     try 
                     {
-                        connection.socket.send(JSON.stringify(data))
+                        let msg = JSON.stringify(data)
+                        //console.log('package size (kB):', msg.length / 1024)
+                        connection.socket.send(msg)
                     } catch (err)
                     {
                        console.log("error: ", err)

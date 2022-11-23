@@ -113,11 +113,15 @@ class Slime
         //drop.item = createItem(this.)
         if (Math.random() > 0.4) 
         {
-            let drop = {pos: this.body.getCenter()}
+            let drop = {pos: Func.add(this.body.getCenter(), Func.randomVector(0.1))}
             drop.item = {type: AMMO}
             drop.item.count = Math.round(3 + Math.random() * 3)
             items.push(drop)
         }
+        let xpdrop = {pos: Func.add(this.body.getCenter(), Func.randomVector(0.1))}
+        xpdrop.item = {type: AMMO}
+        xpdrop.item.count = 8
+        items.push(xpdrop)
         return items
     }
     isEnemy(other)
