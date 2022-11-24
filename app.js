@@ -3,6 +3,7 @@ const app = express()
 let path = require("path")
 
 const config = require('./config.js')
+// get correct config here
 const settings = config.testing
 
 const port = settings.port
