@@ -62,6 +62,10 @@ if (params.key) fkey = params.key.toLowerCase()
 if (params.name) flawkname = params.name
 if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
+// SKIN
+let skin = false
+if (params.skin) skin = params.skin
+
 function preload()
 {
   //console.log('loading assets...')

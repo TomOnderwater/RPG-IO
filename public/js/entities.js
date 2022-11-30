@@ -2,6 +2,17 @@ const animals = ['🐷', '🐭', '🐹', '🐰', '🐼', '🐣', '🦆', '🦢',
 const monsters = ['🦇', '🐗', '🦂', '🐙', '🧟‍♀️', '🧟‍♂️', '🐸']
 const icecream = ['🍩' ,'🍦', '🧁', '🍧', '🍨']
 
+let critterlist = () =>
+{
+    switch(skin)
+    {
+        case 'ice':
+            return icecream
+        default:
+            return monsters
+    }
+}
+
 function randomAnimal(seed, list)
 {
     //console.log(seed)
@@ -113,7 +124,7 @@ class Critter extends Entity
     constructor(entity)
     {
         super(entity)
-        this.face = randomAnimal(bton(this.id) * 1000, icecream)
+        this.face = randomAnimal(bton(this.id) * 1000, critterlist())
     }
     draw()
     {
