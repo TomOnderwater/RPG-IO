@@ -1,3 +1,5 @@
+const version = "v0.1"
+
 p5.disableFriendlyErrors = true
 
 //GAME SPECIFIC
@@ -63,6 +65,7 @@ if (params.name) flawkname = params.name
 if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
 // SKIN
+// example: ?skin=ice (for icecream)
 let skin = false
 if (params.skin) skin = params.skin
 
@@ -170,7 +173,16 @@ function draw()
     break
   }
   //fullscreen()
+  drawVersion()
   ticks ++
+}
+
+function drawVersion()
+{
+  push()
+  fill(255)
+  text(version, width - 30, height - 10)
+  pop()
 }
 function updateInput()
 {

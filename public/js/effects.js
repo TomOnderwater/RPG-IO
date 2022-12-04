@@ -196,22 +196,21 @@ class Explosion
 
 class Impact extends Event
 {
-  constructor(pos, damage, dir, color)
+  constructor(pos, damage, dir, type)
   {
     super (pos, damage)
     this.maxticks = 30
-    this.color = color
+    this.type = type
     let splattercount = Math.round(random(1, (damage + 1) * 0.5))
     if (splattercount > 10) splattercount = 10
     this.splatters = []
-    // FIX THIS TO A MORE LOGICAL SETUP
-    if (color.r == 255)
+    if (type === 'blood')
       sound.splashimpact(pos, damage)
-    if (color.r == 100)
+    if (type === 'stone')
       sound.basicimpact(pos, damage)
     for (let i = 0; i < splattercount; i++)
     {
-      this.splatters.push(new Splatter(pos, dir, this.maxticks, this.color))
+      this.splatters.push(new Splatter(pos, dir, this.maxticks, type))
     }
   }
   draw()
@@ -227,16 +226,21 @@ class Impact extends Event
 
 class Splatter
 {
-  constructor(pos, dir, maxticks, color)
+  constructor(pos, dir, maxticks, type)
   {
     this.pos = pos
     this.dia = random(0.04, 0.12) * cam.zoom
     this.diaincrement = 0.004 * cam.zoom
     this.mult = random(0.3, 0.7)
-    this.color = color
+    this.type === type
+    this.color = {r: 255, g: 0, b: 0}
+    if (skin === 'ice')
+      this.color = {r: 150, g: 150, b: 255}
+
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
     this.ticks = Math.round(random(maxticks * 0.5, maxticks))
   }
+
   draw()
   {
     this.pos = add(this.pos, this.dir)
@@ -246,7 +250,12 @@ class Splatter
     push()
     noStroke()
     fill(this.color.r, this.color.g, this.color.b, this.ticks * 2)
-    circle(pos.x, pos.y, this.dia)
+    if (skin === 'ice')
+    {
+      rectMode(CENTER)
+      rect(pos.x, pos.y, this.dia, this.dia)
+    }
+    else circle(pos.x, pos.y, this.dia)
     pop()
     this.ticks --
     return (this.ticks <= 0)

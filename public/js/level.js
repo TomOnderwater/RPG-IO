@@ -48,6 +48,9 @@ class Level {
   initLevel(leveldata)
   {
     this.tiles = []
+    this.events = []
+    this.entities = []
+    this.grounditems = []
     this.height = leveldata.height
     this.width = leveldata.width
     for (let x = 0; x < leveldata.cols.length; x++)
@@ -159,7 +162,7 @@ class Level {
       switch(event.type)
       {
         case 'damage':
-          this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.color))
+          this.events.push(new Impact(event.pos, event.damage, event.dir, event.target.type))
           break
         case 'explosion':
           handleFeedback([event])

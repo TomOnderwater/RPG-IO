@@ -12,7 +12,7 @@ module.exports = function calcAttack(attack)
                 pos: attack.collision.pos, 
                 damage: attack.damage,
                 owner: attack.attacker,
-                target: {color: {r:255, g: 0, b: 0}, id: attack.collision.entity.id}
+                target: {type: 'blood', id: attack.collision.entity.id}
             }
     }
     if (attack.collision)
@@ -30,7 +30,7 @@ module.exports = function calcAttack(attack)
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage,
-                target: {color: {r:100, g: 100, b: 100}},
+                target: {type: 'stone'},
                 owner: attack.attacker
             } // add a color to targets
         }
@@ -45,7 +45,7 @@ module.exports = function calcAttack(attack)
                 dir: attack.collision.speed, 
                 pos: attack.collision.pos, 
                 damage,
-                target: {color: {r:255, g: 0, b: 0}, id: attack.collision.entity.id},
+                target: {type: 'blood', id: attack.collision.entity.id},
                 owner: attack.attacker
             }
         }
