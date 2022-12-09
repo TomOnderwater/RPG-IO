@@ -1,4 +1,4 @@
-const version = "v0.1"
+const version = "v0.11"
 
 p5.disableFriendlyErrors = true
 
