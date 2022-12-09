@@ -46,6 +46,7 @@ const httpPrefix = isSecure() ? 'https://' : 'http://'
 const wsPrefix = isSecure() ? 'wss://' : 'ws://'
 
 const soundfolder = 'assets/sound_effects/'
+const texturefolder = 'assets/textures/'
 
 // SHORTCUTS
 let SEXYGREY // = color(51, 51, 51)
@@ -74,30 +75,33 @@ function preload()
   //console.log('loading assets...')
   sound = new SoundManager()
   //console.log('loading textures...')
+  let skinfolder = skin ? getSkin(skin) : 'default'
+  // SURFACE TEXTURES
+  let folder = texturefolder + skinfolder + '/'
 
   // SURFACE TEXTURES
-  grasstex_ = loadImage('assets/textures/seamless_grass1.jpg')
-  watertex_ = loadImage('assets/textures/watertexture1.jpg')
-  stonetex_ = loadImage('assets/textures/stonetexture.jpg')
-  dirttex_ = loadImage('assets/textures/dirt_texture1.jpg')
-  sandtex_ = loadImage('assets/textures/sandtexture1.jpg')
-  graveltex_ = loadImage('assets/textures/graveltexture.png')
+  grasstex_ = loadImage(folder + 'seamless_grass1.jpg')
+  watertex_ = loadImage(folder + 'watertexture1.jpg')
+  stonetex_ = loadImage(folder + 'stonetexture.jpg')
+  dirttex_ = loadImage(folder + 'dirt_texture1.jpg')
+  sandtex_ = loadImage(folder + 'sandtexture1.jpg')
+  graveltex_ = loadImage(folder + 'graveltexture.png')
 
   // STRUCTURE TEXTURES
-  walltexture = loadImage('assets/textures/smallwalltexture.png')
-  rocktexture = loadImage('assets/textures/rocktexture.png')
-  woodenwallTexture = loadImage('assets/textures/woodwalltexture.jpg')
-  stonewallTexture = loadImage('assets/textures/rockwall.jpg')
+  walltexture = loadImage(folder + 'smallwalltexture.png')
+  rocktexture = loadImage(folder + 'rocktexture.png')
+  woodenwallTexture = loadImage(folder + 'woodwalltexture.jpg')
+  stonewallTexture = loadImage(folder + 'rockwall.jpg')
 
   // ICONS
-  woodicon = loadImage('assets/textures/woodicon.png')
-  stoneicon = loadImage('assets/textures/stoneicon.png')
-  ammoicon = loadImage('assets/textures/ammobag.png')
-  stafficon = loadImage('assets/textures/staff.png')
-  chestIcon = loadImage('assets/textures/treasurechest.png')
-  gearicon = loadImage('assets/textures/gearicon.png')
-  flailIcon = loadImage('assets/textures/flailicon.png')
-  potionicon = loadImage('assets/textures/potion.png')
+  woodicon = loadImage(texturefolder + 'woodicon.png')
+  stoneicon = loadImage(texturefolder + 'stoneicon.png')
+  ammoicon = loadImage(texturefolder + 'ammobag.png')
+  stafficon = loadImage(texturefolder + 'staff.png')
+  chestIcon = loadImage(texturefolder + 'treasurechest.png')
+  gearicon = loadImage(texturefolder + 'gearicon.png')
+  flailIcon = loadImage(texturefolder + 'flailicon.png')
+  potionicon = loadImage(texturefolder + 'potion.png')
 
   // LOAD FONTS
   titlefont = loadFont('assets/fonts/GamePlayed-vYL7.ttf')

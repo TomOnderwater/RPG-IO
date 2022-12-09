@@ -15,6 +15,8 @@ function openStream() {
             console.log("GAME START", game_id)
             console.log(msg.level)
             level.initLevel(msg.level)
+            // request level as a check
+            getLevel()
             setGameState('game') //set state
           break
           case 'spectator':
@@ -110,6 +112,12 @@ async function startSpectator()
   openStream()
 }
 
+async function getLevel()
+{
+  const url = httpPrefix + host + '/getlevel'
+  let data = await(returnPost(url, {key, id: game_id}))
+  if (data.level) level.initLevel(data.level)
+}
 async function loadLevelData(connection)
 {
   const url = httpPrefix + host + '/getLevel'

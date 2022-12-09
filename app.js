@@ -86,7 +86,7 @@ app.post("/start", (req, res) => {
   // contains a key
   let connection = req.body
   connection.key = connection.key.toLowerCase()
-  console.log('start', connection.name, 'in dungeon: ', connection.key)
+  console.log('start', connection.name, 'in level:', connection.key)
   let game = gameMaster.addPlayer(connection)
   accountmanager.updateName(connection.session, connection.name) //update latest name
   accountmanager.updateKey(connection.session, connection.key)
@@ -166,13 +166,15 @@ app.ws('/gamestream', (ws, req) => {
             }
               break
           }
-        gameMaster.startPlayer({key, id, type})
         // check if the player is still alive
-        if (gameMaster.manageConnections({socket: ws, key, id, type})) 
+        gameMaster.startPlayer({key, id, type})
+        if (gameMaster.manageConnections({socket: ws, key, id, type}))
+        {
           ws.send(JSON.stringify({
             type: 'start', id, key, 
             level: gameMaster.getLevelData({key, id, type})
             }))
+        }
         break
         case 'level':
           ws.send(JSON.stringify({type: 'view', 

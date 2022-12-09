@@ -250,7 +250,7 @@ module.exports = class Dungeon {
         // DEPRECIATED SOON
         new_player.initHand(this.assignID())
         // add to queue
-        console.log('adding player: ', new_player.name, 'id: ', new_player.id)
+        //console.log('adding player: ', new_player.name, 'id: ', new_player.id)
         this.queue.push(new_player)
         //console.log('queued: ', this.queue)
         return {id, key: this.key}
