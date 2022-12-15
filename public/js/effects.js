@@ -236,7 +236,9 @@ class Splatter
     this.color = {r: 255, g: 0, b: 0}
     if (skin === 'ice')
       this.color = {r: 150, g: 150, b: 255}
-
+    if (type === 'stone')
+      this.color = {r: 100, g: 100, b: 100}
+      
     this.dir = createVector(dir.x, dir.y).rotate(random(-0.2, 0.2)).mult(0.5)
     this.ticks = Math.round(random(maxticks * 0.5, maxticks))
   }
