@@ -2,6 +2,8 @@ const Func = require('../util/functions.js')
 const riverPlains = {water: 0.61, stone: 0.36, structure: 0.36}
 const startitems = [BOW, SWORD]
 
+const getSpawn = require('../util/mobspawn.js')
+
 module.exports = class Survival
 {
     constructor(game, dungeon)
@@ -43,7 +45,7 @@ module.exports = class Survival
                 let chest = Func.chooseOne(chests)
                 let pos = (!chest || this.ticks % (this.mobticks * 2) === 0) ?  
                 level.getRandomLandPos() : chest.body.getCenter()
-                level.spawnMob(CHARGER, pos)
+                level.spawnMob(getSpawn('normal'), pos)
             } 
         }
     }

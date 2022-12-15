@@ -7,6 +7,8 @@ const seeds = [meadows, stoneLands, riverPlains]
 
 const createItem = require('../items/item.js')
 
+const getSpawn = require('../util/mobspawn.js')
+
 module.exports = class Arena
 {
     constructor(game, dungeon)
@@ -107,7 +109,7 @@ module.exports = class Arena
     spawnMobs()
     {
         if (this.level.mobs.length < this.level.maxMobs)
-            this.level.spawnMob(CHARGER, this.level.getRandomLandPos())
+            this.level.spawnMob(getSpawn('peaceful'), this.level.getRandomLandPos())
     }
     getVictimCam(id)
     {

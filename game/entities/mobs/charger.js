@@ -15,7 +15,7 @@ const stamina = 100
 const frequency = 5
 const fov = Math.PI
 const resolution = 10
-const range = 10
+const range = 7
 const speed = 0.07
 
 module.exports = class Charger
