@@ -185,7 +185,8 @@ function drawVersion()
 {
   push()
   fill(255)
-  text(version, width - 30, height - 10)
+  textAlign(RIGHT)
+  text(version, width - 5, height - 10)
   pop()
 }
 function updateInput()
