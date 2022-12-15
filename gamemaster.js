@@ -13,17 +13,21 @@ function generateKey(len) // creates some random key to display on screen
 
 module.exports = class GameMaster
 {
-    constructor()
+    constructor(settings)
     {
         this.dungeons = []
         this.connections = []
         this.ticks = 0
+        this.settings = settings || {}
+        this.difficulty = this.settings.difficulty ? this.settings.difficulty : 'easy'
+        console.log('base difficulty:', this.difficulty)
         // DEFAULT SURVIVAL dungeon
-        this.dungeons.push(new Dungeon({
+        this.dungeons.push(new Dungeon({ 
             floorcount: 1, 
             size: {width: 100, height: 100}, 
             mode: 'survival',
-            persistent: true}, 
+            persistent: true,
+            difficulty: this.difficulty}, 
             'world'))
 
         // DEFAULT ARENA DUNGEON
@@ -31,7 +35,8 @@ module.exports = class GameMaster
             floorcount: 1, 
             size: {width: 32, height: 18}, 
             mode: 'arena',
-            persistent: true}, 
+            persistent: true,
+            difficulty: this.difficulty}, 
             'arena')) // key is arena
     }
     addDungeon(key)

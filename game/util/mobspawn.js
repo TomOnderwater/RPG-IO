@@ -1,15 +1,15 @@
-const { chooseOne } = require("./functions")
+const Func = require("./functions")
 
 module.exports = function getSpawn(mode)
 {
     switch(mode)
     {
-        case 'peaceful':
-            return SLIME
+        case 'easy':
+            return Func.chooseOne([...Array(15).fill(SLIME), CHARGER])
         case 'normal':
-            return chooseOne([SLIME, SLIME, SLIME, SLIME, SLIME, CHARGER])
+            return Func.chooseOne([...Array(5).fill(SLIME), CHARGER])
         case 'hard':
-            return chooseOne([SLIME, SLIME, CHARGER])
+            return Func.chooseOne([...Array(2).fill(SLIME), CHARGER])
     }
     return SLIME
 }

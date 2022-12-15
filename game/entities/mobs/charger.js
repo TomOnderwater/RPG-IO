@@ -9,7 +9,7 @@ function randomWalk(maxspeed)
 }
 
 const mass = 2
-const rad = 0.4
+const rad = 0.3
 const health = 150
 const stamina = 100
 const frequency = 5

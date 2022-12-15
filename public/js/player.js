@@ -104,7 +104,7 @@ class Player extends Entity
     translate(pos.x, pos.y)
     rotate(this.dir + HALF_PI)
     //draw perception
-    if (this.invulnerable) fill(100, 50)
+    if (this.invulnerable) fill(100, 150)
     else fill(255)
     //circle(0, 0, 40)
     textSize(this.dia * cam.zoom)

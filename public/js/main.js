@@ -1,4 +1,4 @@
-const version = "v0.12"
+const version = "v0.13"
 
 p5.disableFriendlyErrors = true
 
@@ -67,7 +67,7 @@ if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
 // SKIN
 // example: ?skin=ice (for icecream)
-let skin = false
+let skin = 'ice'
 if (params.skin) skin = params.skin
 
 function preload()

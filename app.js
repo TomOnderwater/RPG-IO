@@ -3,8 +3,9 @@ const app = express()
 let path = require("path")
 
 const config = require('./config.js')
-// get correct config here
-const settings = config.testing
+
+// SET CONFIGURATION ////////////////////////////////////
+const settings = config.deployment
 
 const port = settings.port
 
@@ -19,7 +20,7 @@ app.use(bodyParser.json())
 const GameMaster = require("./gamemaster.js")
 const AccountManager = require("./accounts.js")
 
-let gameMaster = new GameMaster()
+let gameMaster = new GameMaster(settings)
 
 if (settings.reset) resetGames()
 
@@ -86,7 +87,7 @@ app.post("/start", (req, res) => {
   // contains a key
   let connection = req.body
   connection.key = connection.key.toLowerCase()
-  console.log('start', connection.name, 'in level:', connection.key)
+  //console.log('start', connection.name, 'in level:', connection.key)
   let game = gameMaster.addPlayer(connection)
   accountmanager.updateName(connection.session, connection.name) //update latest name
   accountmanager.updateKey(connection.session, connection.key)
@@ -123,7 +124,7 @@ function resetGames()
   gameMaster.cleanup()
   // reset gamemaster
   console.log("RESETTING GAME HANDLER")
-  gameMaster = new GameMaster()
+  gameMaster = new GameMaster(settings)
   console.log("next cleanup scheduled", settings.reset * 0.001, 'seconds from now')
   setTimeout(resetGames, settings.reset)
 }

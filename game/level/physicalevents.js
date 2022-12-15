@@ -79,7 +79,7 @@ class Explosion
                     type: 'damage', 
                     dir, pos: collision, 
                     damage: this.damage,
-                    target: {color: {r:255, g: 0, b: 0}},
+                    target: {type: 'stone'},
                     owner: this.event.owner.id
                 })
             }
@@ -94,7 +94,7 @@ class Explosion
                     dir: {x: 0, y: 0}, 
                     pos: collision, 
                     damage: this.damage,
-                    target: {color: {r:100, g: 100, b: 100}},
+                    target: {type: 'blood', id: body.entity.id},
                     owner: this.event.owner.id
                 })
             }

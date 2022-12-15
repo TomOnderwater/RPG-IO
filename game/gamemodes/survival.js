@@ -16,7 +16,7 @@ module.exports = class Survival
         this.finalscores = []
         this.treasurechestticks = 3000 // about 100 seconds
 
-        this.difficulty = 'normal'
+        this.difficulty = game.difficulty
 
         this.mobticks = 60
         this.naturalhealing = true

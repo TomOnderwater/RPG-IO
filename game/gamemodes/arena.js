@@ -7,6 +7,8 @@ const seeds = [meadows, stoneLands, riverPlains]
 
 const createItem = require('../items/item.js')
 
+// https://baskin.flawk.io
+
 const getSpawn = require('../util/mobspawn.js')
 
 module.exports = class Arena
@@ -27,7 +29,7 @@ module.exports = class Arena
         this.game_ended = false
         this.inLobby = true
 
-        this.difficulty = 'normal'
+        this.difficulty = game.difficulty
         // CONFIGURABLE SETTINGS //
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
         this.weaponcount = 4
