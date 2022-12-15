@@ -27,6 +27,7 @@ module.exports = class Arena
         this.game_ended = false
         this.inLobby = true
 
+        this.difficulty = 'normal'
         // CONFIGURABLE SETTINGS //
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
         this.weaponcount = 4
@@ -109,7 +110,7 @@ module.exports = class Arena
     spawnMobs()
     {
         if (this.level.mobs.length < this.level.maxMobs)
-            this.level.spawnMob(getSpawn('peaceful'), this.level.getRandomLandPos())
+            this.level.spawnMob(getSpawn(this.difficulty), this.level.getRandomLandPos())
     }
     getVictimCam(id)
     {

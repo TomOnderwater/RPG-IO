@@ -78,7 +78,7 @@ module.exports = class Charger
         let collisions = this.body.update(closebodies)
         for (let collision of collisions)
         {
-            if (collision.entity.type == PLAYER)
+            if (Func.inList(collision.entity.type, this.enemies))
             {
                 let damage = this.attack
 

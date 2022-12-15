@@ -199,6 +199,14 @@ function circleOnCircle(circle1, circle2)
    return (sqDist(circle1.pos, circle2.pos) <= Math.pow(circle1.rad + circle2.rad, 2))
 }
 
+function inList(item, list)
+{
+    for (let i = 0; i < list.length; i++)
+    {
+        if (item === list[i]) return true
+    }
+    return false
+}
 function floorPos(pos)
 {
   return {x: Math.floor(pos.x), y: Math.floor(pos.y)}
@@ -237,5 +245,5 @@ module.exports = {
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, circleOnCircle, 
     constrain, toBase64, floorPos, randomName, randomVector, normalize, chooseOne,
-    cloneObject
+    cloneObject, inList
 }

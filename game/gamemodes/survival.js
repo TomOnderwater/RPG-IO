@@ -15,6 +15,9 @@ module.exports = class Survival
         this.leaderboard = []
         this.finalscores = []
         this.treasurechestticks = 3000 // about 100 seconds
+
+        this.difficulty = 'normal'
+
         this.mobticks = 60
         this.naturalhealing = true
         this.respawning = true
@@ -45,7 +48,7 @@ module.exports = class Survival
                 let chest = Func.chooseOne(chests)
                 let pos = (!chest || this.ticks % (this.mobticks * 2) === 0) ?  
                 level.getRandomLandPos() : chest.body.getCenter()
-                level.spawnMob(getSpawn('normal'), pos)
+                level.spawnMob(getSpawn(this.difficulty), pos)
             } 
         }
     }
