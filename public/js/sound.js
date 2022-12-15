@@ -18,7 +18,7 @@ class SoundManager {
             sprite: {burning: [1200, 4200, true]},
             looping: true})
         this.splashimpactsound = new Howl({src: [soundfolder + 'splashimpact.mp3']})
-        this.basicimpactsound = new Howl({src: [soundfolder + 'basicimpact.mp3']})
+        this.basicimpactsound = new Howl({src: [soundfolder + 'basicimpact.mp3'], sprite: {impact: [250, 1000]}})
     }
     stop()
     {
@@ -143,7 +143,7 @@ class SoundManager {
     {
         let p = this.getStereoPos(pos)
         this.basicimpactsound.pos(p.x, p.y)
-        let id = this.basicimpactsound.play()
+        let id = this.basicimpactsound.play('impact')
         this.basicimpactsound.volume(constrain(damage * 0.05, 0, 1), id)
     }
     fireball(pos)

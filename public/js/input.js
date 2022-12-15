@@ -889,6 +889,13 @@ class JoyStick
             out = {type: 'boost', boost: this.boost, 
             dir: {x: this.boostdir.x, y: this.boostdir.y}}
         this.zeroBoost()
+        if (this.touch !== null)
+        {
+            let t = getTouch(this.touch)
+            if (t) this.place(t)
+            //this.place(getTouch(this.touch))
+        }
+        //this.active = false
         return out
     }
     buildupBoost()

@@ -43,7 +43,7 @@ module.exports = class Survival
                 let chest = Func.chooseOne(chests)
                 let pos = (!chest || this.ticks % (this.mobticks * 2) === 0) ?  
                 level.getRandomLandPos() : chest.body.getCenter()
-                level.spawnMob(SLIME, pos)
+                level.spawnMob(CHARGER, pos)
             } 
         }
     }

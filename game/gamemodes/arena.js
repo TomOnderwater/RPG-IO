@@ -107,7 +107,7 @@ module.exports = class Arena
     spawnMobs()
     {
         if (this.level.mobs.length < this.level.maxMobs)
-            this.level.spawnMob(SLIME, this.level.getRandomLandPos())
+            this.level.spawnMob(CHARGER, this.level.getRandomLandPos())
     }
     getVictimCam(id)
     {

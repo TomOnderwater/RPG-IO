@@ -141,6 +141,30 @@ class Critter extends Entity
     }
 }
 
+class Charger extends Entity
+{
+    constructor(entity)
+    {
+        super(entity)
+        //this.face = randomAnimal(bton(this.id) * 1000, critterlist())
+        this.dia = 0.8
+    }
+    draw()
+    {
+        push()
+        fill(255, 255, 0)
+        stroke(255, 125, 0)
+        let pos = cam.onScreen(this.pos)
+        textAlign(CENTER, CENTER)
+        translate(pos.x, pos.y)
+        rotate(this.dir + HALF_PI)
+        textSize(this.dia * cam.zoom)
+        text('🧸', 0, 0)
+        pop()
+    }
+}
+
+
 class Arrow extends Entity {
 constructor(entity){
     super(entity)

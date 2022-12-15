@@ -1,7 +1,7 @@
 const Tile = require('./tile.js')
 const LevelGenerator = require('./levelgeneration/levelgeneration.js')
 const Func = require('../util/functions.js')
-const Mobs = require('../entities/mobs.js')
+const getMob = require('../entities/mobs.js')
 const RangedAttack = require('../entities/rangedattacks.js')
 const GroundItem = require('./grounditems.js')
 const BuildingManager = require('./building.js')
@@ -310,11 +310,12 @@ module.exports = class Level
     }
     spawnMob(type, pos)
     {
-        let slime = new Mobs.Slime({x: 0, y: 0}, this.dungeon.assignID())
-        let spawnpos = this.getFreeSpot(pos, slime.body)
-        slime.body.pos = spawnpos
+        let mob = getMob(type)
+        mob.id = this.dungeon.assignID()
+        let spawnpos = this.getFreeSpot(pos, mob.body)
+        mob.body.pos = spawnpos
         //console.log('slime spawned')
-        this.mobs.push(slime)
+        this.mobs.push(mob)
     }
     getBuildingEvents(player)
     {

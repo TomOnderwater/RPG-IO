@@ -21,6 +21,7 @@ global.AIR = 'a'
 // entity definitions
 global.PLAYER = 'p'
 global.SLIME = 's'
+global.CHARGER = ')'
 
 // MATERIAL DEFINITIONS
 global.WOOD = 'W'

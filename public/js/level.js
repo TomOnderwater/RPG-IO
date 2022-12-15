@@ -275,6 +275,8 @@ updateItems(items)
           return new Fist(data)
         case FLAIL:
           return new Flail(data)
+        case CHARGER:
+          return new Charger(data)
         default: // items that can be held in the hand
           return new HandItem(data)
       }

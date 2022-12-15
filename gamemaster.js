@@ -111,6 +111,11 @@ module.exports = class GameMaster
                     }
                 }
             }
+            else if (this.connections[i].player)
+            {
+                if (this.connections[i].player.dead())
+                    this.connections[i].player = null
+            }
           }
     }
     cleanup()
@@ -176,7 +181,7 @@ module.exports = class GameMaster
     {
         // TODO: Add a ban hammer for lingering connections to a dead game
         // there's no player
-        console.log('new connection:', connection.key, connection.id)
+        //console.log('new connection:', connection.key, connection.id)
         if (connection.id === 'spectator') 
         {
             this.connections.push(connection)
@@ -184,7 +189,7 @@ module.exports = class GameMaster
         }
         let dungeon = this.getDungeon(connection.key)
         let player = dungeon.getPlayer(connection.id)
-        if (!player) return false // dead, or something
+        if (player === null) return false // dead, or something
         //console.log('player: ', player)
         for (let con of this.connections)
             {

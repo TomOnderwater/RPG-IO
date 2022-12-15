@@ -15,8 +15,9 @@ function openStream() {
             console.log("GAME START", game_id)
             console.log(msg.level)
             level.initLevel(msg.level)
-            // request level as a check
-            getLevel()
+
+            //getLevel() // double check
+            
             setGameState('game') //set state
           break
           case 'spectator':

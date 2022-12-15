@@ -1,4 +1,4 @@
-const version = "v0.11"
+const version = "v0.12"
 
 p5.disableFriendlyErrors = true
 
@@ -75,7 +75,7 @@ function preload()
   //console.log('loading assets...')
   sound = new SoundManager()
   //console.log('loading textures...')
-  let skinfolder = skin ? getSkin(skin) : 'default'
+  let skinfolder = skin ? skin : 'default'
   // SURFACE TEXTURES
   let folder = texturefolder + skinfolder + '/'
 

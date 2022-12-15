@@ -8,6 +8,7 @@ const TREE = 't', AIR = 'a', ROCK = 'r', TREASURECHEST = 'Y'
 
 const PLAYER = 'p'
 const SLIME = 's'
+const CHARGER = ')'
 
 // item definitions
 const SWORD = 'S'
