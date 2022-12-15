@@ -34,8 +34,8 @@ module.exports = class Charger
         this.type = CHARGER
         this.name = Func.randomName() + ' the Critter'
         this.xp = 0
-        this.enemies = [PLAYER, SLIME]
-        this.attack = 10
+        this.enemies = [PLAYER]
+        this.attack = 5
         this.ticks = 0
     }
     updateActions(level, colliders)
