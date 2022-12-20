@@ -158,7 +158,7 @@ module.exports = class Arena
             killerEntry.kills ++
             killerEntry.victims = [...killerEntry.victims, victim.id, ...victimEntry.victims]
         }
-        this.leaderboard.sort((a, b) => b.wins - a.wins)
+        this.leaderboard.sort((a, b) => b.kills - a.kills)
     }
     addToLeaderBoard(entry)
     {
@@ -209,7 +209,7 @@ module.exports = class Arena
         out.top = []
         for (let i = 0; i < this.leaderboard.length; i++)
         {
-            out.top.push({name: this.leaderboard[i].name, score: this.leaderboard[i].wins})
+            out.top.push({name: this.leaderboard[i].name, score: this.leaderboard[i].kills})
         }
         return out
     }
