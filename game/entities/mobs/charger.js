@@ -13,8 +13,8 @@ const rad = 0.3
 const health = 150
 const stamina = 100
 const frequency = 5
-const fov = Math.PI
-const resolution = 11
+const fov = Math.PI * 2
+const resolution = 20
 const range = 7
 const speed = 0.07
 
