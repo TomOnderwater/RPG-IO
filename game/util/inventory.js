@@ -4,6 +4,7 @@ module.exports = class Inventory {
     constructor(slotcount)
     {
         this.slots = this.initSlots(slotcount)
+        this.ammo = 0
         this.updated = true
     }
     initSlots(count)
@@ -96,12 +97,21 @@ module.exports = class Inventory {
         this.slots[id].selected = true
         //console.log(this.slots)
     }
+    hasAmmo(ammo)
+    {
+        return ammo <= this.ammo
+    }
+    removeAmmo(ammo)
+    {
+        this.ammo -= ammo
+    }
     canRemove(item)
     {
         for (let slot of this.slots)
         {
             if (slot.item.type === item.type)
             {
+                if (item)
                 return (slot.item.count - item.count >= 0)
             }
         }
@@ -128,11 +138,7 @@ module.exports = class Inventory {
     }
     addAmmo(count)
     {
-        for (let slot of this.slots)
-        {
-            if (slot.item.ammo) 
-                slot.item.count += count
-        }
+        this.ammo += count
         return true
     }
     add(item)
@@ -156,7 +162,7 @@ module.exports = class Inventory {
                 slot.item.type = item.type
                 slot.item.count += item.count
                 slot.item.persistent = item.persistent
-                slot.item.ammo = item.ammo
+                slot.item.ammo = item.ammo // flag if it uses ammo
                 return true
             }
         }

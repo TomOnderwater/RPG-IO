@@ -72,16 +72,17 @@ class Item
     //if (!this.projectile || !this.owner) return
     if (Func.magnitude(dir) > this.minimumdraw)
     {
-        if (!inventory.canRemove({type: this.type, count: projectile.cost}))
+        if (!inventory.hasAmmo(projectile.cost))
             {
                 projectile.cost = this.projectile.cost // CAN'T AFFORD THE SHOT
-                if (!inventory.canRemove({type: this.type, count: projectile.cost}))
+                if (!inventory.hasAmmo(projectile.cost)) // try lower
                 return
             }
 
         //get start pos
         let pos = this.body.pos
-        inventory.remove({type: this.type, count: projectile.cost})
+        inventory.removeAmmo(projectile.cost)
+        //inventory.remove({type: this.type, count: projectile.cost})
         level.addRangedAttack({ owner: this.owner, pos, dir, projectile, item: this })
         this.addFeedBackEvent({type: projectile.type})
         }
@@ -149,18 +150,18 @@ class Flail extends Item
         super(data)
         this.physical = true
         this.attack = 65
-        this.mass = 2.5
-        this.reach = 0.006 // reach of the handle
+        this.mass = 10.5 //2.5
+        this.reach = 0.009//0.006 // reach of the handle
         this.destruction = 10
         this.bounce = 0.2
-        this.rad = 0.15
+        this.rad = 0.4 //0.15
         this.persistent = true
         this.resetBody()
         this.resetChain()
     }
     resetChain()
     {
-        this.chain = new Chain(this.body.pos, 3, 0.2, this.mass)
+        this.chain = new Chain(this.body.pos, 5, 0.2, this.mass)
     }
     doAction(hand)
     {

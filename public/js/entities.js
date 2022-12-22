@@ -318,7 +318,7 @@ class Flail extends Entity
     let pos = cam.onScreen(this.pos)
     fill(80)
     noStroke()
-    circle(pos.x, pos.y, cam.zoom * 0.3)
+    circle(pos.x, pos.y, cam.zoom * 0.8)
     pop()
     }
     kill()

@@ -16,9 +16,8 @@ module.exports = class GroundItem{
             if (Func.circleOnCircle(entity.body, this.body))
             {
                 // check if it's elligble to pick it up
-                if (entity.type == PLAYER) 
+                if (entity.type === PLAYER) 
                     return entity.pickup(this.item)
-                    //return true
             }
         }
         return false

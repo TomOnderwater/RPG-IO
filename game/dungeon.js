@@ -216,8 +216,8 @@ module.exports = class Dungeon {
                 this.levels[0].addPlayer(player, this.game.getSpawnPos(player))
                 this.game.addToLeaderBoard({id: player.id,
                                             name: player.name})
-                // remove from queue
                 this.queue.splice(i, 1)
+                return
             }
         }
     }
@@ -226,7 +226,6 @@ module.exports = class Dungeon {
         let item = createItem(type)
         if (count !== undefined)
             item.count = count
-        else if (item.ammo) item.count = 20
         return item
     }
     assignID()

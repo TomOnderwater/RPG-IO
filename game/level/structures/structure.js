@@ -119,7 +119,7 @@ class TreasureChest
         let option = Func.chooseOne(this.options)
         let drop = {pos: this.body.getCenter()}
         drop.item = createItem(option)
-        drop.item.count = drop.item.ammo ? 20 : 0
+        drop.item.count = 0
         //console.log('drop:', items)
         items.push(drop)
         return items

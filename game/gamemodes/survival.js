@@ -18,6 +18,7 @@ module.exports = class Survival
 
         this.difficulty = game.difficulty
 
+        this.scoreticks = 10
         this.mobticks = 60
         this.naturalhealing = true
         this.respawning = true
@@ -58,15 +59,10 @@ module.exports = class Survival
         {
             let killerEntry = this.getEntry(killer.id)
             if (victim.type === PLAYER)
-        {
-            //let victimEntry = this.getEntry(victim.id)
-            //killerEntry.score += Math.round(victimEntry.score * 0.5)
+            {
             killerEntry.victims = [...killerEntry.victims, victim.id]
             this.removeEntry(victim.id)
-        }
-        else killerEntry.score += 10
-
-        this.leaderboard.sort((a, b) => b.score - a.score)
+            }
         return
         }
         if (victim.type === PLAYER)
@@ -75,7 +71,7 @@ module.exports = class Survival
     addToLeaderBoard(entry)
     {
         entry.victims = []
-        entry.score = 0
+        entry.score = 10
         this.leaderboard.push(entry)
     }
     getFinalScore(id)
@@ -114,7 +110,6 @@ module.exports = class Survival
         }
         this.leaderboard.sort((a, b) => b.score - a.score)
     }
-
     updateLeaderBoard()
     {
         this.leaderboard = []
@@ -123,6 +118,7 @@ module.exports = class Survival
             let entries = level.getLeaderBoard()
             for (let entry of entries)
             {
+                entry.victims = []
                 this.leaderboard.push(entry)
             }
         }
@@ -140,17 +136,6 @@ module.exports = class Survival
         let items = []
         switch(player.name)
         {
-            case 'Art':
-                items.push(this.dungeon.createItem(BOW, 999))
-                items.push(this.dungeon.createItem(FLAIL))
-                items.push(this.dungeon.createItem(STAFF, 20))
-            break
-            case 'Tom':
-                items.push(this.dungeon.createItem(BOW, 100))
-                items.push(this.dungeon.createItem(SWORD))
-                items.push(this.dungeon.createItem(STAFF, 100))
-                items.push(this.dungeon.createItem(FLAIL))
-            break
             case 'Porno elf':
                 items.push(this.dungeon.createItem(FLAIL), 69)
             break
@@ -194,6 +179,8 @@ module.exports = class Survival
         }
         if (this.ticks % this.mobticks === 0) 
             this.spawnMobs()
+        if (this.ticks % this.scoreticks === 0)
+            this.updateLeaderBoard()
         this.ticks ++
     }
 }

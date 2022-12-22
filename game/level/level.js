@@ -298,7 +298,9 @@ module.exports = class Level
         let out = []
         for (let player of this.players)
         {
-            out.push(player.getScore())
+            let entry = {name: player.name, id: player.id}
+            entry.score = player.inventory.ammo
+            out.push(entry)
         }
         return out
     }
