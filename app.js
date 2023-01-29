@@ -48,8 +48,6 @@ let gameMaster = new GameMaster(settings)
 
 if (settings.reset) resetGames()
 
-
-
 runGames()
 checkConnections()
 
@@ -73,6 +71,10 @@ app.get("/controller", (req, res) => {
 // TESTING
 app.get("/testing", (req, res) => {
     res.sendFile(path.join(__dirname + "/public/testing.html"))
+})
+
+app.post('/getTitle', (req, res) => {
+  res.send({title: settings.title})
 })
 
 app.post("/getLevel", (req, res) => {
@@ -172,7 +174,10 @@ function runGames()
 app.ws('/gamestream', (ws, req) => {
   
   // get the ip address
-  let ip = req.socket.remoteAddress
+  let ipfull = req.socket.remoteAddress
+  let fields = ipfull.split(':')
+  let ip = fields[fields.length -1]
+
   ws.onmessage = (body) => 
   {
     let msg = JSON.parse(body.data)

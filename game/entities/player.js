@@ -183,7 +183,13 @@ module.exports = class Player
         {
             item.pos = this.body.pos
         }
-        //console.log('dropping:', items)
+        let bags = Math.round(this.inventory.ammo * 0.0625) + 3
+        for (let i = 0; i < bags; i++)
+        {
+            let drop = {pos: Func.add(this.body.getCenter(), Func.randomVector(0.1))}
+            drop.item = {type: AMMO, count: 8}
+            items.push(drop)
+        }
         return items
     }
 }

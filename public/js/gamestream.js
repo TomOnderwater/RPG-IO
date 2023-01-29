@@ -125,6 +125,13 @@ async function getLevel()
   if (data.level) level.initLevel(data.level)
 }
 
+async function getTitle()
+{
+  const url = httpPrefix + host + '/getTitle'
+  let data = await(returnPost(url, {}))
+  if (data.title) title = data.title
+  console.log(title)
+}
 async function loadLevelData(connection)
 {
   const url = httpPrefix + host + '/getLevel'

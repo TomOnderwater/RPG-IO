@@ -1,5 +1,10 @@
+/*
+Made by Tom Onderwater in 2023
+*/
 
-const version = "v0.2"
+
+const version = "v0.21"
+let title = 'MobFight'
 
 p5.disableFriendlyErrors = true
 
@@ -141,8 +146,11 @@ function setup() {
   //register player
   if (type === 'player' || type === 'controller') 
   {
+    //get the level data by acting as a spectator
+    //getLevel({key: 'world'})
     loadLevelData({key, id: 'spectator', type: 'spectator'})
     setupInput()
+    getTitle()
     registerPlayer()
   }
   if (type === 'spectator') startSpectator()
@@ -189,7 +197,7 @@ function drawVersion()
   push()
   fill(255)
   textAlign(RIGHT)
-  text(version, width - 5, height - 10)
+  text(version, width - 15, height - 15)
   pop()
 }
 function updateInput()
@@ -338,7 +346,7 @@ class Lobby
   textAlign(CENTER, CENTER)
   textSize(width * 0.15)
   fill(51, 51, 51)
-  text('MobFight', width * 0.5, height * 0.5)
+  text(title, width * 0.5, height * 0.5)
   pop()
 
 
@@ -423,9 +431,9 @@ function drawAmmo(pos, size)
   drawIcon(ammoicon, pos, size + 4 || 20)
   fill(255)
   noStroke()
-  textAlign(CENTER, LEFT)
+  textAlign(LEFT, CENTER)
   textSize(size || 16)
-  text(ammo, pos.x + 18, pos.y + 6)
+  text(ammo, pos.x + 12, pos.y)
   pop()
 }
 
