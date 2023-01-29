@@ -10,7 +10,7 @@ p5.disableFriendlyErrors = true
 
 //GAME SPECIFIC
 let cam, level, player = false, sess_id, game_id, gamestate, inputname = 'guest', lobby,
-  messageboard
+  messageboard, weapon, myBroadCast = {started: false}
 
 // FLAWK SPECIFIC
 let autostart = false, flawkname = false, fkey = false
@@ -31,8 +31,6 @@ const TXB2 = TEXTUREBLEND * 0.5
 
 // DATA SPECIFIC
 let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0, ammo = 0
-
-let myBroadCast = {started: false}
 
 // RAW TEXTURES
 let grasstex_, stonetex_, watertex_, sandtex_, dirttex_, graveltex_

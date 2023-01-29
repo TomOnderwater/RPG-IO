@@ -26,16 +26,13 @@ class Entity
     constructor(data)
     {
         this.id = data.i
-        this.target = data.p
-        this.pos = data.p
-        this.ppos = data.p
         this.type = data.t
-        this.moving = data.m || false //specific for 
         this.dir = 0
-        this.owner = false
         this.dia = 0.4
         this.bounce = 0.2
-        this.cost = data.c || 1
+        this.pos = data.p
+        this.ppos = data.p
+        this.newData(data)
     }
     update()
     {
@@ -76,9 +73,10 @@ class Entity
         if (data.m !== undefined) this.moving = data.m
         if (data.o !== undefined) 
             {
-                if (!this.owner) // start sprite at owner (as if grabbing from inventory)
-                    this.pos = level.getPlayer(data.o).pos
+                let p_own = this.owner
                 this.owner = level.getPlayer(data.o)
+                if (!p_own) // start sprite at owner (as if grabbing from inventory)
+                    this.pos = this.owner.pos
             }
         if (data.I !== undefined)
             this.invulnerable = true
@@ -200,6 +198,11 @@ class HandItem extends Entity
         this.size = 0.4
         this.dist = 0.5
         this.rot = 0
+        //console.log('owner:', this.owner)
+        if (player)
+        {
+            if (this.owner.id === player.id) weapon = this
+        }
     }
     draw()
     {
@@ -371,6 +374,27 @@ class Bow extends HandItem
         this.drawreach = 0.5
         this.size = 0.1
     }
+    drawTrail()
+    {
+        //console.log('drawing trail', this.bowdraw)
+        if (!this.bowdraw) return
+        if (this.bowdraw < 0.2) return
+
+        let diff = subtract(player.pos, this.bowpos)
+        let p_diff = createVector(diff.x, diff.y).rotate(PI)
+        let p_pos = createVector(player.pos.x, player.pos.y)
+        push()
+        for (let i = 0; i < 3; i ++)
+        {
+            let p = p5.Vector.mult(p_diff, (i * 1.2) + 2)
+            p.add(p_pos)
+            let pos = cam.onScreen(p)
+            fill(51, 100 - (i * 20))
+            noStroke()
+            circle(pos.x, pos.y, 10 - (i * 2))
+        }
+        pop()
+    }
     draw()
     {
         let rot = 0, draw = 0, bowtarget = this.pos, basedraw = 0.05
@@ -379,7 +403,9 @@ class Bow extends HandItem
                 rot = Math.atan2(this.owner.pos.y - this.pos.y, this.owner.pos.x - this.pos.x)
                 if (this.moving) 
                 {
-                    draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y) + 0.1
+                    draw = dist(this.owner.pos.x, this.owner.pos.y, this.pos.x, this.pos.y)
+                    this.bowdraw = draw
+                    draw += 0.1
                     bowtarget = add(p5.Vector.fromAngle(rot).mult(this.drawreach), this.owner.pos)
                 }
             }

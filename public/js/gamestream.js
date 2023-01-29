@@ -53,9 +53,7 @@ function updateView(viewport)
   }
 
   if (viewport.broadcast)
-  {
     initBroadCast(viewport.broadcast)
-  }
 
   if (viewport.countdown)
     messageboard.countdown(viewport.countdown)

@@ -728,6 +728,7 @@ class UtitlityStick
         this.center = createVector(0, 0)
         this.joy = createVector(0, 0)
         this.bg = color(0, 255, 0, 100)
+        this.output = createVector(0, 0)
         this.touch = null
         this.hintcompleted = false
     }
@@ -744,6 +745,21 @@ class UtitlityStick
         fill(200, 200, 200, 150)
         circle(this.joy.x, this.joy.y, this.dia * 0.33)
         pop()
+
+        this.drawPlayerTrail()
+    }
+    drawPlayerTrail()
+    {
+        let playerWeapon = findWeapon()
+        //console.log('weapon', playerWeapon)
+        if (!playerWeapon) 
+            return weapon = false
+        
+        let funcs = getAllFuncs(playerWeapon)
+        for (let func of funcs)
+        {
+            if (func === 'drawTrail') return playerWeapon.drawTrail()
+        }
     }
     drawHint()
     {
@@ -773,7 +789,11 @@ class UtitlityStick
                 return createVector(0, 0)
             }
             //existing touch
-            if (this.active && t.id === this.touch) return this.updateJoy(t)
+            if (this.active && t.id === this.touch) 
+            {
+                this.output = this.updateJoy(t)
+                return {x: this.output.x, y: this.output.y}
+            }
         }
         return this.cancelJoy() //no updates
     }
