@@ -5,6 +5,14 @@ let path = require("path")
 const config = require('./config.js')
 
 // SET CONFIGURATION ////////////////////////////////////
+/**
+ * settings options:
+ * 
+ * deployment
+ * testing
+ * baskin
+ * flawk
+ */
 
 let settings = config.deployment
 process.argv.forEach(function (val, index) {
