@@ -282,6 +282,16 @@ function onField(p, area)
       return false
   }
 
+  function chooseOne(list, seed)
+{
+    if (!list.length) return false
+    if (seed !== undefined) randomSeed(seed)
+    let n = (random() * list.length) - 0.5
+    let i = Math.round(n)
+    return list[i]
+}
+
+
 function getTouchById(id)
 {
     if (id === null) return null

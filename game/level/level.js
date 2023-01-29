@@ -17,6 +17,7 @@ module.exports = class Level
         this.height = level.height
         this.dungeon = dungeon
         this.game = dungeon.game
+        
         this.tiles = new LevelGenerator(level).getTiles()
         this.players = []
         this.entities = [] // list of items in motion with a rotation, collisionstyle: box
@@ -544,7 +545,7 @@ module.exports = class Level
             }
             cols.push(col)
         }
-        return {width: this.width, height: this.height, cols, items: this.getItems()}
+        return {width: this.width, height: this.height, cols, items: this.getItems(), key: this.dungeon.key}
     }
     getTileData(player)
     {

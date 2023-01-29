@@ -4,6 +4,8 @@ module.exports = function getSpawn(mode)
 {
     switch(mode)
     {
+        case 'peaceful':
+            return SLIME
         case 'easy':
             return Func.chooseOne([...Array(20).fill(SLIME), CHARGER])
         case 'normal':

@@ -125,6 +125,8 @@ class Critter extends Entity
     {
         super(entity)
         this.face = randomAnimal(bton(this.id) * 1000, critterlist())
+        //this.face = chooseOne(critterlist(), bton(this.id) * 1000)
+
     }
     draw()
     {
@@ -138,6 +140,7 @@ class Critter extends Entity
         textSize(this.dia * cam.zoom)
         text(this.face, 0, 0)
         pop()
+        
     }
 }
 
@@ -318,7 +321,7 @@ class Flail extends Entity
     let pos = cam.onScreen(this.pos)
     fill(80)
     noStroke()
-    circle(pos.x, pos.y, cam.zoom * 0.8)
+    circle(pos.x, pos.y, cam.zoom * 0.3)
     pop()
     }
     kill()

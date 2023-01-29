@@ -50,6 +50,7 @@ class Tile {
       this.structure.draw()
   }
 
+  // TODO
   drawSurface(p)
   {
     let pos = p || cam.onScreen({x: this.x + 0.5 + TXB2, y: this.y + 0.5 + TXB2})

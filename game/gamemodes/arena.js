@@ -34,6 +34,7 @@ module.exports = class Arena
         this.availableWeapons = [BOW, FLAIL, SWORD, STAFF]
         this.weaponcount = 4
         this.roundLimit = 120
+        this.lobbyTime = 30
         this.mobticks = 60
         // player specific stuff
         this.naturalhealing = false
@@ -102,7 +103,8 @@ module.exports = class Arena
     {
         let drop = {pos}
         drop.item = createItem(type)
-        drop.item.count = drop.item.ammo ? 20 : 0
+        drop.item.count = 0
+        //drop.item.count = drop.item.ammo ? 20 : 0
         this.level.placeItem(drop)
     }
     getSpawnPos(player)
@@ -145,6 +147,7 @@ module.exports = class Arena
     }
     addKill(killer, victim)
     {
+        // ADD scoring for killing critters -> implement in leaderboard
         if (victim.type === PLAYER)
         {
             this.spectators.push(victim)
@@ -158,22 +161,36 @@ module.exports = class Arena
             killerEntry.kills ++
             killerEntry.victims = [...killerEntry.victims, victim.id, ...victimEntry.victims]
         }
-        this.leaderboard.sort((a, b) => b.kills - a.kills)
+        else
+        {
+            if (killer.type === PLAYER)
+            {
+                let killerEntry = this.getEntry(killer.id)
+                killerEntry.mobkills ++
+            }
+        }
+        this.leaderboard.sort((a, b) => b.score - a.score)
     }
     addToLeaderBoard(entry)
     {
         entry.victims = []
         entry.wins = 0
         entry.kills = 0
+        entry.mobkills = 0
+        entry.score = 0
         entry.alive = true
         this.leaderboard.push(entry)
 
         if (this.leaderboard.length > 1 && !this.countDownStarted)
         { 
             this.countDownStarted = true
-            this.timeLeft = UPDATERATE * 30
+            this.timeLeft = UPDATERATE * this.lobbyTime
             this.inLobby = true
         }
+    }
+    getScore(entry)
+    {
+        return (entry.kills * 5) + (entry.wins * 10) + entry.mobkills
     }
     removeEntry(id)
     {
@@ -209,7 +226,7 @@ module.exports = class Arena
         out.top = []
         for (let i = 0; i < this.leaderboard.length; i++)
         {
-            out.top.push({name: this.leaderboard[i].name, score: this.leaderboard[i].kills})
+            out.top.push({name: this.leaderboard[i].name, score: this.leaderboard[i].score})
         }
         return out
     }
@@ -238,7 +255,9 @@ module.exports = class Arena
                     let winner = this.level.players[0]
                     let entry = this.getEntry(winner.id)
                     entry.wins ++
-                    this.leaderboard.sort((a, b) => b.wins - a.wins)
+                    entry.score = this.getScore(entry)
+                    this.dungeon.addBroadCast({msg: "ROUND OVER, WINNER: " + entry.name, duration: 3000})
+                    this.leaderboard.sort((a, b) => b.score - a.score)
                 }
                 this.game_ended = true
                 setTimeout(this.beginGame.bind(this), 1000)

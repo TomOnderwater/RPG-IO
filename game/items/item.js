@@ -27,7 +27,9 @@ class Item
         // HANDLE ACTIONS (SHOOTING, BUILDING ETC)
         this.handleActions(hand)
         // PHYSICAL STUFF
-        this.handleCollisions(colliders) // HANDLE PHYSICAL COLLISIONS
+        if (this.owner.invulnerableticks > 0) // check for invulnerabilty
+            this.handleCollisions(colliders, false) // HANDLE PHYSICAL COLLISIONS
+        else this.handleCollisions(colliders)
     }
     updatePriming()
     {
@@ -100,7 +102,7 @@ class Item
         this.handbounce = Func.squareBounce(this.handbounce, target, this.bounce)
         this.body.pos = Func.add(owner.body.pos, this.handbounce) 
     }
-    handleCollisions(colliders)
+    handleCollisions(colliders, attackEnabled = true)
     {
         let level = this.owner.level
         if (this.moving && this.physical)
@@ -113,7 +115,7 @@ class Item
                 {
                     for (let collision of collisions)
                     {
-                        if (collision.entity.health !== undefined)
+                        if (collision.entity.health !== undefined && attackEnabled)
                             level.addEvent(calcAttack({
                                 collision, 
                                 item: this, 
@@ -126,9 +128,8 @@ class Item
     }
     handleActions(hand)
     {
-        //this.hand = hand
+        
         let owner = this.owner
-
         this.doAction(hand)
         // what to do when input turns to zero physical ends after this loop
     }
@@ -150,18 +151,18 @@ class Flail extends Item
         super(data)
         this.physical = true
         this.attack = 65
-        this.mass = 10.5 //2.5
-        this.reach = 0.009//0.006 // reach of the handle
+        this.mass = 2.5
+        this.reach = 0.006 // reach of the handle
         this.destruction = 10
         this.bounce = 0.2
-        this.rad = 0.4 //0.15
+        this.rad = 0.15
         this.persistent = true
         this.resetBody()
         this.resetChain()
     }
     resetChain()
     {
-        this.chain = new Chain(this.body.pos, 5, 0.2, this.mass)
+        this.chain = new Chain(this.body.pos, 3, 0.2, this.mass)
     }
     doAction(hand)
     {
@@ -193,7 +194,7 @@ class Flail extends Item
         this.body.setSpeed(speed)
         //console.log(speed)
     }
-    handleCollisions(colliders)
+    handleCollisions(colliders, attackEnabled = true)
     {
         let level = this.owner.level
         if (this.moving && this.physical)
@@ -206,7 +207,7 @@ class Flail extends Item
                 {
                     for (let collision of collisions)
                     {
-                        if (collision.entity.health !== undefined)
+                        if (collision.entity.health !== undefined && attackEnabled)
                             level.addEvent(calcAttack({
                                 collision, 
                                 item: this, 
@@ -318,7 +319,7 @@ class Bow extends Item
         let owner = this.owner
         if (Func.zeroVector(hand.input)) 
         {
-            if (this.moving)
+            if (this.moving && !owner.invulnerableticks)
                 this.shoot()
             this.moving = false
             this.body.pos = owner.body.pos
@@ -374,7 +375,7 @@ class Staff extends Item
         let owner = this.owner
         if (Func.zeroVector(hand.input)) 
         {
-            if (this.moving)
+            if (this.moving && !owner.invulnerableticks)
                 this.shoot()
             this.moving = false
             this.body.pos = owner.body.pos

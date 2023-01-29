@@ -5,7 +5,31 @@ let path = require("path")
 const config = require('./config.js')
 
 // SET CONFIGURATION ////////////////////////////////////
-const settings = config.deployment
+
+let settings = config.deployment
+process.argv.forEach(function (val, index) {
+  let arguments = val.split('=')
+  if (arguments.length > 1)
+  {
+    let argument = arguments[0]
+    let value = arguments[1]
+    if (argument == 'deployment') 
+    {
+      try 
+      {
+        settings = config[value]
+      }
+      catch (error)
+      {
+        settings = config.deployment
+      }
+    }
+    if (argument == 'difficulty') settings.difficulty = value
+    if (argument == 'port') settings.port = Number(settings.value)
+  }
+})
+
+//const settings = config.deployment
 
 const port = settings.port
 
@@ -23,6 +47,8 @@ const AccountManager = require("./accounts.js")
 let gameMaster = new GameMaster(settings)
 
 if (settings.reset) resetGames()
+
+
 
 runGames()
 checkConnections()
@@ -82,6 +108,11 @@ app.post("/newcode", (req, res) =>
   })
 })
 
+app.post("/getip", (req, res) => 
+{
+  res.send({ip: gameMaster.getIP({key: req.key, id: req.id})})
+})
+
 app.post("/start", (req, res) => {
   //console.log(req)
   // contains a key
@@ -93,6 +124,8 @@ app.post("/start", (req, res) => {
   accountmanager.updateKey(connection.session, connection.key)
   res.send(game)
 })
+
+// TODO add method to establish round trip ping
 
 app.post("/sess_id", (req, res) => {
   let connection = req.body
@@ -137,6 +170,9 @@ function runGames()
 }
 // identification is done via game id
 app.ws('/gamestream', (ws, req) => {
+  
+  // get the ip address
+  let ip = req.socket.remoteAddress
   ws.onmessage = (body) => 
   {
     let msg = JSON.parse(body.data)
@@ -169,8 +205,9 @@ app.ws('/gamestream', (ws, req) => {
           }
         // check if the player is still alive
         gameMaster.startPlayer({key, id, type})
-        if (gameMaster.manageConnections({socket: ws, key, id, type}))
+        if (gameMaster.manageConnections({socket: ws, key, id, type, ip}))
         {
+          console.log('ip: ', ip)
           ws.send(JSON.stringify({
             type: 'start', id, key, 
             level: gameMaster.getLevelData({key, id, type})

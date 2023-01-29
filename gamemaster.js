@@ -16,28 +16,28 @@ module.exports = class GameMaster
     constructor(settings)
     {
         this.dungeons = []
-        this.connections = []
+        // TODO add function to get ip address from connections.socket
+        this.basesize = {width: 32, height: 18}
+        // TODO add ping to handshake
+        this.connections = [] // TODO: add ping to connections
         this.ticks = 0
         this.settings = settings || {}
         this.difficulty = this.settings.difficulty ? this.settings.difficulty : 'easy'
         console.log('base difficulty:', this.difficulty)
-        // DEFAULT SURVIVAL dungeon
-        this.dungeons.push(new Dungeon({ 
-            floorcount: 1, 
-            size: {width: 100, height: 100}, 
-            mode: 'survival',
-            persistent: true,
-            difficulty: this.difficulty}, 
-            'world'))
 
-        // DEFAULT ARENA DUNGEON
-        this.dungeons.push(new Dungeon({
-            floorcount: 1, 
-            size: {width: 32, height: 18}, 
-            mode: 'arena',
-            persistent: true,
-            difficulty: this.difficulty}, 
-            'arena')) // key is arena
+        if (!settings.basedungeons)
+            settings.basedungeons = [{key: 'arena', type: 'arena', difficulty: 'easy'}]
+        
+        settings.basedungeons.forEach(dungeon => {
+            let configsettings = dungeon
+            if (!configsettings.key) configsettings.key = this.createKey(5)
+            if (!configsettings.size) configsettings.size = this.basesize
+            if (!configsettings.mode) configsettings.mode = 'arena'
+            if (!configsettings.difficulty) configsettings.difficulty = this.difficulty
+            configsettings.persistent = true
+            
+            this.dungeons.push(new Dungeon(configsettings, configsettings.key))
+        })
     }
     addDungeon(key)
     {
@@ -45,7 +45,7 @@ module.exports = class GameMaster
         console.log('key = ', key)
         let dungeon = new Dungeon({
             floorcount: 1, 
-            size: {width: 32, height: 18}, 
+            size: this.basesize, 
             mode: 'arena'}, 
             key)
 
@@ -207,6 +207,7 @@ module.exports = class GameMaster
                         con.player = player
                         con.id = player.id
                         con.key = connection.key
+                        con.ip === connection.ip
                         //console.log('player: ', con.player)
                         return true
                     }
@@ -214,7 +215,6 @@ module.exports = class GameMaster
             if (!con.player) continue
             if (con.player.id === connection.id) 
             {
-            con.socket = connection.socket // set socket
             return true
             }
         }
@@ -222,9 +222,18 @@ module.exports = class GameMaster
                                 id: connection.id,
                                 key: connection.key,
                                 type: connection.type,
+                                ip: connection.ip,
                                 player})
         //console.log('connections: ', this.connections)
         return true
+    }
+    getIP(connection) //returns the ip address based on the id and key
+    {
+        for (let con of this.connections)
+        {
+            if (con.key === connection.key && con.id === connection.id)
+                return connection.ip
+        }
     }
     updateInput(input)
     {
@@ -244,6 +253,8 @@ module.exports = class GameMaster
                 name: 'some curious guy'}
         //console.log('dungeon: ', dungeon)
         let viewport = dungeon.getViewPort(connection)
+        if (dungeon.broadcast)
+            viewport.data.broadcast = dungeon.broadcast
         if (dungeon.fullnew) 
             viewport.data.level = dungeon.getLevelData(connection.id)
         return viewport

@@ -13,11 +13,8 @@ function openStream() {
             game_id = msg.id
             key = msg.key
             console.log("GAME START", game_id)
-            console.log(msg.level)
-            level.initLevel(msg.level)
-
-            //getLevel() // double check
-            
+            //rebuild the level with final clause (keys need to match)
+            level.initLevel(msg.level, true)
             setGameState('game') //set state
           break
           case 'spectator':
@@ -55,6 +52,11 @@ function updateView(viewport)
     //sound = new SoundManager()
   }
 
+  if (viewport.broadcast)
+  {
+    initBroadCast(viewport.broadcast)
+  }
+
   if (viewport.countdown)
     messageboard.countdown(viewport.countdown)
   else messageboard.stopCountdown()
@@ -67,6 +69,9 @@ function updateView(viewport)
 
   if (viewport.leaderboard)
   leaderboard = viewport.leaderboard
+
+  if (viewport.ammo !== undefined) 
+    ammo = viewport.ammo
 
   if (type == 'spectator') return
   
@@ -119,6 +124,7 @@ async function getLevel()
   let data = await(returnPost(url, {key, id: game_id}))
   if (data.level) level.initLevel(data.level)
 }
+
 async function loadLevelData(connection)
 {
   const url = httpPrefix + host + '/getLevel'

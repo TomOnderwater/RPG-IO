@@ -17,15 +17,20 @@ module.exports = class Dungeon {
         this.key = key
         this.ticks = 0
         this.queue = []
+        this.broadcast = false
         this.levels = this.generateLevel(this.game.getLevelSpecs(0))
         this.game.initLevels()
         this.fullnew = false
     }
     newLevel(seed)
     {
-        console.log(seed)
+        //console.log(seed)
         this.levels = this.generateLevel(seed)
         this.fullnew = true
+    }
+    addBroadCast(broadcast)
+    {
+        this.broadcast = broadcast
     }
     generateLevel(specs)
     {
@@ -76,6 +81,7 @@ module.exports = class Dungeon {
             this.levels[i].resetEvents()
             this.levels[i].clearUpdates()
         }
+        this.broadcast = false
         this.fullnew = false
     }
     getViewPort(connection) 
@@ -140,6 +146,9 @@ module.exports = class Dungeon {
         // set update frequency for misc
         if (this.ticks % 10 === 0) 
             viewport.leaderboard = this.game.getLeaderBoard()
+
+        if (this.ticks % 5 === 0 && connection.player)
+            viewport.ammo = connection.player.getAmmo()
 
         let countdown = this.game.getCountDown()
         if (countdown)

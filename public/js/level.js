@@ -45,8 +45,16 @@ class Level {
           if (event.ended()) this.events.splice(i, 1)
         }
   }
-  initLevel(leveldata)
+  initLevel(leveldata, final)
   {
+    console.log('initializing level')
+    if (leveldata.key !== key && final !== undefined)
+    {
+      console.log('wrong level')
+      getLevel()
+      return
+    }
+
     this.tiles = []
     this.events = []
     this.entities = []

@@ -55,7 +55,7 @@ class MobileInput {
         this.joystick.draw()
         this.handStick.draw()
         this.inventory.draw()
-        this.settings.draw()
+        //this.settings.draw()
     }
     isFree(t)
     {

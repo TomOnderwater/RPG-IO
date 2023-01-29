@@ -106,7 +106,7 @@ module.exports = class Charger
         {
             let drop = {pos: Func.add(this.body.getCenter(), Func.randomVector(0.1))}
             drop.item = {type: AMMO}
-            drop.item.count = Math.round(3 + Math.random() * 3)
+            drop.item.count = Math.round(10 + Math.random() * 3)
             items.push(drop)
         }
         let xpdrop = {pos: Func.add(this.body.getCenter(), Func.randomVector(0.1))}

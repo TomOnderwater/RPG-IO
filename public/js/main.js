@@ -1,4 +1,5 @@
-const version = "v0.13"
+
+const version = "v0.2"
 
 p5.disableFriendlyErrors = true
 
@@ -24,7 +25,9 @@ const entityborder = 0.03, TEXTUREBLEND = 0.05
 const TXB2 = TEXTUREBLEND * 0.5
 
 // DATA SPECIFIC
-let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0
+let input, gamestream, nameinput, message, keyinput, leaderboard, inventory, timer = 0, ammo = 0
+
+let myBroadCast = {started: false}
 
 // RAW TEXTURES
 let grasstex_, stonetex_, watertex_, sandtex_, dirttex_, graveltex_
@@ -34,6 +37,7 @@ let grassTexture, stoneTexture, waterTexture, sandTexture, dirtTexture, gravelTe
 
 let walltexture, woodicon, stoneicon, rocktexture, stonewallTexture, woodenwallTexture,
 ammoicon, stafficon, gearicon, chestIcon, flailIcon, potionicon
+
 
 // FONTS
 let titlefont
@@ -52,7 +56,6 @@ const texturefolder = 'assets/textures/'
 let SEXYGREY // = color(51, 51, 51)
 
 let sound
-
 
 // QUERY STRING
 const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -408,10 +411,48 @@ function drawSpectator()
   textAlign(TOP, LEFT)
   text("go to: " + httpPrefix + host + " and connect with key: " + key, 10, 30)
   drawLeaderBoard({x: width - 20, y: 20}, RIGHT)
+  drawBroadCasts()
   messageboard.draw()
   //drawFrameRate({x: width -70, y: height - 20})
   pop()
 }
+
+function drawAmmo(pos, size)
+{
+  push()
+  drawIcon(ammoicon, pos, size + 4 || 20)
+  fill(255)
+  noStroke()
+  textAlign(CENTER, LEFT)
+  textSize(size || 16)
+  text(ammo, pos.x + 18, pos.y + 6)
+  pop()
+}
+
+function initBroadCast(broadcast)
+{
+  myBroadCast = {started: true, start: millis(), msg: broadcast.msg, duration: broadcast.duration}
+}
+
+function drawBroadCasts()
+{
+  if (myBroadCast.started)
+  {
+    if (millis() > myBroadCast.start + myBroadCast.duration)
+    {
+      myBroadCast.started = false
+      return
+    }
+    let pct = ((myBroadCast.start + myBroadCast.duration) - millis()) / myBroadCast.duration
+      push()
+      textAlign(CENTER, CENTER)
+      fill(255, 255 - (pct * 50))
+      textSize(20)
+      text(myBroadCast.msg, width * 0.5, height * 0.3)
+      pop()
+  }
+}
+
 function drawGame()
 {
   background(SEXYGREY)
@@ -434,8 +475,10 @@ function drawGame()
     //player.draw()
       }
     }
+  drawBroadCasts()
   messageboard.draw()
   drawLeaderBoard({x: width - 15, y: 15}, RIGHT)
+  drawAmmo({x: 20, y: 20}, 22)
   input.draw()
   //drawFrameRate({x: width -70, y: height - 20})
 }

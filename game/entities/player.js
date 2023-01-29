@@ -22,6 +22,9 @@ module.exports = class Player
         this.invulnerableticks = 150 //about 5 seconds
         // UPDATE
         this.inventory = new Inventory(6)
+
+        //set ammo count to default 10
+        this.inventory.ammo = 10
         this.session = data.session
         this.name = data.name
         this.hand = new Hand(this, createItem(NONE), this.body.pos)
@@ -62,6 +65,10 @@ module.exports = class Player
     {
         this.inventory.updated = true
         return this.inventory.add(item)
+    }
+    getAmmo()
+    {
+        return this.inventory.ammo
     }
     removeItem(item)
     {
