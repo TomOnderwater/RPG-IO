@@ -199,10 +199,11 @@ class HandItem extends Entity
         this.dist = 0.5
         this.rot = 0
         //console.log('owner:', this.owner)
-        if (player)
+        if (player !== undefined && this.owner !== undefined)
         {
             if (this.owner.id === player.id) weapon = this
         }
+        
     }
     draw()
     {
