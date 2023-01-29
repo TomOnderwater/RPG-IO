@@ -746,7 +746,8 @@ class UtitlityStick
         circle(this.joy.x, this.joy.y, this.dia * 0.33)
         pop()
 
-        this.drawPlayerTrail()
+        if (sqMag(this.output) > 0.1)
+            this.drawPlayerTrail()
     }
     drawPlayerTrail()
     {

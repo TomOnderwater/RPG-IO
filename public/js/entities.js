@@ -381,8 +381,8 @@ class Bow extends HandItem
         if (!this.bowdraw) return
         if (this.bowdraw < 0.2) return
 
-        let diff = subtract(player.pos, this.bowpos)
-        let p_diff = createVector(diff.x, diff.y).rotate(PI)
+        let diff = subtract(player.pos, this.pos)
+        let p_diff = createVector(diff.x, diff.y)
         let p_pos = createVector(player.pos.x, player.pos.y)
         push()
         for (let i = 0; i < 3; i ++)
