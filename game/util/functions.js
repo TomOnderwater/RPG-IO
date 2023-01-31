@@ -48,6 +48,11 @@ function subtract(p1, p2) {
     }
 }
 
+function vector()
+{
+    return {x: 0, y: 0}
+}
+
 function add(p1, p2) {
     return {
         x: p1.x + p2.x,
@@ -218,10 +223,10 @@ function randomVector(max)
         y: (Math.random() - 0.5) * 2 * max}
 }
 
-function normalize(vec)
+function normalize(vec, normal = 1)
 {
     // use ratio for fewer divisions
-    let ratio = 1 / Math.sqrt(vec.x * vec.x + vec.y * vec.y)
+    let ratio = normal / Math.sqrt(vec.x * vec.x + vec.y * vec.y)
     return {x: vec.x * ratio, y: vec.y * ratio }
 }
 
@@ -245,5 +250,5 @@ module.exports = {
     squareBounce, isAbout, fixNumber, inRange, getRandom,
     getVector, fixPos, constrainVector, zeroVector, circleOnCircle, 
     constrain, toBase64, floorPos, randomName, randomVector, normalize, chooseOne,
-    cloneObject, inList
+    cloneObject, inList, vector
 }

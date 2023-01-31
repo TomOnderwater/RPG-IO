@@ -3,10 +3,12 @@ const Func = require('../../util/functions.js')
 const calcAttack = require('../../util/damage.js')
 const Perception = require('../../util/perception.js')
 
+const Actions = require('./behaviour/actions.js')
+
 function baseSlime()
 {
     let stats = {}
-    stats.rad = 0.2 //body diameter
+    stats.rad = 0.2
     stats.health = 30
     stats.type = SLIME
     stats.fov = 2 * Math.PI
@@ -20,10 +22,12 @@ function baseSlime()
     return stats
 }
 
+
 function randomWalk(maxspeed)
 {
  return { x: Func.getRandom(-maxspeed, maxspeed), y: Func.getRandom(-maxspeed, maxspeed)}
 }
+
 
 module.exports = class Slime
 {
@@ -31,12 +35,12 @@ module.exports = class Slime
     {
         this.stats = stats || baseSlime()
         this.id = id || 0
-        this.pos = pos || {x: 0, y: 0}
+        this.pos = pos || Func.vector()
         this.body = new PhysicalBody({type: 'circle', mass: this.stats.mass, entity: this, pos: this.pos, rad: this.stats.rad})
         this.perception = new Perception(this.stats.fov, this.stats.resolution, this.stats.range)
         this.maxspeed = this.stats.speed
         this.sight = false
-        this.dir = {x: 0, y: 0}
+        this.dir = Func.vector()
         this.heading = 0
         this.stamina = this.stats.stamina
         this.health = this.stats.health
@@ -80,6 +84,7 @@ module.exports = class Slime
         //get closest bodies to collide with
         //random movement event
         
+
         //if (Math.random() > 0.99) this.dir = randomWalk(this.maxspeed * 0.5)
         let surfacespeed = level.getGroundSpeed(this.body.pos)
         // move the body
@@ -153,6 +158,7 @@ module.exports = class Slime
                     }
             }
         }
+    
         if (Math.random() > 0.95)
             return {action: 'wander',
                     dir: randomWalk(this.maxspeed * 0.5)}
@@ -177,16 +183,16 @@ module.exports = class Slime
         this.lastattacker = attacker
     }
     data() 
-        {
-            let x = Func.fixNumber(this.body.pos.x, 2)
-            let y = Func.fixNumber(this.body.pos.y, 2)
-            let pos = {x,y}
-            return {
-                i: this.id, 
-                t: this.type, 
-                p: pos, 
-                h: this.health, 
-                H: this.maxhealth
-            }
+    {
+        let x = Func.fixNumber(this.body.pos.x, 2)
+        let y = Func.fixNumber(this.body.pos.y, 2)
+        let pos = {x,y}
+        return {
+            i: this.id, 
+            t: this.type, 
+            p: pos, 
+            h: this.health, 
+            H: this.maxhealth
         }
+    }
 }

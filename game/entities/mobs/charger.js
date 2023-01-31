@@ -3,6 +3,8 @@ const Func = require('../../util/functions.js')
 const calcAttack = require('../../util/damage.js')
 const Perception = require('../../util/perception.js')
 
+const Actions = require('./behaviour/actions.js')
+
 function randomWalk(maxspeed)
 {
  return { x: Func.getRandom(-maxspeed, maxspeed), y: Func.getRandom(-maxspeed, maxspeed)}
@@ -32,16 +34,34 @@ module.exports = class Charger
         this.health = health
         this.maxhealth = health
         this.type = CHARGER
-        this.name = Func.randomName() + ' the Critter'
+        //this.name = Func.randomName() + ' the Bear'
         this.xp = 0
         this.enemies = [PLAYER]
         this.attack = 5
         this.ticks = 0
+
+        /* EXPERIMENTAL
+        this.walk = new Actions.Walk({enemies: this.enemies})
+        this.attack = new Actions.Attack({enemies: this.enemies})
+        */ 
     }
     updateActions(level, colliders)
     {
-        let perception = this.perception.getSight(this, level, colliders)
-        this.action = this.getAction(perception.perception)
+        let sightresponse = this.perception.getSight(this, level, colliders)
+
+        let perception = sightresponse.perception
+
+        //TODO get response based on perception 
+        /*
+        let attackResponse = this.attack.update({perception, pos: this.body.pos})
+        let walkResponse = this.walk.update({perception, pos: this.body.pos})
+
+        let response = Actions.getResponse([attackResponse, walkResponse])
+        
+        this.dir = response
+        */
+
+        this.action = this.getAction(perception)
     }
     handleAction(action)
     {
@@ -69,7 +89,6 @@ module.exports = class Charger
         this.handleAction(this.action)
         //get closest bodies to collide with
         //random movement event
-        
         //if (Math.random() > 0.99) this.dir = randomWalk(this.maxspeed * 0.5)
         let surfacespeed = level.getGroundSpeed(this.body.pos)
         // move the body
@@ -120,6 +139,7 @@ module.exports = class Charger
     }
     getAction(perception)
     {
+
         for (let line of perception)
         {
             if (this.isEnemy(line.ray.obj))

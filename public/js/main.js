@@ -3,7 +3,7 @@ Made by Tom Onderwater in 2023
 */
 
 
-const version = "v0.21"
+const version = "v0.23"
 let title = 'MobFight'
 
 p5.disableFriendlyErrors = true
