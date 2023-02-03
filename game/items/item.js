@@ -319,7 +319,7 @@ class Bow extends Item
         let owner = this.owner
         if (Func.zeroVector(hand.input)) 
         {
-            if (this.moving && !owner.invulnerableticks)
+            if (this.moving)
                 this.shoot()
             this.moving = false
             this.body.pos = owner.body.pos
@@ -375,7 +375,8 @@ class Staff extends Item
         let owner = this.owner
         if (Func.zeroVector(hand.input)) 
         {
-            if (this.moving && !owner.invulnerableticks)
+            // check for invulnerabilty
+            if (this.moving)
                 this.shoot()
             this.moving = false
             this.body.pos = owner.body.pos
