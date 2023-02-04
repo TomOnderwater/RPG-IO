@@ -43,4 +43,4 @@ const baskin = {
         {key: 'world', mode: 'survival', difficulty: this.difficulty, size: {width: 100, height: 100}}
     ]}
 
-module.exports = {testing, deployment}
+module.exports = {testing, deployment, flawk, baskin}
