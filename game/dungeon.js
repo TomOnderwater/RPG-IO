@@ -91,7 +91,7 @@ module.exports = class Dungeon {
         {
             let viewport = {}
             let level = this.levels[0]
-            //if (this.ticks % 2 === 0) 
+            if (this.ticks % 2 === 0) 
                 viewport.entities = level.getAllEntities()
             viewport.events = level.getAllEvents()
             if (level.itemupdates.length)
@@ -130,7 +130,7 @@ module.exports = class Dungeon {
             }
         if (connection.type === 'player')
         {
-            //if (this.ticks % 2 === 0) 
+            if (this.ticks % 2 === 0) 
                 viewport.entities = active.level.getEntities(active.player)
             viewport.events = active.level.getEvents(active.player)
             if (active.level.itemupdates.length)

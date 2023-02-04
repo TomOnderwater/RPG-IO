@@ -14,6 +14,7 @@ const config = require('./config.js')
  * flawk
  */
 
+// node app deployment=flawk
 let settings = config.deployment
 process.argv.forEach(function (val, index) {
   let arguments = val.split('=')
