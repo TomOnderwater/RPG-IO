@@ -73,7 +73,7 @@ if (params.autostart) autostart = params.autostart === 'no' ? false : true
 
 // SKIN
 // example: ?skin=ice (for icecream)
-let skin = 'ice'
+let skin = 'default'
 if (params.skin) skin = params.skin
 
 function preload()
