@@ -365,7 +365,7 @@ class Staff extends Item
             rad: this.projectile.rad}
 
         if (this.primed)
-            projectile.cost *= 2
+            projectile.cost *= 8
 
         this.fireProjectile(projectile, dir, inventory, level)
 
