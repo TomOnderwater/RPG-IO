@@ -120,7 +120,7 @@ class Item
                                 collision, 
                                 item: this, 
                                 attacker: this.owner.id, 
-                                power: 1}))
+                                power: 1.5}))
                     }
                 }
             }
